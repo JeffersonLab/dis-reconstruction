@@ -4,7 +4,7 @@
 eic-smear package
 -----------------
 
-Documentation for the eic-smear package can be found [here](https://wiki.bnl.gov/eic/index.php/Computing) and [here](https://wiki.bnl.gov/eic/index.php/Smearing). The most up-to-date version of the eic-smear code is [here](https://gitlab.com/eic/eic-smear).
+Documentation for the eic-smear package can be found [here](https://wiki.bnl.gov/eic/index.php/Monte_Carlo_and_Smearing) and [here](https://wiki.bnl.gov/eic/index.php/Smearing). The most up-to-date version of the eic-smear code is [here](https://gitlab.com/eic/eic-smear).
 
 The EIC versions of various event generators provide output that can be directly fed into the eic-smear software. See [here](https://wiki.bnl.gov/eic/index.php/Simulations#Event_Generators). In particular, look at the information for [PYTHIA](https://wiki.bnl.gov/eic/index.php/PYTHIA) and [DJANGOH](https://wiki.bnl.gov/eic/index.php/DJANGOH).
 
@@ -47,7 +47,7 @@ Files provided on this repository
 
 Contact
 --------
-Author: [Barak Schmookler](barak.schmookler@stonybrook.edu)
+Author: [Barak Schmookler](mailto:barak.schmookler@stonybrook.edu)
 
 
 
