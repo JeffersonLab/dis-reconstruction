@@ -1,0 +1,9 @@
+Universe       = vanilla
+Notification   = Never
+Executable     = run_ep.sh
+GetEnv         = True
+Input	       = /dev/null
+Output         = jobout/epjob.out
+Error          = jobout/epjob.err
+Log            = jobout/epjob.log
+Queue

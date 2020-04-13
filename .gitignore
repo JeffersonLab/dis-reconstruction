@@ -1,4 +1,8 @@
+#Files
 *.so
 *.d
 *.pcm
+
+#Directories
+jobout
 
