@@ -1,0 +1,1181 @@
+
+Processing access_smeared.C...
+-------------------------------
+Total Number of Events = 1000
+
+For Event 0, Q^2 = 55.323 GeV^2!
+For Event 0, we have 41 particles!
+For Event 0, particle 0 is detected with Status 21
+For Event 0, particle 0 is detected with Id 11
+For Event 0, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 0, particle 0 is detected with theta = 180.000 degrees
+For Event 0, particle 0 is detected with phi = 0.000 degrees
+For Event 0, particle 1 is detected with Status 21
+For Event 0, particle 1 is detected with Id 2212
+For Event 0, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 0, particle 1 is detected with theta = 0.000 degrees
+For Event 0, particle 1 is detected with phi = 0.000 degrees
+For Event 0, particle 11 is detected with Status 1
+For Event 0, particle 11 is detected with Id 11
+For Event 0, particle 11 is detected with (Px,Py,Pz) = (5.680,-0.875,-4.588) GeV
+For Event 0, particle 11 is detected with theta = 128.598 degrees
+For Event 0, particle 11 is detected with phi = 351.247 degrees
+For Event 0, particle 14 is detected with Status 1
+For Event 0, particle 14 is detected with Id 11
+For Event 0, particle 14 is detected with (Px,Py,Pz) = (0.209,-0.159,12.829) GeV
+For Event 0, particle 14 is detected with theta = 1.172 degrees
+For Event 0, particle 14 is detected with phi = 322.747 degrees
+For Event 0, particle 19 is detected with Status 1
+For Event 0, particle 19 is detected with Id -2212
+For Event 0, particle 19 is detected with (Px,Py,Pz) = (-1.169,-0.017,-0.026) GeV
+For Event 0, particle 19 is detected with theta = 91.267 degrees
+For Event 0, particle 19 is detected with phi = 180.854 degrees
+For Event 0, particle 23 is detected with Status 1
+For Event 0, particle 23 is detected with Id 2112
+For Event 0, particle 23 is detected with (Px,Py,Pz) = (-0.371,0.244,1.873) GeV
+For Event 0, particle 23 is detected with theta = 13.346 degrees
+For Event 0, particle 23 is detected with phi = 146.681 degrees
+For Event 0, particle 25 is detected with Status 1
+For Event 0, particle 25 is detected with Id 211
+For Event 0, particle 25 is detected with (Px,Py,Pz) = (0.198,0.212,14.071) GeV
+For Event 0, particle 25 is detected with theta = 1.181 degrees
+For Event 0, particle 25 is detected with phi = 46.905 degrees
+For Event 0, particle 26 is detected with Status 1
+For Event 0, particle 26 is detected with Id -211
+For Event 0, particle 26 is detected with (Px,Py,Pz) = (-0.199,-0.052,-0.171) GeV
+For Event 0, particle 26 is detected with theta = 129.772 degrees
+For Event 0, particle 26 is detected with phi = 194.589 degrees
+For Event 0, particle 27 is detected with Status 1
+For Event 0, particle 27 is detected with Id 211
+For Event 0, particle 27 is detected with (Px,Py,Pz) = (-1.549,-0.527,-0.374) GeV
+For Event 0, particle 27 is detected with theta = 102.872 degrees
+For Event 0, particle 27 is detected with phi = 198.768 degrees
+For Event 0, particle 28 is detected with Status 1
+For Event 0, particle 28 is detected with Id 2212
+For Event 0, particle 28 is detected with (Px,Py,Pz) = (-1.064,0.810,0.267) GeV
+For Event 0, particle 28 is detected with theta = 78.710 degrees
+For Event 0, particle 28 is detected with phi = 142.717 degrees
+For Event 0, particle 29 is detected with Status 1
+For Event 0, particle 29 is detected with Id 211
+For Event 0, particle 29 is detected with (Px,Py,Pz) = (-0.474,0.121,-0.268) GeV
+For Event 0, particle 29 is detected with theta = 118.713 degrees
+For Event 0, particle 29 is detected with phi = 165.650 degrees
+For Event 0, particle 30 is detected with Status 1
+For Event 0, particle 30 is detected with Id -211
+For Event 0, particle 30 is detected with (Px,Py,Pz) = (-0.377,0.420,-0.079) GeV
+For Event 0, particle 30 is detected with theta = 98.008 degrees
+For Event 0, particle 30 is detected with phi = 131.925 degrees
+For Event 0, particle 32 is detected with Status 1
+For Event 0, particle 32 is detected with Id 22
+For Event 0, particle 32 is detected with (Px,Py,Pz) = (0.002,-0.061,0.280) GeV
+For Event 0, particle 32 is detected with theta = 12.288 degrees
+For Event 0, particle 32 is detected with phi = 272.324 degrees
+For Event 0, particle 33 is detected with Status 1
+For Event 0, particle 33 is detected with Id 22
+For Event 0, particle 33 is detected with (Px,Py,Pz) = (-0.299,-0.262,1.990) GeV
+For Event 0, particle 33 is detected with theta = 11.288 degrees
+For Event 0, particle 33 is detected with phi = 221.191 degrees
+For Event 0, particle 34 is detected with Status 1
+For Event 0, particle 34 is detected with Id 211
+For Event 0, particle 34 is detected with (Px,Py,Pz) = (-0.336,-0.043,1.625) GeV
+For Event 0, particle 34 is detected with theta = 11.765 degrees
+For Event 0, particle 34 is detected with phi = 187.379 degrees
+For Event 0, particle 36 is detected with Status 1
+For Event 0, particle 36 is detected with Id 130
+For Event 0, particle 36 is detected with (Px,Py,Pz) = (0.110,-0.401,27.088) GeV
+For Event 0, particle 36 is detected with theta = 0.879 degrees
+For Event 0, particle 36 is detected with phi = 285.381 degrees
+For Event 0, particle 37 is detected with Status 1
+For Event 0, particle 37 is detected with Id 22
+For Event 0, particle 37 is detected with (Px,Py,Pz) = (-0.059,0.024,-0.067) GeV
+For Event 0, particle 37 is detected with theta = 136.483 degrees
+For Event 0, particle 37 is detected with phi = 158.170 degrees
+For Event 0, particle 38 is detected with Status 1
+For Event 0, particle 38 is detected with Id 22
+For Event 0, particle 38 is detected with (Px,Py,Pz) = (0.035,0.169,-0.193) GeV
+For Event 0, particle 38 is detected with theta = 138.200 degrees
+For Event 0, particle 38 is detected with phi = 78.153 degrees
+For Event 0, particle 39 is detected with Status 1
+For Event 0, particle 39 is detected with Id 22
+For Event 0, particle 39 is detected with (Px,Py,Pz) = (0.018,0.049,0.044) GeV
+For Event 0, particle 39 is detected with theta = 49.608 degrees
+For Event 0, particle 39 is detected with phi = 70.271 degrees
+For Event 0, particle 40 is detected with Status 1
+For Event 0, particle 40 is detected with Id 22
+For Event 0, particle 40 is detected with (Px,Py,Pz) = (0.096,-0.072,0.026) GeV
+For Event 0, particle 40 is detected with theta = 77.670 degrees
+For Event 0, particle 40 is detected with phi = 323.306 degrees
+For Event 0, there are 2 beam particles and 18 detected particles
+
+For Event 1, Q^2 = 13.617 GeV^2!
+For Event 1, we have 35 particles!
+For Event 1, particle 0 is detected with Status 21
+For Event 1, particle 0 is detected with Id 11
+For Event 1, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 1, particle 0 is detected with theta = 180.000 degrees
+For Event 1, particle 0 is detected with phi = 0.000 degrees
+For Event 1, particle 1 is detected with Status 21
+For Event 1, particle 1 is detected with Id 2212
+For Event 1, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 1, particle 1 is detected with theta = 0.000 degrees
+For Event 1, particle 1 is detected with phi = 0.000 degrees
+For Event 1, particle 10 is detected with Status 1
+For Event 1, particle 10 is detected with Id 11
+For Event 1, particle 10 is detected with (Px,Py,Pz) = (3.253,1.644,-9.415) GeV
+For Event 1, particle 10 is detected with theta = 158.837 degrees
+For Event 1, particle 10 is detected with phi = 26.815 degrees
+For Event 1, particle 17 is detected with Status 1
+For Event 1, particle 17 is detected with Id 211
+For Event 1, particle 17 is detected with (Px,Py,Pz) = (-0.167,0.156,10.289) GeV
+For Event 1, particle 17 is detected with theta = 1.269 degrees
+For Event 1, particle 17 is detected with phi = 136.959 degrees
+For Event 1, particle 19 is detected with Status 1
+For Event 1, particle 19 is detected with Id -211
+For Event 1, particle 19 is detected with (Px,Py,Pz) = (-0.124,0.057,0.195) GeV
+For Event 1, particle 19 is detected with theta = 34.975 degrees
+For Event 1, particle 19 is detected with phi = 155.439 degrees
+For Event 1, particle 23 is detected with Status 1
+For Event 1, particle 23 is detected with Id 211
+For Event 1, particle 23 is detected with (Px,Py,Pz) = (0.165,0.167,9.289) GeV
+For Event 1, particle 23 is detected with theta = 1.451 degrees
+For Event 1, particle 23 is detected with phi = 45.390 degrees
+For Event 1, particle 24 is detected with Status 1
+For Event 1, particle 24 is detected with Id 321
+For Event 1, particle 24 is detected with (Px,Py,Pz) = (0.378,-0.363,11.925) GeV
+For Event 1, particle 24 is detected with theta = 2.516 degrees
+For Event 1, particle 24 is detected with phi = 316.144 degrees
+For Event 1, particle 25 is detected with Status 1
+For Event 1, particle 25 is detected with Id -211
+For Event 1, particle 25 is detected with (Px,Py,Pz) = (-0.180,-0.009,1.970) GeV
+For Event 1, particle 25 is detected with theta = 5.237 degrees
+For Event 1, particle 25 is detected with phi = 182.985 degrees
+For Event 1, particle 26 is detected with Status 1
+For Event 1, particle 26 is detected with Id 22
+For Event 1, particle 26 is detected with (Px,Py,Pz) = (-0.533,-0.474,4.431) GeV
+For Event 1, particle 26 is detected with theta = 9.145 degrees
+For Event 1, particle 26 is detected with phi = 221.618 degrees
+For Event 1, particle 27 is detected with Status 1
+For Event 1, particle 27 is detected with Id 22
+For Event 1, particle 27 is detected with (Px,Py,Pz) = (-0.887,-0.647,7.685) GeV
+For Event 1, particle 27 is detected with theta = 8.129 degrees
+For Event 1, particle 27 is detected with phi = 216.097 degrees
+For Event 1, particle 28 is detected with Status 1
+For Event 1, particle 28 is detected with Id -321
+For Event 1, particle 28 is detected with (Px,Py,Pz) = (-0.300,-0.224,3.397) GeV
+For Event 1, particle 28 is detected with theta = 6.285 degrees
+For Event 1, particle 28 is detected with phi = 216.763 degrees
+For Event 1, particle 29 is detected with Status 1
+For Event 1, particle 29 is detected with Id 211
+For Event 1, particle 29 is detected with (Px,Py,Pz) = (-0.815,-0.383,7.662) GeV
+For Event 1, particle 29 is detected with theta = 6.705 degrees
+For Event 1, particle 29 is detected with phi = 205.169 degrees
+For Event 1, particle 30 is detected with Status 1
+For Event 1, particle 30 is detected with Id 130
+For Event 1, particle 30 is detected with (Px,Py,Pz) = (-0.429,-0.215,2.175) GeV
+For Event 1, particle 30 is detected with theta = 12.428 degrees
+For Event 1, particle 30 is detected with phi = 206.586 degrees
+For Event 1, particle 31 is detected with Status 1
+For Event 1, particle 31 is detected with Id 2112
+For Event 1, particle 31 is detected with (Px,Py,Pz) = (-0.378,0.313,33.813) GeV
+For Event 1, particle 31 is detected with theta = 0.832 degrees
+For Event 1, particle 31 is detected with phi = 140.350 degrees
+For Event 1, particle 33 is detected with Status 1
+For Event 1, particle 33 is detected with Id 22
+For Event 1, particle 33 is detected with (Px,Py,Pz) = (0.021,0.020,5.903) GeV
+For Event 1, particle 33 is detected with theta = 0.286 degrees
+For Event 1, particle 33 is detected with phi = 43.295 degrees
+For Event 1, particle 34 is detected with Status 1
+For Event 1, particle 34 is detected with Id 22
+For Event 1, particle 34 is detected with (Px,Py,Pz) = (-0.004,-0.043,0.680) GeV
+For Event 1, particle 34 is detected with theta = 3.635 degrees
+For Event 1, particle 34 is detected with phi = 264.108 degrees
+For Event 1, there are 2 beam particles and 14 detected particles
+
+For Event 2, Q^2 = 11.190 GeV^2!
+For Event 2, we have 35 particles!
+For Event 2, particle 0 is detected with Status 21
+For Event 2, particle 0 is detected with Id 11
+For Event 2, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 2, particle 0 is detected with theta = 180.000 degrees
+For Event 2, particle 0 is detected with phi = 0.000 degrees
+For Event 2, particle 1 is detected with Status 21
+For Event 2, particle 1 is detected with Id 2212
+For Event 2, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 2, particle 1 is detected with theta = 0.000 degrees
+For Event 2, particle 1 is detected with phi = 0.000 degrees
+For Event 2, particle 10 is detected with Status 1
+For Event 2, particle 10 is detected with Id 2212
+For Event 2, particle 10 is detected with (Px,Py,Pz) = (0.114,0.081,92.446) GeV
+For Event 2, particle 10 is detected with theta = 0.087 degrees
+For Event 2, particle 10 is detected with phi = 35.438 degrees
+For Event 2, particle 11 is detected with Status 1
+For Event 2, particle 11 is detected with Id 11
+For Event 2, particle 11 is detected with (Px,Py,Pz) = (-0.122,2.589,-5.725) GeV
+For Event 2, particle 11 is detected with theta = 155.639 degrees
+For Event 2, particle 11 is detected with phi = 92.702 degrees
+For Event 2, particle 14 is detected with Status 1
+For Event 2, particle 14 is detected with Id -321
+For Event 2, particle 14 is detected with (Px,Py,Pz) = (-0.095,-0.355,0.111) GeV
+For Event 2, particle 14 is detected with theta = 73.255 degrees
+For Event 2, particle 14 is detected with phi = 255.070 degrees
+For Event 2, particle 18 is detected with Status 1
+For Event 2, particle 18 is detected with Id 321
+For Event 2, particle 18 is detected with (Px,Py,Pz) = (-0.331,0.119,-0.479) GeV
+For Event 2, particle 18 is detected with theta = 143.738 degrees
+For Event 2, particle 18 is detected with phi = 160.219 degrees
+For Event 2, particle 20 is detected with Status 1
+For Event 2, particle 20 is detected with Id 22
+For Event 2, particle 20 is detected with (Px,Py,Pz) = (0.012,-0.345,-0.574) GeV
+For Event 2, particle 20 is detected with theta = 148.955 degrees
+For Event 2, particle 20 is detected with phi = 271.967 degrees
+For Event 2, particle 21 is detected with Status 1
+For Event 2, particle 21 is detected with Id 22
+For Event 2, particle 21 is detected with (Px,Py,Pz) = (0.032,-0.114,-0.385) GeV
+For Event 2, particle 21 is detected with theta = 162.891 degrees
+For Event 2, particle 21 is detected with phi = 285.651 degrees
+For Event 2, particle 22 is detected with Status 1
+For Event 2, particle 22 is detected with Id 321
+For Event 2, particle 22 is detected with (Px,Py,Pz) = (0.594,-0.242,3.740) GeV
+For Event 2, particle 22 is detected with theta = 9.727 degrees
+For Event 2, particle 22 is detected with phi = 337.809 degrees
+For Event 2, particle 23 is detected with Status 1
+For Event 2, particle 23 is detected with Id -211
+For Event 2, particle 23 is detected with (Px,Py,Pz) = (-0.107,0.068,0.392) GeV
+For Event 2, particle 23 is detected with theta = 17.905 degrees
+For Event 2, particle 23 is detected with phi = 147.728 degrees
+For Event 2, particle 24 is detected with Status 1
+For Event 2, particle 24 is detected with Id -321
+For Event 2, particle 24 is detected with (Px,Py,Pz) = (0.005,0.109,0.109) GeV
+For Event 2, particle 24 is detected with theta = 45.059 degrees
+For Event 2, particle 24 is detected with phi = 87.614 degrees
+For Event 2, particle 25 is detected with Status 1
+For Event 2, particle 25 is detected with Id 211
+For Event 2, particle 25 is detected with (Px,Py,Pz) = (-0.373,-0.142,0.376) GeV
+For Event 2, particle 25 is detected with theta = 46.636 degrees
+For Event 2, particle 25 is detected with phi = 200.811 degrees
+For Event 2, particle 26 is detected with Status 1
+For Event 2, particle 26 is detected with Id 130
+For Event 2, particle 26 is detected with (Px,Py,Pz) = (-0.117,-0.210,0.380) GeV
+For Event 2, particle 26 is detected with theta = 32.304 degrees
+For Event 2, particle 26 is detected with phi = 240.935 degrees
+For Event 2, particle 28 is detected with Status 1
+For Event 2, particle 28 is detected with Id 211
+For Event 2, particle 28 is detected with (Px,Py,Pz) = (-0.007,-0.055,-0.227) GeV
+For Event 2, particle 28 is detected with theta = 166.162 degrees
+For Event 2, particle 28 is detected with phi = 262.582 degrees
+For Event 2, particle 29 is detected with Status 1
+For Event 2, particle 29 is detected with Id -211
+For Event 2, particle 29 is detected with (Px,Py,Pz) = (0.493,-0.629,-0.400) GeV
+For Event 2, particle 29 is detected with theta = 116.592 degrees
+For Event 2, particle 29 is detected with phi = 308.099 degrees
+For Event 2, particle 31 is detected with Status 1
+For Event 2, particle 31 is detected with Id 211
+For Event 2, particle 31 is detected with (Px,Py,Pz) = (-0.079,-0.227,0.067) GeV
+For Event 2, particle 31 is detected with theta = 74.413 degrees
+For Event 2, particle 31 is detected with phi = 250.914 degrees
+For Event 2, particle 32 is detected with Status 1
+For Event 2, particle 32 is detected with Id -211
+For Event 2, particle 32 is detected with (Px,Py,Pz) = (-0.087,-0.133,0.599) GeV
+For Event 2, particle 32 is detected with theta = 14.890 degrees
+For Event 2, particle 32 is detected with phi = 236.709 degrees
+For Event 2, particle 33 is detected with Status 1
+For Event 2, particle 33 is detected with Id 22
+For Event 2, particle 33 is detected with (Px,Py,Pz) = (0.094,-0.282,-0.195) GeV
+For Event 2, particle 33 is detected with theta = 123.228 degrees
+For Event 2, particle 33 is detected with phi = 288.468 degrees
+For Event 2, particle 34 is detected with Status 1
+For Event 2, particle 34 is detected with Id 22
+For Event 2, particle 34 is detected with (Px,Py,Pz) = (-0.027,-0.232,-0.236) GeV
+For Event 2, particle 34 is detected with theta = 135.324 degrees
+For Event 2, particle 34 is detected with phi = 263.462 degrees
+For Event 2, there are 2 beam particles and 17 detected particles
+
+For Event 3, Q^2 = 14.316 GeV^2!
+For Event 3, we have 38 particles!
+For Event 3, particle 0 is detected with Status 21
+For Event 3, particle 0 is detected with Id 11
+For Event 3, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 3, particle 0 is detected with theta = 180.000 degrees
+For Event 3, particle 0 is detected with phi = 0.000 degrees
+For Event 3, particle 1 is detected with Status 21
+For Event 3, particle 1 is detected with Id 2212
+For Event 3, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 3, particle 1 is detected with theta = 0.000 degrees
+For Event 3, particle 1 is detected with phi = 0.000 degrees
+For Event 3, particle 10 is detected with Status 1
+For Event 3, particle 10 is detected with Id 11
+For Event 3, particle 10 is detected with (Px,Py,Pz) = (-3.005,-2.118,-9.084) GeV
+For Event 3, particle 10 is detected with theta = 157.966 degrees
+For Event 3, particle 10 is detected with phi = 215.181 degrees
+For Event 3, particle 21 is detected with Status 1
+For Event 3, particle 21 is detected with Id 211
+For Event 3, particle 21 is detected with (Px,Py,Pz) = (-0.572,1.406,4.999) GeV
+For Event 3, particle 21 is detected with theta = 16.889 degrees
+For Event 3, particle 21 is detected with phi = 112.136 degrees
+For Event 3, particle 22 is detected with Status 1
+For Event 3, particle 22 is detected with Id 2112
+For Event 3, particle 22 is detected with (Px,Py,Pz) = (0.068,0.386,21.341) GeV
+For Event 3, particle 22 is detected with theta = 1.053 degrees
+For Event 3, particle 22 is detected with phi = 80.077 degrees
+For Event 3, particle 26 is detected with Status 1
+For Event 3, particle 26 is detected with Id 321
+For Event 3, particle 26 is detected with (Px,Py,Pz) = (0.494,0.537,3.753) GeV
+For Event 3, particle 26 is detected with theta = 10.997 degrees
+For Event 3, particle 26 is detected with phi = 47.410 degrees
+For Event 3, particle 27 is detected with Status 1
+For Event 3, particle 27 is detected with Id -211
+For Event 3, particle 27 is detected with (Px,Py,Pz) = (0.097,-0.023,0.150) GeV
+For Event 3, particle 27 is detected with theta = 33.623 degrees
+For Event 3, particle 27 is detected with phi = 346.853 degrees
+For Event 3, particle 28 is detected with Status 1
+For Event 3, particle 28 is detected with Id -321
+For Event 3, particle 28 is detected with (Px,Py,Pz) = (0.651,0.027,2.582) GeV
+For Event 3, particle 28 is detected with theta = 14.152 degrees
+For Event 3, particle 28 is detected with phi = 2.367 degrees
+For Event 3, particle 29 is detected with Status 1
+For Event 3, particle 29 is detected with Id 211
+For Event 3, particle 29 is detected with (Px,Py,Pz) = (1.208,0.171,2.975) GeV
+For Event 3, particle 29 is detected with theta = 22.300 degrees
+For Event 3, particle 29 is detected with phi = 8.034 degrees
+For Event 3, particle 30 is detected with Status 1
+For Event 3, particle 30 is detected with Id 130
+For Event 3, particle 30 is detected with (Px,Py,Pz) = (0.199,0.473,1.315) GeV
+For Event 3, particle 30 is detected with theta = 21.306 degrees
+For Event 3, particle 30 is detected with phi = 67.220 degrees
+For Event 3, particle 31 is detected with Status 1
+For Event 3, particle 31 is detected with Id 22
+For Event 3, particle 31 is detected with (Px,Py,Pz) = (0.582,-0.050,1.776) GeV
+For Event 3, particle 31 is detected with theta = 18.210 degrees
+For Event 3, particle 31 is detected with phi = 355.059 degrees
+For Event 3, particle 32 is detected with Status 1
+For Event 3, particle 32 is detected with Id 22
+For Event 3, particle 32 is detected with (Px,Py,Pz) = (0.181,-0.049,0.832) GeV
+For Event 3, particle 32 is detected with theta = 12.679 degrees
+For Event 3, particle 32 is detected with phi = 344.970 degrees
+For Event 3, particle 33 is detected with Status 1
+For Event 3, particle 33 is detected with Id 22
+For Event 3, particle 33 is detected with (Px,Py,Pz) = (0.226,0.104,19.734) GeV
+For Event 3, particle 33 is detected with theta = 0.722 degrees
+For Event 3, particle 33 is detected with phi = 24.802 degrees
+For Event 3, particle 34 is detected with Status 1
+For Event 3, particle 34 is detected with Id 22
+For Event 3, particle 34 is detected with (Px,Py,Pz) = (0.009,-0.022,0.685) GeV
+For Event 3, particle 34 is detected with theta = 1.943 degrees
+For Event 3, particle 34 is detected with phi = 292.280 degrees
+For Event 3, particle 35 is detected with Status 1
+For Event 3, particle 35 is detected with Id 130
+For Event 3, particle 35 is detected with (Px,Py,Pz) = (0.050,-0.733,20.394) GeV
+For Event 3, particle 35 is detected with theta = 2.064 degrees
+For Event 3, particle 35 is detected with phi = 273.935 degrees
+For Event 3, particle 36 is detected with Status 1
+For Event 3, particle 36 is detected with Id 22
+For Event 3, particle 36 is detected with (Px,Py,Pz) = (-0.198,-0.122,16.118) GeV
+For Event 3, particle 36 is detected with theta = 0.828 degrees
+For Event 3, particle 36 is detected with phi = 211.695 degrees
+For Event 3, particle 37 is detected with Status 1
+For Event 3, particle 37 is detected with Id 22
+For Event 3, particle 37 is detected with (Px,Py,Pz) = (0.012,0.013,2.431) GeV
+For Event 3, particle 37 is detected with theta = 0.419 degrees
+For Event 3, particle 37 is detected with phi = 47.575 degrees
+For Event 3, there are 2 beam particles and 15 detected particles
+
+For Event 4, Q^2 = 11.154 GeV^2!
+For Event 4, we have 50 particles!
+For Event 4, particle 0 is detected with Status 21
+For Event 4, particle 0 is detected with Id 11
+For Event 4, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 4, particle 0 is detected with theta = 180.000 degrees
+For Event 4, particle 0 is detected with phi = 0.000 degrees
+For Event 4, particle 1 is detected with Status 21
+For Event 4, particle 1 is detected with Id 2212
+For Event 4, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 4, particle 1 is detected with theta = 0.000 degrees
+For Event 4, particle 1 is detected with phi = 0.000 degrees
+For Event 4, particle 10 is detected with Status 1
+For Event 4, particle 10 is detected with Id 11
+For Event 4, particle 10 is detected with (Px,Py,Pz) = (-1.909,1.169,-4.214) GeV
+For Event 4, particle 10 is detected with theta = 152.022 degrees
+For Event 4, particle 10 is detected with phi = 148.517 degrees
+For Event 4, particle 19 is detected with Status 1
+For Event 4, particle 19 is detected with Id 2212
+For Event 4, particle 19 is detected with (Px,Py,Pz) = (0.089,-0.357,34.321) GeV
+For Event 4, particle 19 is detected with theta = 0.615 degrees
+For Event 4, particle 19 is detected with phi = 283.968 degrees
+For Event 4, particle 20 is detected with Status 1
+For Event 4, particle 20 is detected with Id -2212
+For Event 4, particle 20 is detected with (Px,Py,Pz) = (-0.053,0.493,34.588) GeV
+For Event 4, particle 20 is detected with theta = 0.822 degrees
+For Event 4, particle 20 is detected with phi = 96.079 degrees
+For Event 4, particle 21 is detected with Status 1
+For Event 4, particle 21 is detected with Id 2212
+For Event 4, particle 21 is detected with (Px,Py,Pz) = (-0.253,-0.123,18.428) GeV
+For Event 4, particle 21 is detected with theta = 0.875 degrees
+For Event 4, particle 21 is detected with phi = 205.933 degrees
+For Event 4, particle 22 is detected with Status 1
+For Event 4, particle 22 is detected with Id -211
+For Event 4, particle 22 is detected with (Px,Py,Pz) = (0.207,0.056,3.286) GeV
+For Event 4, particle 22 is detected with theta = 3.726 degrees
+For Event 4, particle 22 is detected with phi = 15.036 degrees
+For Event 4, particle 26 is detected with Status 1
+For Event 4, particle 26 is detected with Id 211
+For Event 4, particle 26 is detected with (Px,Py,Pz) = (0.442,0.073,2.319) GeV
+For Event 4, particle 26 is detected with theta = 10.926 degrees
+For Event 4, particle 26 is detected with phi = 9.349 degrees
+For Event 4, particle 32 is detected with Status 1
+For Event 4, particle 32 is detected with Id 211
+For Event 4, particle 32 is detected with (Px,Py,Pz) = (1.207,-0.647,-0.662) GeV
+For Event 4, particle 32 is detected with theta = 115.803 degrees
+For Event 4, particle 32 is detected with phi = 331.813 degrees
+For Event 4, particle 33 is detected with Status 1
+For Event 4, particle 33 is detected with Id 22
+For Event 4, particle 33 is detected with (Px,Py,Pz) = (-0.033,0.054,0.229) GeV
+For Event 4, particle 33 is detected with theta = 15.388 degrees
+For Event 4, particle 33 is detected with phi = 121.403 degrees
+For Event 4, particle 34 is detected with Status 1
+For Event 4, particle 34 is detected with Id 22
+For Event 4, particle 34 is detected with (Px,Py,Pz) = (-0.047,-0.052,0.842) GeV
+For Event 4, particle 34 is detected with theta = 4.726 degrees
+For Event 4, particle 34 is detected with phi = 227.904 degrees
+For Event 4, particle 35 is detected with Status 1
+For Event 4, particle 35 is detected with Id 22
+For Event 4, particle 35 is detected with (Px,Py,Pz) = (-0.041,0.094,0.292) GeV
+For Event 4, particle 35 is detected with theta = 19.301 degrees
+For Event 4, particle 35 is detected with phi = 113.795 degrees
+For Event 4, particle 36 is detected with Status 1
+For Event 4, particle 36 is detected with Id 22
+For Event 4, particle 36 is detected with (Px,Py,Pz) = (-0.037,0.114,1.108) GeV
+For Event 4, particle 36 is detected with theta = 6.147 degrees
+For Event 4, particle 36 is detected with phi = 107.832 degrees
+For Event 4, particle 37 is detected with Status 1
+For Event 4, particle 37 is detected with Id -211
+For Event 4, particle 37 is detected with (Px,Py,Pz) = (-0.232,0.149,0.418) GeV
+For Event 4, particle 37 is detected with theta = 33.355 degrees
+For Event 4, particle 37 is detected with phi = 147.324 degrees
+For Event 4, particle 38 is detected with Status 1
+For Event 4, particle 38 is detected with Id 211
+For Event 4, particle 38 is detected with (Px,Py,Pz) = (0.346,-0.318,1.158) GeV
+For Event 4, particle 38 is detected with theta = 22.090 degrees
+For Event 4, particle 38 is detected with phi = 317.461 degrees
+For Event 4, particle 39 is detected with Status 1
+For Event 4, particle 39 is detected with Id 22
+For Event 4, particle 39 is detected with (Px,Py,Pz) = (-0.109,-0.162,0.097) GeV
+For Event 4, particle 39 is detected with theta = 63.443 degrees
+For Event 4, particle 39 is detected with phi = 236.125 degrees
+For Event 4, particle 40 is detected with Status 1
+For Event 4, particle 40 is detected with Id 22
+For Event 4, particle 40 is detected with (Px,Py,Pz) = (-0.305,-0.400,0.520) GeV
+For Event 4, particle 40 is detected with theta = 44.059 degrees
+For Event 4, particle 40 is detected with phi = 232.738 degrees
+For Event 4, particle 41 is detected with Status 1
+For Event 4, particle 41 is detected with Id -211
+For Event 4, particle 41 is detected with (Px,Py,Pz) = (-0.624,-0.450,-0.772) GeV
+For Event 4, particle 41 is detected with theta = 135.118 degrees
+For Event 4, particle 41 is detected with phi = 215.793 degrees
+For Event 4, particle 43 is detected with Status 1
+For Event 4, particle 43 is detected with Id -211
+For Event 4, particle 43 is detected with (Px,Py,Pz) = (0.344,0.203,-0.151) GeV
+For Event 4, particle 43 is detected with theta = 110.769 degrees
+For Event 4, particle 43 is detected with phi = 30.593 degrees
+For Event 4, particle 44 is detected with Status 1
+For Event 4, particle 44 is detected with Id 211
+For Event 4, particle 44 is detected with (Px,Py,Pz) = (0.840,-0.477,-0.873) GeV
+For Event 4, particle 44 is detected with theta = 132.075 degrees
+For Event 4, particle 44 is detected with phi = 330.398 degrees
+For Event 4, particle 45 is detected with Status 1
+For Event 4, particle 45 is detected with Id -321
+For Event 4, particle 45 is detected with (Px,Py,Pz) = (0.094,0.181,-0.242) GeV
+For Event 4, particle 45 is detected with theta = 139.858 degrees
+For Event 4, particle 45 is detected with phi = 62.411 degrees
+For Event 4, particle 46 is detected with Status 1
+For Event 4, particle 46 is detected with Id 211
+For Event 4, particle 46 is detected with (Px,Py,Pz) = (0.119,-0.322,-0.093) GeV
+For Event 4, particle 46 is detected with theta = 105.193 degrees
+For Event 4, particle 46 is detected with phi = 290.308 degrees
+For Event 4, particle 47 is detected with Status 1
+For Event 4, particle 47 is detected with Id 130
+For Event 4, particle 47 is detected with (Px,Py,Pz) = (0.061,0.700,-0.903) GeV
+For Event 4, particle 47 is detected with theta = 142.113 degrees
+For Event 4, particle 47 is detected with phi = 85.035 degrees
+For Event 4, particle 48 is detected with Status 1
+For Event 4, particle 48 is detected with Id 22
+For Event 4, particle 48 is detected with (Px,Py,Pz) = (-0.072,0.077,0.146) GeV
+For Event 4, particle 48 is detected with theta = 35.938 degrees
+For Event 4, particle 48 is detected with phi = 133.122 degrees
+For Event 4, particle 49 is detected with Status 1
+For Event 4, particle 49 is detected with Id 22
+For Event 4, particle 49 is detected with (Px,Py,Pz) = (-0.037,-0.053,0.158) GeV
+For Event 4, particle 49 is detected with theta = 22.129 degrees
+For Event 4, particle 49 is detected with phi = 235.374 degrees
+For Event 4, there are 2 beam particles and 23 detected particles
+
+For Event 5, Q^2 = 13.255 GeV^2!
+For Event 5, we have 69 particles!
+For Event 5, particle 0 is detected with Status 21
+For Event 5, particle 0 is detected with Id 11
+For Event 5, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 5, particle 0 is detected with theta = 180.000 degrees
+For Event 5, particle 0 is detected with phi = 0.000 degrees
+For Event 5, particle 1 is detected with Status 21
+For Event 5, particle 1 is detected with Id 2212
+For Event 5, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 5, particle 1 is detected with theta = 0.000 degrees
+For Event 5, particle 1 is detected with phi = 0.000 degrees
+For Event 5, particle 11 is detected with Status 1
+For Event 5, particle 11 is detected with Id 11
+For Event 5, particle 11 is detected with (Px,Py,Pz) = (2.926,-0.961,-6.824) GeV
+For Event 5, particle 11 is detected with theta = 155.710 degrees
+For Event 5, particle 11 is detected with phi = 341.816 degrees
+For Event 5, particle 21 is detected with Status 1
+For Event 5, particle 21 is detected with Id -211
+For Event 5, particle 21 is detected with (Px,Py,Pz) = (0.328,0.173,1.608) GeV
+For Event 5, particle 21 is detected with theta = 12.992 degrees
+For Event 5, particle 21 is detected with phi = 27.741 degrees
+For Event 5, particle 28 is detected with Status 1
+For Event 5, particle 28 is detected with Id -211
+For Event 5, particle 28 is detected with (Px,Py,Pz) = (0.146,-0.328,0.261) GeV
+For Event 5, particle 28 is detected with theta = 53.966 degrees
+For Event 5, particle 28 is detected with phi = 293.994 degrees
+For Event 5, particle 32 is detected with Status 1
+For Event 5, particle 32 is detected with Id -211
+For Event 5, particle 32 is detected with (Px,Py,Pz) = (0.090,-0.134,0.785) GeV
+For Event 5, particle 32 is detected with theta = 11.641 degrees
+For Event 5, particle 32 is detected with phi = 303.787 degrees
+For Event 5, particle 33 is detected with Status 1
+For Event 5, particle 33 is detected with Id 211
+For Event 5, particle 33 is detected with (Px,Py,Pz) = (0.229,-0.247,0.613) GeV
+For Event 5, particle 33 is detected with theta = 28.814 degrees
+For Event 5, particle 33 is detected with phi = 312.891 degrees
+For Event 5, particle 35 is detected with Status 1
+For Event 5, particle 35 is detected with Id 22
+For Event 5, particle 35 is detected with (Px,Py,Pz) = (-0.068,0.022,-0.024) GeV
+For Event 5, particle 35 is detected with theta = 108.512 degrees
+For Event 5, particle 35 is detected with phi = 162.248 degrees
+For Event 5, particle 36 is detected with Status 1
+For Event 5, particle 36 is detected with Id 22
+For Event 5, particle 36 is detected with (Px,Py,Pz) = (-0.780,0.254,0.182) GeV
+For Event 5, particle 36 is detected with theta = 77.470 degrees
+For Event 5, particle 36 is detected with phi = 161.940 degrees
+For Event 5, particle 37 is detected with Status 1
+For Event 5, particle 37 is detected with Id 22
+For Event 5, particle 37 is detected with (Px,Py,Pz) = (-0.250,-0.655,0.852) GeV
+For Event 5, particle 37 is detected with theta = 39.437 degrees
+For Event 5, particle 37 is detected with phi = 249.141 degrees
+For Event 5, particle 39 is detected with Status 1
+For Event 5, particle 39 is detected with Id 211
+For Event 5, particle 39 is detected with (Px,Py,Pz) = (0.069,-0.019,0.342) GeV
+For Event 5, particle 39 is detected with theta = 11.786 degrees
+For Event 5, particle 39 is detected with phi = 344.158 degrees
+For Event 5, particle 40 is detected with Status 1
+For Event 5, particle 40 is detected with Id -211
+For Event 5, particle 40 is detected with (Px,Py,Pz) = (-0.229,0.916,5.623) GeV
+For Event 5, particle 40 is detected with theta = 9.528 degrees
+For Event 5, particle 40 is detected with phi = 104.054 degrees
+For Event 5, particle 41 is detected with Status 1
+For Event 5, particle 41 is detected with Id 211
+For Event 5, particle 41 is detected with (Px,Py,Pz) = (0.217,-0.750,10.866) GeV
+For Event 5, particle 41 is detected with theta = 4.109 degrees
+For Event 5, particle 41 is detected with phi = 286.161 degrees
+For Event 5, particle 42 is detected with Status 1
+For Event 5, particle 42 is detected with Id -211
+For Event 5, particle 42 is detected with (Px,Py,Pz) = (0.853,-0.368,11.652) GeV
+For Event 5, particle 42 is detected with theta = 4.559 degrees
+For Event 5, particle 42 is detected with phi = 336.688 degrees
+For Event 5, particle 43 is detected with Status 1
+For Event 5, particle 43 is detected with Id 2212
+For Event 5, particle 43 is detected with (Px,Py,Pz) = (-0.067,0.571,39.732) GeV
+For Event 5, particle 43 is detected with theta = 0.829 degrees
+For Event 5, particle 43 is detected with phi = 96.715 degrees
+For Event 5, particle 44 is detected with Status 1
+For Event 5, particle 44 is detected with Id 211
+For Event 5, particle 44 is detected with (Px,Py,Pz) = (-0.171,-0.022,15.521) GeV
+For Event 5, particle 44 is detected with theta = 0.636 degrees
+For Event 5, particle 44 is detected with phi = 187.353 degrees
+For Event 5, particle 47 is detected with Status 1
+For Event 5, particle 47 is detected with Id 22
+For Event 5, particle 47 is detected with (Px,Py,Pz) = (-0.530,-0.041,5.391) GeV
+For Event 5, particle 47 is detected with theta = 5.627 degrees
+For Event 5, particle 47 is detected with phi = 184.408 degrees
+For Event 5, particle 48 is detected with Status 1
+For Event 5, particle 48 is detected with Id 22
+For Event 5, particle 48 is detected with (Px,Py,Pz) = (-0.156,-0.074,1.355) GeV
+For Event 5, particle 48 is detected with theta = 7.257 degrees
+For Event 5, particle 48 is detected with phi = 205.451 degrees
+For Event 5, particle 50 is detected with Status 1
+For Event 5, particle 50 is detected with Id 211
+For Event 5, particle 50 is detected with (Px,Py,Pz) = (-0.262,0.009,-0.058) GeV
+For Event 5, particle 50 is detected with theta = 102.477 degrees
+For Event 5, particle 50 is detected with phi = 178.136 degrees
+For Event 5, particle 51 is detected with Status 1
+For Event 5, particle 51 is detected with Id 211
+For Event 5, particle 51 is detected with (Px,Py,Pz) = (-0.388,0.239,0.439) GeV
+For Event 5, particle 51 is detected with theta = 46.057 degrees
+For Event 5, particle 51 is detected with phi = 148.372 degrees
+For Event 5, particle 52 is detected with Status 1
+For Event 5, particle 52 is detected with Id -211
+For Event 5, particle 52 is detected with (Px,Py,Pz) = (0.101,-0.064,0.011) GeV
+For Event 5, particle 52 is detected with theta = 84.711 degrees
+For Event 5, particle 52 is detected with phi = 327.441 degrees
+For Event 5, particle 54 is detected with Status 1
+For Event 5, particle 54 is detected with Id 22
+For Event 5, particle 54 is detected with (Px,Py,Pz) = (0.002,-0.037,0.035) GeV
+For Event 5, particle 54 is detected with theta = 46.685 degrees
+For Event 5, particle 54 is detected with phi = 273.426 degrees
+For Event 5, particle 55 is detected with Status 1
+For Event 5, particle 55 is detected with Id 22
+For Event 5, particle 55 is detected with (Px,Py,Pz) = (-0.131,0.068,0.048) GeV
+For Event 5, particle 55 is detected with theta = 71.879 degrees
+For Event 5, particle 55 is detected with phi = 152.652 degrees
+For Event 5, particle 56 is detected with Status 1
+For Event 5, particle 56 is detected with Id 22
+For Event 5, particle 56 is detected with (Px,Py,Pz) = (-0.020,0.188,0.230) GeV
+For Event 5, particle 56 is detected with theta = 39.437 degrees
+For Event 5, particle 56 is detected with phi = 95.997 degrees
+For Event 5, particle 57 is detected with Status 1
+For Event 5, particle 57 is detected with Id 22
+For Event 5, particle 57 is detected with (Px,Py,Pz) = (-0.010,-0.001,0.133) GeV
+For Event 5, particle 57 is detected with theta = 4.298 degrees
+For Event 5, particle 57 is detected with phi = 185.636 degrees
+For Event 5, particle 58 is detected with Status 1
+For Event 5, particle 58 is detected with Id 22
+For Event 5, particle 58 is detected with (Px,Py,Pz) = (-0.128,0.168,0.185) GeV
+For Event 5, particle 58 is detected with theta = 48.839 degrees
+For Event 5, particle 58 is detected with phi = 127.209 degrees
+For Event 5, particle 59 is detected with Status 1
+For Event 5, particle 59 is detected with Id 22
+For Event 5, particle 59 is detected with (Px,Py,Pz) = (-0.059,0.032,0.196) GeV
+For Event 5, particle 59 is detected with theta = 18.807 degrees
+For Event 5, particle 59 is detected with phi = 151.807 degrees
+For Event 5, particle 61 is detected with Status 1
+For Event 5, particle 61 is detected with Id -211
+For Event 5, particle 61 is detected with (Px,Py,Pz) = (-0.861,0.745,0.587) GeV
+For Event 5, particle 61 is detected with theta = 62.715 degrees
+For Event 5, particle 61 is detected with phi = 139.133 degrees
+For Event 5, particle 62 is detected with Status 1
+For Event 5, particle 62 is detected with Id 211
+For Event 5, particle 62 is detected with (Px,Py,Pz) = (-0.036,-0.119,0.060) GeV
+For Event 5, particle 62 is detected with theta = 64.229 degrees
+For Event 5, particle 62 is detected with phi = 252.937 degrees
+For Event 5, particle 63 is detected with Status 1
+For Event 5, particle 63 is detected with Id 22
+For Event 5, particle 63 is detected with (Px,Py,Pz) = (-0.002,0.065,-0.020) GeV
+For Event 5, particle 63 is detected with theta = 106.794 degrees
+For Event 5, particle 63 is detected with phi = 92.106 degrees
+For Event 5, particle 64 is detected with Status 1
+For Event 5, particle 64 is detected with Id 22
+For Event 5, particle 64 is detected with (Px,Py,Pz) = (-0.119,-0.011,0.022) GeV
+For Event 5, particle 64 is detected with theta = 79.777 degrees
+For Event 5, particle 64 is detected with phi = 185.210 degrees
+For Event 5, particle 65 is detected with Status 1
+For Event 5, particle 65 is detected with Id 130
+For Event 5, particle 65 is detected with (Px,Py,Pz) = (-0.696,0.194,0.681) GeV
+For Event 5, particle 65 is detected with theta = 46.677 degrees
+For Event 5, particle 65 is detected with phi = 164.382 degrees
+For Event 5, particle 66 is detected with Status 1
+For Event 5, particle 66 is detected with Id 22
+For Event 5, particle 66 is detected with (Px,Py,Pz) = (0.036,-0.011,-0.030) GeV
+For Event 5, particle 66 is detected with theta = 128.660 degrees
+For Event 5, particle 66 is detected with phi = 343.409 degrees
+For Event 5, particle 67 is detected with Status 1
+For Event 5, particle 67 is detected with Id 22
+For Event 5, particle 67 is detected with (Px,Py,Pz) = (0.080,-0.125,0.127) GeV
+For Event 5, particle 67 is detected with theta = 49.352 degrees
+For Event 5, particle 67 is detected with phi = 302.482 degrees
+For Event 5, particle 68 is detected with Status 1
+For Event 5, particle 68 is detected with Id 130
+For Event 5, particle 68 is detected with (Px,Py,Pz) = (-0.116,0.325,-0.584) GeV
+For Event 5, particle 68 is detected with theta = 149.465 degrees
+For Event 5, particle 68 is detected with phi = 109.618 degrees
+For Event 5, there are 2 beam particles and 33 detected particles
+
+For Event 6, Q^2 = 10.983 GeV^2!
+For Event 6, we have 50 particles!
+For Event 6, particle 0 is detected with Status 21
+For Event 6, particle 0 is detected with Id 11
+For Event 6, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 6, particle 0 is detected with theta = 180.000 degrees
+For Event 6, particle 0 is detected with phi = 0.000 degrees
+For Event 6, particle 1 is detected with Status 21
+For Event 6, particle 1 is detected with Id 2212
+For Event 6, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 6, particle 1 is detected with theta = 0.000 degrees
+For Event 6, particle 1 is detected with phi = 0.000 degrees
+For Event 6, particle 10 is detected with Status 1
+For Event 6, particle 10 is detected with Id 11
+For Event 6, particle 10 is detected with (Px,Py,Pz) = (-0.311,3.029,-8.167) GeV
+For Event 6, particle 10 is detected with theta = 159.553 degrees
+For Event 6, particle 10 is detected with phi = 95.867 degrees
+For Event 6, particle 18 is detected with Status 1
+For Event 6, particle 18 is detected with Id -321
+For Event 6, particle 18 is detected with (Px,Py,Pz) = (0.560,-0.327,0.801) GeV
+For Event 6, particle 18 is detected with theta = 38.985 degrees
+For Event 6, particle 18 is detected with phi = 329.692 degrees
+For Event 6, particle 22 is detected with Status 1
+For Event 6, particle 22 is detected with Id 2112
+For Event 6, particle 22 is detected with (Px,Py,Pz) = (-0.020,0.434,79.449) GeV
+For Event 6, particle 22 is detected with theta = 0.313 degrees
+For Event 6, particle 22 is detected with phi = 92.577 degrees
+For Event 6, particle 23 is detected with Status 1
+For Event 6, particle 23 is detected with Id 211
+For Event 6, particle 23 is detected with (Px,Py,Pz) = (0.034,-0.139,9.039) GeV
+For Event 6, particle 23 is detected with theta = 0.910 degrees
+For Event 6, particle 23 is detected with phi = 283.814 degrees
+For Event 6, particle 27 is detected with Status 1
+For Event 6, particle 27 is detected with Id 211
+For Event 6, particle 27 is detected with (Px,Py,Pz) = (0.485,-0.650,0.889) GeV
+For Event 6, particle 27 is detected with theta = 42.377 degrees
+For Event 6, particle 27 is detected with phi = 306.742 degrees
+For Event 6, particle 29 is detected with Status 1
+For Event 6, particle 29 is detected with Id 130
+For Event 6, particle 29 is detected with (Px,Py,Pz) = (-1.145,-0.597,1.070) GeV
+For Event 6, particle 29 is detected with theta = 50.341 degrees
+For Event 6, particle 29 is detected with phi = 207.526 degrees
+For Event 6, particle 30 is detected with Status 1
+For Event 6, particle 30 is detected with Id 321
+For Event 6, particle 30 is detected with (Px,Py,Pz) = (0.495,-0.768,0.699) GeV
+For Event 6, particle 30 is detected with theta = 52.603 degrees
+For Event 6, particle 30 is detected with phi = 302.801 degrees
+For Event 6, particle 31 is detected with Status 1
+For Event 6, particle 31 is detected with Id -211
+For Event 6, particle 31 is detected with (Px,Py,Pz) = (-0.112,-0.359,-0.113) GeV
+For Event 6, particle 31 is detected with theta = 106.772 degrees
+For Event 6, particle 31 is detected with phi = 252.636 degrees
+For Event 6, particle 33 is detected with Status 1
+For Event 6, particle 33 is detected with Id 22
+For Event 6, particle 33 is detected with (Px,Py,Pz) = (-0.169,-0.384,1.277) GeV
+For Event 6, particle 33 is detected with theta = 18.175 degrees
+For Event 6, particle 33 is detected with phi = 246.241 degrees
+For Event 6, particle 34 is detected with Status 1
+For Event 6, particle 34 is detected with Id 22
+For Event 6, particle 34 is detected with (Px,Py,Pz) = (0.025,-0.057,0.143) GeV
+For Event 6, particle 34 is detected with theta = 23.274 degrees
+For Event 6, particle 34 is detected with phi = 293.429 degrees
+For Event 6, particle 38 is detected with Status 1
+For Event 6, particle 38 is detected with Id 211
+For Event 6, particle 38 is detected with (Px,Py,Pz) = (0.118,0.097,1.284) GeV
+For Event 6, particle 38 is detected with theta = 6.806 degrees
+For Event 6, particle 38 is detected with phi = 39.374 degrees
+For Event 6, particle 39 is detected with Status 1
+For Event 6, particle 39 is detected with Id -211
+For Event 6, particle 39 is detected with (Px,Py,Pz) = (-0.118,-0.257,2.054) GeV
+For Event 6, particle 39 is detected with theta = 7.831 degrees
+For Event 6, particle 39 is detected with phi = 245.234 degrees
+For Event 6, particle 42 is detected with Status 1
+For Event 6, particle 42 is detected with Id 22
+For Event 6, particle 42 is detected with (Px,Py,Pz) = (-0.167,0.052,-0.060) GeV
+For Event 6, particle 42 is detected with theta = 108.793 degrees
+For Event 6, particle 42 is detected with phi = 162.614 degrees
+For Event 6, particle 43 is detected with Status 1
+For Event 6, particle 43 is detected with Id 22
+For Event 6, particle 43 is detected with (Px,Py,Pz) = (-0.063,0.021,0.063) GeV
+For Event 6, particle 43 is detected with theta = 46.236 degrees
+For Event 6, particle 43 is detected with phi = 161.696 degrees
+For Event 6, particle 44 is detected with Status 1
+For Event 6, particle 44 is detected with Id 22
+For Event 6, particle 44 is detected with (Px,Py,Pz) = (-0.010,0.111,0.055) GeV
+For Event 6, particle 44 is detected with theta = 63.847 degrees
+For Event 6, particle 44 is detected with phi = 95.035 degrees
+For Event 6, particle 45 is detected with Status 1
+For Event 6, particle 45 is detected with Id 22
+For Event 6, particle 45 is detected with (Px,Py,Pz) = (0.132,0.104,0.136) GeV
+For Event 6, particle 45 is detected with theta = 51.000 degrees
+For Event 6, particle 45 is detected with phi = 38.356 degrees
+For Event 6, particle 46 is detected with Status 1
+For Event 6, particle 46 is detected with Id 22
+For Event 6, particle 46 is detected with (Px,Py,Pz) = (-0.004,-0.066,0.054) GeV
+For Event 6, particle 46 is detected with theta = 50.601 degrees
+For Event 6, particle 46 is detected with phi = 266.529 degrees
+For Event 6, particle 47 is detected with Status 1
+For Event 6, particle 47 is detected with Id 22
+For Event 6, particle 47 is detected with (Px,Py,Pz) = (0.011,-0.259,0.713) GeV
+For Event 6, particle 47 is detected with theta = 19.973 degrees
+For Event 6, particle 47 is detected with phi = 272.372 degrees
+For Event 6, particle 48 is detected with Status 1
+For Event 6, particle 48 is detected with Id 22
+For Event 6, particle 48 is detected with (Px,Py,Pz) = (0.272,-0.001,0.573) GeV
+For Event 6, particle 48 is detected with theta = 25.387 degrees
+For Event 6, particle 48 is detected with phi = 359.710 degrees
+For Event 6, particle 49 is detected with Status 1
+For Event 6, particle 49 is detected with Id 22
+For Event 6, particle 49 is detected with (Px,Py,Pz) = (-0.013,0.015,0.040) GeV
+For Event 6, particle 49 is detected with theta = 26.845 degrees
+For Event 6, particle 49 is detected with phi = 130.738 degrees
+For Event 6, there are 2 beam particles and 20 detected particles
+
+For Event 7, Q^2 = 28.239 GeV^2!
+For Event 7, we have 46 particles!
+For Event 7, particle 0 is detected with Status 21
+For Event 7, particle 0 is detected with Id 11
+For Event 7, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 7, particle 0 is detected with theta = 180.000 degrees
+For Event 7, particle 0 is detected with phi = 0.000 degrees
+For Event 7, particle 1 is detected with Status 21
+For Event 7, particle 1 is detected with Id 2212
+For Event 7, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 7, particle 1 is detected with theta = 0.000 degrees
+For Event 7, particle 1 is detected with phi = 0.000 degrees
+For Event 7, particle 10 is detected with Status 1
+For Event 7, particle 10 is detected with Id 11
+For Event 7, particle 10 is detected with (Px,Py,Pz) = (4.752,-0.200,-7.303) GeV
+For Event 7, particle 10 is detected with theta = 146.929 degrees
+For Event 7, particle 10 is detected with phi = 357.592 degrees
+For Event 7, particle 17 is detected with Status 1
+For Event 7, particle 17 is detected with Id 2112
+For Event 7, particle 17 is detected with (Px,Py,Pz) = (-0.096,-0.592,79.164) GeV
+For Event 7, particle 17 is detected with theta = 0.434 degrees
+For Event 7, particle 17 is detected with phi = 260.791 degrees
+For Event 7, particle 24 is detected with Status 1
+For Event 7, particle 24 is detected with Id 211
+For Event 7, particle 24 is detected with (Px,Py,Pz) = (-0.086,-0.052,0.005) GeV
+For Event 7, particle 24 is detected with theta = 87.329 degrees
+For Event 7, particle 24 is detected with phi = 211.091 degrees
+For Event 7, particle 25 is detected with Status 1
+For Event 7, particle 25 is detected with Id -211
+For Event 7, particle 25 is detected with (Px,Py,Pz) = (-0.075,-0.099,-0.093) GeV
+For Event 7, particle 25 is detected with theta = 126.744 degrees
+For Event 7, particle 25 is detected with phi = 232.803 degrees
+For Event 7, particle 26 is detected with Status 1
+For Event 7, particle 26 is detected with Id 211
+For Event 7, particle 26 is detected with (Px,Py,Pz) = (-2.379,0.099,1.049) GeV
+For Event 7, particle 26 is detected with theta = 66.220 degrees
+For Event 7, particle 26 is detected with phi = 177.629 degrees
+For Event 7, particle 27 is detected with Status 1
+For Event 7, particle 27 is detected with Id 22
+For Event 7, particle 27 is detected with (Px,Py,Pz) = (-0.096,0.464,1.688) GeV
+For Event 7, particle 27 is detected with theta = 15.662 degrees
+For Event 7, particle 27 is detected with phi = 101.680 degrees
+For Event 7, particle 28 is detected with Status 1
+For Event 7, particle 28 is detected with Id 22
+For Event 7, particle 28 is detected with (Px,Py,Pz) = (-0.144,0.255,0.854) GeV
+For Event 7, particle 28 is detected with theta = 18.922 degrees
+For Event 7, particle 28 is detected with phi = 119.370 degrees
+For Event 7, particle 29 is detected with Status 1
+For Event 7, particle 29 is detected with Id 22
+For Event 7, particle 29 is detected with (Px,Py,Pz) = (0.643,-0.191,3.850) GeV
+For Event 7, particle 29 is detected with theta = 9.885 degrees
+For Event 7, particle 29 is detected with phi = 343.451 degrees
+For Event 7, particle 30 is detected with Status 1
+For Event 7, particle 30 is detected with Id 22
+For Event 7, particle 30 is detected with (Px,Py,Pz) = (0.003,0.001,0.000) GeV
+For Event 7, particle 30 is detected with theta = 83.512 degrees
+For Event 7, particle 30 is detected with phi = 22.886 degrees
+For Event 7, particle 31 is detected with Status 1
+For Event 7, particle 31 is detected with Id 211
+For Event 7, particle 31 is detected with (Px,Py,Pz) = (-0.789,0.138,8.050) GeV
+For Event 7, particle 31 is detected with theta = 5.686 degrees
+For Event 7, particle 31 is detected with phi = 170.057 degrees
+For Event 7, particle 33 is detected with Status 1
+For Event 7, particle 33 is detected with Id -211
+For Event 7, particle 33 is detected with (Px,Py,Pz) = (-0.327,-0.233,0.307) GeV
+For Event 7, particle 33 is detected with theta = 52.604 degrees
+For Event 7, particle 33 is detected with phi = 215.419 degrees
+For Event 7, particle 34 is detected with Status 1
+For Event 7, particle 34 is detected with Id 211
+For Event 7, particle 34 is detected with (Px,Py,Pz) = (-0.348,0.148,0.131) GeV
+For Event 7, particle 34 is detected with theta = 70.868 degrees
+For Event 7, particle 34 is detected with phi = 156.939 degrees
+For Event 7, particle 36 is detected with Status 1
+For Event 7, particle 36 is detected with Id 211
+For Event 7, particle 36 is detected with (Px,Py,Pz) = (-0.347,0.303,0.747) GeV
+For Event 7, particle 36 is detected with theta = 31.657 degrees
+For Event 7, particle 36 is detected with phi = 138.883 degrees
+For Event 7, particle 37 is detected with Status 1
+For Event 7, particle 37 is detected with Id -211
+For Event 7, particle 37 is detected with (Px,Py,Pz) = (0.075,-0.151,0.030) GeV
+For Event 7, particle 37 is detected with theta = 79.822 degrees
+For Event 7, particle 37 is detected with phi = 296.374 degrees
+For Event 7, particle 38 is detected with Status 1
+For Event 7, particle 38 is detected with Id -211
+For Event 7, particle 38 is detected with (Px,Py,Pz) = (-0.899,0.231,0.637) GeV
+For Event 7, particle 38 is detected with theta = 55.544 degrees
+For Event 7, particle 38 is detected with phi = 165.569 degrees
+For Event 7, particle 40 is detected with Status 1
+For Event 7, particle 40 is detected with Id 22
+For Event 7, particle 40 is detected with (Px,Py,Pz) = (0.132,0.064,0.439) GeV
+For Event 7, particle 40 is detected with theta = 18.503 degrees
+For Event 7, particle 40 is detected with phi = 25.898 degrees
+For Event 7, particle 41 is detected with Status 1
+For Event 7, particle 41 is detected with Id 22
+For Event 7, particle 41 is detected with (Px,Py,Pz) = (0.059,-0.007,0.036) GeV
+For Event 7, particle 41 is detected with theta = 58.946 degrees
+For Event 7, particle 41 is detected with phi = 353.047 degrees
+For Event 7, particle 42 is detected with Status 1
+For Event 7, particle 42 is detected with Id 22
+For Event 7, particle 42 is detected with (Px,Py,Pz) = (-0.074,0.061,0.024) GeV
+For Event 7, particle 42 is detected with theta = 76.148 degrees
+For Event 7, particle 42 is detected with phi = 140.449 degrees
+For Event 7, particle 43 is detected with Status 1
+For Event 7, particle 43 is detected with Id 22
+For Event 7, particle 43 is detected with (Px,Py,Pz) = (0.018,0.048,-0.075) GeV
+For Event 7, particle 43 is detected with theta = 145.649 degrees
+For Event 7, particle 43 is detected with phi = 69.865 degrees
+For Event 7, particle 44 is detected with Status 1
+For Event 7, particle 44 is detected with Id 22
+For Event 7, particle 44 is detected with (Px,Py,Pz) = (0.003,-0.077,0.249) GeV
+For Event 7, particle 44 is detected with theta = 17.266 degrees
+For Event 7, particle 44 is detected with phi = 272.319 degrees
+For Event 7, particle 45 is detected with Status 1
+For Event 7, particle 45 is detected with Id 22
+For Event 7, particle 45 is detected with (Px,Py,Pz) = (-0.025,-0.210,0.212) GeV
+For Event 7, particle 45 is detected with theta = 44.912 degrees
+For Event 7, particle 45 is detected with phi = 263.226 degrees
+For Event 7, there are 2 beam particles and 21 detected particles
+
+For Event 8, Q^2 = 22.145 GeV^2!
+For Event 8, we have 42 particles!
+For Event 8, particle 0 is detected with Status 21
+For Event 8, particle 0 is detected with Id 11
+For Event 8, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 8, particle 0 is detected with theta = 180.000 degrees
+For Event 8, particle 0 is detected with phi = 0.000 degrees
+For Event 8, particle 1 is detected with Status 21
+For Event 8, particle 1 is detected with Id 2212
+For Event 8, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 8, particle 1 is detected with theta = 0.000 degrees
+For Event 8, particle 1 is detected with phi = 0.000 degrees
+For Event 8, particle 10 is detected with Status 1
+For Event 8, particle 10 is detected with Id 11
+For Event 8, particle 10 is detected with (Px,Py,Pz) = (-1.134,4.403,-8.781) GeV
+For Event 8, particle 10 is detected with theta = 152.626 degrees
+For Event 8, particle 10 is detected with phi = 104.448 degrees
+For Event 8, particle 17 is detected with Status 1
+For Event 8, particle 17 is detected with Id 2112
+For Event 8, particle 17 is detected with (Px,Py,Pz) = (-0.099,-0.478,71.534) GeV
+For Event 8, particle 17 is detected with theta = 0.391 degrees
+For Event 8, particle 17 is detected with phi = 258.363 degrees
+For Event 8, particle 19 is detected with Status 1
+For Event 8, particle 19 is detected with Id 211
+For Event 8, particle 19 is detected with (Px,Py,Pz) = (-0.407,-0.239,0.731) GeV
+For Event 8, particle 19 is detected with theta = 32.825 degrees
+For Event 8, particle 19 is detected with phi = 210.409 degrees
+For Event 8, particle 23 is detected with Status 1
+For Event 8, particle 23 is detected with Id 211
+For Event 8, particle 23 is detected with (Px,Py,Pz) = (0.066,0.116,0.743) GeV
+For Event 8, particle 23 is detected with theta = 10.226 degrees
+For Event 8, particle 23 is detected with phi = 60.284 degrees
+For Event 8, particle 24 is detected with Status 1
+For Event 8, particle 24 is detected with Id -211
+For Event 8, particle 24 is detected with (Px,Py,Pz) = (0.102,0.186,4.668) GeV
+For Event 8, particle 24 is detected with theta = 2.604 degrees
+For Event 8, particle 24 is detected with phi = 61.305 degrees
+For Event 8, particle 26 is detected with Status 1
+For Event 8, particle 26 is detected with Id -321
+For Event 8, particle 26 is detected with (Px,Py,Pz) = (-0.129,-0.444,2.166) GeV
+For Event 8, particle 26 is detected with theta = 12.044 degrees
+For Event 8, particle 26 is detected with phi = 253.855 degrees
+For Event 8, particle 29 is detected with Status 1
+For Event 8, particle 29 is detected with Id 211
+For Event 8, particle 29 is detected with (Px,Py,Pz) = (0.120,-0.281,1.066) GeV
+For Event 8, particle 29 is detected with theta = 15.983 degrees
+For Event 8, particle 29 is detected with phi = 293.154 degrees
+For Event 8, particle 30 is detected with Status 1
+For Event 8, particle 30 is detected with Id 211
+For Event 8, particle 30 is detected with (Px,Py,Pz) = (0.040,-0.439,0.713) GeV
+For Event 8, particle 30 is detected with theta = 31.767 degrees
+For Event 8, particle 30 is detected with phi = 275.242 degrees
+For Event 8, particle 31 is detected with Status 1
+For Event 8, particle 31 is detected with Id -211
+For Event 8, particle 31 is detected with (Px,Py,Pz) = (0.429,-0.889,3.125) GeV
+For Event 8, particle 31 is detected with theta = 17.520 degrees
+For Event 8, particle 31 is detected with phi = 295.744 degrees
+For Event 8, particle 33 is detected with Status 1
+For Event 8, particle 33 is detected with Id 22
+For Event 8, particle 33 is detected with (Px,Py,Pz) = (0.030,0.135,6.471) GeV
+For Event 8, particle 33 is detected with theta = 1.221 degrees
+For Event 8, particle 33 is detected with phi = 77.625 degrees
+For Event 8, particle 34 is detected with Status 1
+For Event 8, particle 34 is detected with Id 22
+For Event 8, particle 34 is detected with (Px,Py,Pz) = (-0.045,0.045,1.078) GeV
+For Event 8, particle 34 is detected with theta = 3.387 degrees
+For Event 8, particle 34 is detected with phi = 135.475 degrees
+For Event 8, particle 35 is detected with Status 1
+For Event 8, particle 35 is detected with Id 22
+For Event 8, particle 35 is detected with (Px,Py,Pz) = (0.098,0.052,1.004) GeV
+For Event 8, particle 35 is detected with theta = 6.283 degrees
+For Event 8, particle 35 is detected with phi = 28.097 degrees
+For Event 8, particle 36 is detected with Status 1
+For Event 8, particle 36 is detected with Id 22
+For Event 8, particle 36 is detected with (Px,Py,Pz) = (0.016,-0.042,1.264) GeV
+For Event 8, particle 36 is detected with theta = 2.038 degrees
+For Event 8, particle 36 is detected with phi = 290.750 degrees
+For Event 8, particle 38 is detected with Status 1
+For Event 8, particle 38 is detected with Id 22
+For Event 8, particle 38 is detected with (Px,Py,Pz) = (0.121,-0.297,1.023) GeV
+For Event 8, particle 38 is detected with theta = 17.433 degrees
+For Event 8, particle 38 is detected with phi = 292.137 degrees
+For Event 8, particle 39 is detected with Status 1
+For Event 8, particle 39 is detected with Id 22
+For Event 8, particle 39 is detected with (Px,Py,Pz) = (0.209,-0.489,1.196) GeV
+For Event 8, particle 39 is detected with theta = 23.956 degrees
+For Event 8, particle 39 is detected with phi = 293.112 degrees
+For Event 8, particle 40 is detected with Status 1
+For Event 8, particle 40 is detected with Id 211
+For Event 8, particle 40 is detected with (Px,Py,Pz) = (0.280,-0.466,0.465) GeV
+For Event 8, particle 40 is detected with theta = 49.468 degrees
+For Event 8, particle 40 is detected with phi = 301.011 degrees
+For Event 8, particle 41 is detected with Status 1
+For Event 8, particle 41 is detected with Id -211
+For Event 8, particle 41 is detected with (Px,Py,Pz) = (0.304,-0.873,1.534) GeV
+For Event 8, particle 41 is detected with theta = 31.060 degrees
+For Event 8, particle 41 is detected with phi = 289.173 degrees
+For Event 8, there are 2 beam particles and 17 detected particles
+
+For Event 9, Q^2 = 75.948 GeV^2!
+For Event 9, we have 61 particles!
+For Event 9, particle 0 is detected with Status 21
+For Event 9, particle 0 is detected with Id 11
+For Event 9, particle 0 is detected with (Px,Py,Pz) = (-0.000,-0.000,-10.000) GeV
+For Event 9, particle 0 is detected with theta = 180.000 degrees
+For Event 9, particle 0 is detected with phi = 0.000 degrees
+For Event 9, particle 1 is detected with Status 21
+For Event 9, particle 1 is detected with Id 2212
+For Event 9, particle 1 is detected with (Px,Py,Pz) = (0.000,0.000,100.000) GeV
+For Event 9, particle 1 is detected with theta = 0.000 degrees
+For Event 9, particle 1 is detected with phi = 0.000 degrees
+For Event 9, particle 10 is detected with Status 1
+For Event 9, particle 10 is detected with Id 11
+For Event 9, particle 10 is detected with (Px,Py,Pz) = (-0.508,-6.248,-3.276) GeV
+For Event 9, particle 10 is detected with theta = 117.591 degrees
+For Event 9, particle 10 is detected with phi = 265.348 degrees
+For Event 9, particle 22 is detected with Status 1
+For Event 9, particle 22 is detected with Id -211
+For Event 9, particle 22 is detected with (Px,Py,Pz) = (0.643,0.512,0.400) GeV
+For Event 9, particle 22 is detected with theta = 64.036 degrees
+For Event 9, particle 22 is detected with phi = 38.553 degrees
+For Event 9, particle 23 is detected with Status 1
+For Event 9, particle 23 is detected with Id 211
+For Event 9, particle 23 is detected with (Px,Py,Pz) = (-0.118,-0.103,0.076) GeV
+For Event 9, particle 23 is detected with theta = 64.054 degrees
+For Event 9, particle 23 is detected with phi = 221.342 degrees
+For Event 9, particle 24 is detected with Status 1
+For Event 9, particle 24 is detected with Id -211
+For Event 9, particle 24 is detected with (Px,Py,Pz) = (-0.118,0.113,0.628) GeV
+For Event 9, particle 24 is detected with theta = 14.570 degrees
+For Event 9, particle 24 is detected with phi = 136.311 degrees
+For Event 9, particle 30 is detected with Status 1
+For Event 9, particle 30 is detected with Id 2212
+For Event 9, particle 30 is detected with (Px,Py,Pz) = (0.147,0.068,21.408) GeV
+For Event 9, particle 30 is detected with theta = 0.433 degrees
+For Event 9, particle 30 is detected with phi = 24.954 degrees
+For Event 9, particle 31 is detected with Status 1
+For Event 9, particle 31 is detected with Id -211
+For Event 9, particle 31 is detected with (Px,Py,Pz) = (0.053,0.125,3.611) GeV
+For Event 9, particle 31 is detected with theta = 2.150 degrees
+For Event 9, particle 31 is detected with phi = 67.202 degrees
+For Event 9, particle 32 is detected with Status 1
+For Event 9, particle 32 is detected with Id 321
+For Event 9, particle 32 is detected with (Px,Py,Pz) = (-0.218,0.455,40.952) GeV
+For Event 9, particle 32 is detected with theta = 0.706 degrees
+For Event 9, particle 32 is detected with phi = 115.635 degrees
+For Event 9, particle 33 is detected with Status 1
+For Event 9, particle 33 is detected with Id -211
+For Event 9, particle 33 is detected with (Px,Py,Pz) = (-0.211,-0.150,8.379) GeV
+For Event 9, particle 33 is detected with theta = 1.773 degrees
+For Event 9, particle 33 is detected with phi = 215.434 degrees
+For Event 9, particle 35 is detected with Status 1
+For Event 9, particle 35 is detected with Id 22
+For Event 9, particle 35 is detected with (Px,Py,Pz) = (0.059,0.072,0.958) GeV
+For Event 9, particle 35 is detected with theta = 5.519 degrees
+For Event 9, particle 35 is detected with phi = 50.572 degrees
+For Event 9, particle 36 is detected with Status 1
+For Event 9, particle 36 is detected with Id 2212
+For Event 9, particle 36 is detected with (Px,Py,Pz) = (0.381,-0.330,8.384) GeV
+For Event 9, particle 36 is detected with theta = 3.440 degrees
+For Event 9, particle 36 is detected with phi = 319.123 degrees
+For Event 9, particle 38 is detected with Status 1
+For Event 9, particle 38 is detected with Id -211
+For Event 9, particle 38 is detected with (Px,Py,Pz) = (0.403,0.081,0.480) GeV
+For Event 9, particle 38 is detected with theta = 40.549 degrees
+For Event 9, particle 38 is detected with phi = 11.372 degrees
+For Event 9, particle 39 is detected with Status 1
+For Event 9, particle 39 is detected with Id 211
+For Event 9, particle 39 is detected with (Px,Py,Pz) = (-0.072,0.237,0.376) GeV
+For Event 9, particle 39 is detected with theta = 33.379 degrees
+For Event 9, particle 39 is detected with phi = 106.992 degrees
+For Event 9, particle 40 is detected with Status 1
+For Event 9, particle 40 is detected with Id -321
+For Event 9, particle 40 is detected with (Px,Py,Pz) = (-0.084,0.409,0.524) GeV
+For Event 9, particle 40 is detected with theta = 38.525 degrees
+For Event 9, particle 40 is detected with phi = 101.610 degrees
+For Event 9, particle 41 is detected with Status 1
+For Event 9, particle 41 is detected with Id 211
+For Event 9, particle 41 is detected with (Px,Py,Pz) = (0.201,-0.133,0.059) GeV
+For Event 9, particle 41 is detected with theta = 76.216 degrees
+For Event 9, particle 41 is detected with phi = 326.554 degrees
+For Event 9, particle 42 is detected with Status 1
+For Event 9, particle 42 is detected with Id 321
+For Event 9, particle 42 is detected with (Px,Py,Pz) = (0.353,0.244,-0.361) GeV
+For Event 9, particle 42 is detected with theta = 130.086 degrees
+For Event 9, particle 42 is detected with phi = 34.705 degrees
+For Event 9, particle 43 is detected with Status 1
+For Event 9, particle 43 is detected with Id -211
+For Event 9, particle 43 is detected with (Px,Py,Pz) = (-0.120,0.272,0.062) GeV
+For Event 9, particle 43 is detected with theta = 78.205 degrees
+For Event 9, particle 43 is detected with phi = 113.849 degrees
+For Event 9, particle 46 is detected with Status 1
+For Event 9, particle 46 is detected with Id 321
+For Event 9, particle 46 is detected with (Px,Py,Pz) = (0.021,0.310,-0.118) GeV
+For Event 9, particle 46 is detected with theta = 110.835 degrees
+For Event 9, particle 46 is detected with phi = 86.170 degrees
+For Event 9, particle 48 is detected with Status 1
+For Event 9, particle 48 is detected with Id 211
+For Event 9, particle 48 is detected with (Px,Py,Pz) = (-1.048,2.126,-0.943) GeV
+For Event 9, particle 48 is detected with theta = 111.703 degrees
+For Event 9, particle 48 is detected with phi = 116.250 degrees
+For Event 9, particle 49 is detected with Status 1
+For Event 9, particle 49 is detected with Id -211
+For Event 9, particle 49 is detected with (Px,Py,Pz) = (-0.165,0.499,-0.422) GeV
+For Event 9, particle 49 is detected with theta = 128.760 degrees
+For Event 9, particle 49 is detected with phi = 108.262 degrees
+For Event 9, particle 50 is detected with Status 1
+For Event 9, particle 50 is detected with Id -2112
+For Event 9, particle 50 is detected with (Px,Py,Pz) = (0.363,0.373,5.404) GeV
+For Event 9, particle 50 is detected with theta = 5.505 degrees
+For Event 9, particle 50 is detected with phi = 45.781 degrees
+For Event 9, particle 52 is detected with Status 1
+For Event 9, particle 52 is detected with Id 22
+For Event 9, particle 52 is detected with (Px,Py,Pz) = (-0.152,-0.071,1.204) GeV
+For Event 9, particle 52 is detected with theta = 7.928 degrees
+For Event 9, particle 52 is detected with phi = 205.110 degrees
+For Event 9, particle 53 is detected with Status 1
+For Event 9, particle 53 is detected with Id 22
+For Event 9, particle 53 is detected with (Px,Py,Pz) = (0.017,-0.061,0.368) GeV
+For Event 9, particle 53 is detected with theta = 9.806 degrees
+For Event 9, particle 53 is detected with phi = 285.363 degrees
+For Event 9, particle 54 is detected with Status 1
+For Event 9, particle 54 is detected with Id 130
+For Event 9, particle 54 is detected with (Px,Py,Pz) = (-0.153,0.541,0.267) GeV
+For Event 9, particle 54 is detected with theta = 64.577 degrees
+For Event 9, particle 54 is detected with phi = 105.848 degrees
+For Event 9, particle 55 is detected with Status 1
+For Event 9, particle 55 is detected with Id 22
+For Event 9, particle 55 is detected with (Px,Py,Pz) = (0.145,0.089,-0.006) GeV
+For Event 9, particle 55 is detected with theta = 92.002 degrees
+For Event 9, particle 55 is detected with phi = 31.515 degrees
+For Event 9, particle 56 is detected with Status 1
+For Event 9, particle 56 is detected with Id 22
+For Event 9, particle 56 is detected with (Px,Py,Pz) = (0.043,-0.006,-0.078) GeV
+For Event 9, particle 56 is detected with theta = 151.147 degrees
+For Event 9, particle 56 is detected with phi = 352.003 degrees
+For Event 9, particle 57 is detected with Status 1
+For Event 9, particle 57 is detected with Id 22
+For Event 9, particle 57 is detected with (Px,Py,Pz) = (0.082,0.362,0.277) GeV
+For Event 9, particle 57 is detected with theta = 53.198 degrees
+For Event 9, particle 57 is detected with phi = 77.238 degrees
+For Event 9, particle 58 is detected with Status 1
+For Event 9, particle 58 is detected with Id 22
+For Event 9, particle 58 is detected with (Px,Py,Pz) = (0.073,0.171,0.040) GeV
+For Event 9, particle 58 is detected with theta = 77.812 degrees
+For Event 9, particle 58 is detected with phi = 66.996 degrees
+For Event 9, particle 59 is detected with Status 1
+For Event 9, particle 59 is detected with Id 22
+For Event 9, particle 59 is detected with (Px,Py,Pz) = (-0.057,0.020,0.279) GeV
+For Event 9, particle 59 is detected with theta = 12.152 degrees
+For Event 9, particle 59 is detected with phi = 160.531 degrees
+For Event 9, particle 60 is detected with Status 1
+For Event 9, particle 60 is detected with Id 22
+For Event 9, particle 60 is detected with (Px,Py,Pz) = (0.043,0.025,1.066) GeV
+For Event 9, particle 60 is detected with theta = 2.698 degrees
+For Event 9, particle 60 is detected with phi = 30.118 degrees
+For Event 9, there are 2 beam particles and 29 detected particles
+
+-------------------------------
