@@ -40,7 +40,7 @@ If you have some difficulty setting up either enviroment using the above instruc
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
-If you have access to the Jefferson Lab farm (ifarm), you should source the setup_jlab.sh script provided in this repository. This will allow you to run the eic-smear package. (Need to add instructions for PYTHIA and DJANGOH.)
+If you have access to the Jefferson Lab farm (ifarm), you should source the setup_jlab.csh script provided in this repository. This will allow you to run the eic-smear package. I'm working to get the EIC version of PYTHIA6 working on the JLAB ifarm. (Need to add instructions DJANGOH.)
 
 
 Working with the Singularity container or Docker image
