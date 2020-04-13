@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/csh
 
 # For EIC-SMEAR
 source /apps/root/PRO/setroot_CUE
