@@ -13,7 +13,18 @@ Working on the RACF (BNL) machines
 ----------------------------------
 If you have either an EIC RACF account or a sPHENIX RACF account, you automatically have access to the software packages mentioned above. Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
 
-Follow the steps here if you have an sPHENIX account (or a PHENIX account with sPHENIX permissions): [sPHENIX Enviroment Setup](https://wiki.bnl.gov/sPHENIX/index.php/Setup).
+The EIC environment setup described on the EIC wiki page above will link to a ROOT5 build. It is better instead to set your environment as follows:
+
+setenv EIC_LEVEL pro
+
+source /afs/rhic.bnl.gov/eic/restructured/etc/eic_cshrc.csh
+
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/afs/rhic.bnl.gov/eic/lib/
+
+setenv PATH ${PATH}:/afs/rhic.bnl.gov/eic/bin/
+
+
+Follow these steps if you have an sPHENIX account (or a PHENIX account with sPHENIX permissions): [sPHENIX Enviroment Setup](https://wiki.bnl.gov/sPHENIX/index.php/Setup).
 
 If working on with the Sphenix setup, the default LHAPDF directory is
 
@@ -43,6 +54,11 @@ N.B. It seems that not all the simulation packages listed above are provided by 
 
 Files provided on this repository
 ---------------------------------
+Example detectors are provided in the "detectors" folder.
+
+In the "pythia" folder, the script "run_ep.sh" will run a PYTHIA6 simulation and then smear the output for each detector in the "detectors" folder. The simulation output files are saved in the "outfiles" subfolder. The file "pythia_ep.sub" allows the user to run the simulation on the RACF (BNL) batch farm.
+
+The "analysis" folder gives several examples of analyzing the smeared (and generator-level) output. Simple ROOT macros can be found in the top directory; a more complex analysis code is in the "compiled" subfolder. 
 
 
 Contact
