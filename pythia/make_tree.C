@@ -2,7 +2,7 @@ R__LOAD_LIBRARY(libeicsmear.so)
 
 void make_tree(std::string filstr){
 
-  erhic::DisKinematics::BoundaryWarning=false;
+  //erhic::DisKinematics::BoundaryWarning=false; //Need to comment this for eic account
   
   std::string dirstr = "outfiles";
   std::string inputstr = dirstr + "/" + filstr;
