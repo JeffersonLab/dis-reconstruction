@@ -1,4 +1,4 @@
-R__LOAD_LIBRARY(libeicsmear.so);
+R__LOAD_LIBRARY(libeicsmear);
 
 void access_smeared(){
   

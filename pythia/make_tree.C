@@ -1,4 +1,4 @@
-R__LOAD_LIBRARY(libeicsmear.so)
+R__LOAD_LIBRARY(libeicsmear)
 
 void make_tree(std::string filstr){
 

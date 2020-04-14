@@ -1,4 +1,4 @@
-R__LOAD_LIBRARY(libeicsmear.so);
+R__LOAD_LIBRARY(libeicsmear);
 
 void access_tree(){
 
@@ -9,7 +9,8 @@ void access_tree(){
   erhic::ParticleMC *particle(NULL); //Also use Pointer
   
   //Load ROOT File
-  TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad_def.root");
+  //TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad_def.root"); //Not created by eic version
+  TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad.root");
 
   //Get EICTree Tree
   TTree *tree = (TTree*)f->Get("EICTree");
