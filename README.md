@@ -1,5 +1,6 @@
 # dis-reconstruction
 
+<br/>
 
 eic-smear package
 -----------------
@@ -8,21 +9,21 @@ Documentation for the eic-smear package can be found [here](https://wiki.bnl.gov
 
 The EIC versions of various event generators provide output that can be directly fed into the eic-smear software. See [here](https://wiki.bnl.gov/eic/index.php/Simulations#Event_Generators). In particular, look at the information for [PYTHIA](https://wiki.bnl.gov/eic/index.php/PYTHIA) and [DJANGOH](https://wiki.bnl.gov/eic/index.php/DJANGOH).
 
+<br/>
 
 Working on the RACF (BNL) machines
 ----------------------------------
 If you have either an EIC RACF account or a sPHENIX RACF account, you automatically have access to the software packages mentioned above. Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
 
-The EIC environment setup described on the EIC wiki page above will link to a ROOT5 build. It is better instead to set your environment as follows:
+The EIC environment setup described on the EIC wiki page above will link to a ROOT5 build. It is better instead to link to ROOT6 by setting your environment as follows:
 
 setenv EIC_LEVEL pro
 
 source /afs/rhic.bnl.gov/eic/restructured/etc/eic_cshrc.csh
 
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/afs/rhic.bnl.gov/eic/lib/
+(N.B. The above commands should also allow you to setup the EIC environment if you are working on a STAR account.)
 
-setenv PATH ${PATH}:/afs/rhic.bnl.gov/eic/bin/
-
+<br/>
 
 Follow these steps if you have an sPHENIX account (or a PHENIX account with sPHENIX permissions): [sPHENIX Enviroment Setup](https://wiki.bnl.gov/sPHENIX/index.php/Setup).
 
@@ -34,13 +35,17 @@ This directory only contains a small number of PDF datasets. It is best to set t
 
 /afs/rhic/eic/share/lhapdf/PDFsets
 
+<br/>
 
 If you have some difficulty setting up either enviroment using the above instructions, please contact me and I can send you my environmental setup scripts for each configuration.
 
+<br/>
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
 If you have access to the Jefferson Lab farm (ifarm), you should source the setup_jlab.csh script provided in this repository. This will allow you to run the eic-smear package. I'm working to get the EIC version of PYTHIA6 working on the JLAB ifarm. (Need to add instructions DJANGOH.)
+
+<br/>
 
 
 Working with the Singularity container or Docker image
@@ -51,6 +56,8 @@ Information on obtaining and using the EIC software Docker image can be found [h
 
 N.B. It seems that not all the simulation packages listed above are provided by default on the Singularity container or Docker image. I'll contact the EIC software group to resolve this ASAP.
 
+<br/>
+
 
 Files provided on this repository
 ---------------------------------
@@ -60,6 +67,7 @@ In the "pythia" folder, the script "run_ep.sh" will run a PYTHIA6 simulation and
 
 The "analysis" folder gives several examples of analyzing the smeared (and generator-level) output. Simple ROOT macros can be found in the top directory; a more complex analysis code is in the "compiled" subfolder. A different "Makefile" is needed depending on the account (i.e. sphenix, eic, jlab) the user is working on.
 
+<br/>
 
 Contact
 --------
