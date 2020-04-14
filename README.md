@@ -13,7 +13,11 @@ The EIC versions of various event generators provide output that can be directly
 
 Working on the RACF (BNL) machines
 ----------------------------------
-If you have either an EIC RACF account or a sPHENIX RACF account, you automatically have access to the software packages mentioned above. Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
+If you have either a BNL RACF account, you automatically have access to the software packages mentioned above. 
+
+<BR/>
+
+Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
 
 The EIC environment setup described on the EIC wiki page above will link to a ROOT5 build. It is better instead to link to ROOT6 by setting your environment as follows:
 
