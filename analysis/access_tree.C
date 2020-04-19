@@ -9,7 +9,7 @@ void access_tree(){
   erhic::ParticleMC *particle(NULL); //Also use Pointer
   
   //Load ROOT File
-  //TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad_def.root"); //Not created by eic version
+  //TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad_def.root"); //Not created by eic or jlab version
   TFile *f = new TFile("../pythia/outfiles/ep_10_100_norad.root");
 
   //Get EICTree Tree

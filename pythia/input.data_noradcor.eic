@@ -22,8 +22,8 @@ MSTP(19)=1 ! Hermes MSTP-19=1 different Q2 suppression, default = 4
 MSTP(20)=0 ! Hermes MSTP(20)=0 , default MSTP(20)=3
 MSTP(32)=8
 MSTP(38)=4
-MSTP(51)=10050 ! if pdflib is linked than non pythia-pdfs are available,                         like MSTP(51)=4046 
-!MSTP(51)=10150
+!MSTP(51)=10050 ! if pdflib is linked than non pythia-pdfs are available,                         like MSTP(51)=4046 
+MSTP(51)=10150
 MSTP(52)=2   ! ---> pdflib used MSTP   52=2
 MSTP(53)=3
 MSTP(54)=1

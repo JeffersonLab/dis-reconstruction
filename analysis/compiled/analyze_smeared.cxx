@@ -42,7 +42,7 @@ int main(int argc, char **argv){
   //Smeared Particle Class
   Smear::ParticleMCS *particle_s(NULL);
   
-  //TFile *f = new TFile("../../pythia/outfiles/ep_10_100_norad_def.root"); //not created by eic version
+  //TFile *f = new TFile("../../pythia/outfiles/ep_10_100_norad_def.root"); //not created by eic or jlab version
   TFile *f = new TFile("../../pythia/outfiles/ep_10_100_norad.root");
 
   TTree *tree = (TTree*)f->Get("EICTree");
