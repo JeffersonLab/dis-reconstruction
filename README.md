@@ -47,7 +47,7 @@ If you have some difficulty setting up either enviroment using the above instruc
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
-If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run on the JLAB ifarm the EIC versions of Pythia6 and DJANGOH, as well as the eic-smear package.
+If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run the EIC versions of the Pythia6 and the DJANGOH event generators on the ifarm; it will also provide access to the eic-smear library installed on the ifarm.
 
 <br/>
 
