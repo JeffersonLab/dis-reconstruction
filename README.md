@@ -19,9 +19,9 @@ If you have either a BNL RACF account, you automatically have access to the soft
 
 Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
 
-The EIC environment setup described on the EIC wiki page above will link to a ROOT5 build. It is better instead to link to ROOT6 by setting your environment as follows:
+The EIC environmental setup described on the EIC wiki page above will link to a ROOT5 build. To link to the most up-to-date version of eic-smear along with ROOT6, set your environment as follows:
 
-setenv EIC_LEVEL pro
+setenv EIC_LEVEL dev
 
 source /afs/rhic.bnl.gov/eic/restructured/etc/eic_cshrc.csh
 
@@ -49,16 +49,18 @@ Working on the JLAB (ifarm) machines
 -----------------------------------
 If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run the EIC versions of the Pythia6 and the DJANGOH event generators on the ifarm; it will also provide access to the eic-smear library installed on the ifarm.
 
+It is also possible to instead access the EIC software on the Jefferson Lab farm using a singularity continer as discussed [here](https://eic.github.io/software/escalate_singularity_1.html).
+
 <br/>
 
 
 Working with the Singularity container or Docker image
 ------------------------------------------------------
-You can also use the singularity container (https://github.com/EIC-Detector/Singularity) to run the software -- this works best on linux. I was able to get "Option-2" to work on an Ubuntu box. If you have MacOS or Windows, it may be better to use the virtual box as they suggest (https://github.com/EIC-Detector/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
+You can also use a Singularity container to access the EIC software. General instructions can be found [here](https://eic.github.io/software/eicsmear_generators_singularity.html).
 
-Information on obtaining and using the EIC software Docker image can be found [here](https://eic.gitlab.io/documents/quickstart/#ESCalate).
+A ready-made image is provided by the sPHENIX collaboration (https://github.com/EIC-Detector/Singularity) to run the software -- this works best on linux. I was able to get "Option-2" to work on an Ubuntu box. If you have MacOS or Windows, it may be better to use the virtual box as they suggest (https://github.com/EIC-Detector/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
 
-N.B. It seems that not all the simulation packages listed above are provided by default on the Singularity container or Docker image. I'll contact the EIC software group to resolve this ASAP.
+Information on accessing the EIC software through the ESCalate package can be found [here](https://eic.gitlab.io/documents/quickstart/#ESCalate).
 
 <br/>
 
@@ -67,7 +69,7 @@ Files provided on this repository
 ---------------------------------
 Example detectors are provided in the "detectors" folder.
 
-In the "pythia" folder, the script "run_ep.sh" will run a PYTHIA6 simulation and then smear the output for each detector in the "detectors" folder. The simulation output files are saved in the "outfiles" subfolder. Depending on which account the user is working on(i.e. sphenix, eic, jlab), the user will have to link to the correct detector directory in "make_smeared_...". The file "pythia_ep.sub" allows the user to run the simulation on the RACF (BNL) batch farm.
+In the "pythia" folder, the script "run_ep.sh" will run a PYTHIA6 simulation and then smear the output for each detector in the "detectors" folder. The simulation output files are saved in the "outfiles" subfolder. Depending on which account the user is working on (i.e. sphenix, eic, jlab), the user will have to link to the correct detector directory in "make_smeared_...". The file "pythia_ep.sub" allows the user to run the simulation on the RACF (BNL) batch farm.
 
 The "analysis" folder gives several examples of analyzing the smeared (and generator-level) output. Simple ROOT macros can be found in the top directory; a more complex analysis code is in the "compiled" subfolder. A different "Makefile" is needed depending on the account (i.e. sphenix, eic, jlab) the user is working on.
 
