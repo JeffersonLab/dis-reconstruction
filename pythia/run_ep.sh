@@ -24,4 +24,8 @@ echo "Making Second Smeared ROOT File..."
 root -l -b -q 'make_smeared_central.C("ep_10_100_norad")'
 echo "Done!!!"
 
+echo "Making Third Smeared ROOT File..."
+root -l -b -q 'make_smeared_handbook.C("ep_10_100_norad")'
+echo "Done!!!"
+
 echo "-----------------------------------"

@@ -7,7 +7,7 @@ ROOTGLIBS   := $(shell $(ROOTCONFIG) --glibs)
 
 CXX         := g++
 
-INCLUDES    := -I/afs/rhic.bnl.gov/eic/restructured/env/EIC2019a/include
+INCLUDES    := -I/afs/rhic.bnl.gov/eic/restructured/env/EIC2020a/include
 DEFINES     := -DWITHRINT
 CXXFLAGS    := -O2 -Wall -fPIC $(ROOTCFLAGS) $(INCLUDES) $(DEFINES)
 
@@ -15,7 +15,7 @@ LD          := g++
 LDFLAGS     := -O2 $(ROOTLDFLAGS)
 
 LIBS        := $(ROOTGLIBS)                               \
-	       -L/afs/rhic.bnl.gov/eic/restructured/env/EIC2019a/lib -leicsmear
+	       -L/afs/rhic.bnl.gov/eic/restructured/env/EIC2020a/lib -leicsmear
 SRC_FILES   := $(wildcard *.cxx)
 EXE_FILES   := $(SRC_FILES:%.cxx=%) 
 
