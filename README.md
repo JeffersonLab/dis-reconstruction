@@ -71,6 +71,8 @@ Example detectors are provided in the "detectors" folder.
 
 In the "pythia" folder, the script "run_ep.sh" will run a PYTHIA6 simulation and then smear the output for each detector in the "detectors" folder. The simulation output files are saved in the "outfiles" subfolder. Depending on which account the user is working on (i.e. sphenix, eic, jlab), the user will have to link to the correct detector directory in "make_smeared_...". The file "pythia_ep.sub" allows the user to run the simulation on the RACF (BNL) batch farm.
 
+The "djangoh" folder has a similar structure as the "pythia" folder.
+
 The "analysis" folder gives several examples of analyzing the smeared (and generator-level) output. Simple ROOT macros can be found in the top directory; a more complex analysis code is in the "compiled" subfolder. A different "Makefile" is needed depending on the account (i.e. sphenix, eic, jlab) the user is working on.
 
 <br/>
