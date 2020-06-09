@@ -1,19 +1,19 @@
 OUTFILENAM
-outfiles/djangoh.NC.Rad.20x250
+outfiles/djangoh_hera
 TITLE
-DJANGOH 4.6.10 for eRHIC for PR, LO at 20x250, Wmin=1.4
+DJANGOH 4.6.10 for HERA e^+p
 EL-BEAM
-            20D0    0.0D0    -1
+            27.6D0    0.0D0    1
 PR-BEAM
-            250D0   0.0D0
+            920D0   0.0D0
 GSW-PARAM
-            2 1 3 1 1 1 2 1 1 1 1
+            2 0 3 1 0 0 2 1 1 1 1
 KINEM-CUTS
-            3   0.001D0  1.00D0  0.01D0  0.95D0  1.0D0  1D5  1.4D00
+            3   1D-5  1.00D0  1D-4  0.98D0  1.5D0  1D5  1.4D00
 EGAM-MIN
             0D0
 INT-OPT-NC
-            1 18 18 18 18   0 0 0 0 
+            1 0 0 0 0   0 0 0 0 
 INT-OPT-CC
             0 0 0 0
 INT-ONLY
@@ -21,11 +21,11 @@ INT-ONLY
 INT-POINTS
             30000
 SAM-OPT-NC
-            1 1 1 1 1   0 0 0 0
+            1 0 0 0 0   0 0 0 0
 SAM-OPT-CC
             0 0 0 0
 NUCLEUS
-            250D0   1.0D0 1.0D0
+            920D0   1.0D0 1.0D0
 NUCL-MOD
             0
 STRUCTFUNC
@@ -45,7 +45,7 @@ IOUNITS
 RNDM-SEEDS
             -1 -1
 START
-            1000
+            100000
 SOPHIA
             1.5
 OUT-LEP

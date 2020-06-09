@@ -1,0 +1,9 @@
+Universe       = vanilla
+Notification   = Never
+Executable     = run_hera.sh
+GetEnv         = True
+Input	       = /dev/null
+Output         = jobout/job_hera.out
+Error          = jobout/job_hera.err
+Log            = jobout/job_hera.log
+Queue
