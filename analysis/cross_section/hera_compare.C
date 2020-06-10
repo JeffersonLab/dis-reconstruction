@@ -142,7 +142,7 @@ void hera_compare(){
     erhic::ParticleMC *particle_d(NULL); //Particle Class
 
     TChain *t_d = new TChain("EICTree");
-    for(int i=0;i<=9;i++){
+    for(int i=0;i<=24;i++){
         t_d->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/hera/djangoh_hera_%d.root",i));
     }
 
