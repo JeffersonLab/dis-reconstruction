@@ -10,7 +10,7 @@
 
 //To Build with ROOT6:
 //>>root
-//>>detector_full.C+
+//>>.L detector_full.C+
 //-----------------------
 
 #include "eicsmear/erhic/VirtualParticle.h"

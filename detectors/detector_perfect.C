@@ -5,7 +5,7 @@
 
 //To Build with ROOT6:
 //>>root
-//>>detector_perfect.C+
+//>>.L detector_perfect.C+
 //-----------------------
 
 #include "eicsmear/erhic/VirtualParticle.h"
