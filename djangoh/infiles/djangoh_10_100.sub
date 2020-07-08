@@ -1,0 +1,9 @@
+Universe       = vanilla
+Notification   = Never
+Executable     = run_yellow_10_100.sh
+GetEnv         = True
+Input	       = /dev/null
+Output         = jobout/job_10_100.out
+Error          = jobout/job_10_100.err
+Log            = jobout/job_10_100.log
+Queue
