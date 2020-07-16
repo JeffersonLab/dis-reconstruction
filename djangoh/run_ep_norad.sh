@@ -14,6 +14,10 @@ OUTFILE2=outfiles/djangoh.NC.20x250_out.dat
 if test -f "$OUTFILE2"; then
 	rm -f "$OUTFILE2"
 fi
+OUTFILE3=outfiles/djangoh.NC.20x250_smp.dat
+if test -f "$OUTFILE3"; then
+        rm -f "$OUTFILE3"
+fi
 
 djangoh < ep.Rad=0.NC.in > logfiles/ep.Rad=0.NC.log
 
