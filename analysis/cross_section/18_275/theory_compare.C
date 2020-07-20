@@ -1,17 +1,68 @@
 R__LOAD_LIBRARY(libeicsmear);
 
-void hera_compare(){
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+TGraph* Theory_Graph(const char* infile, double Q2_set=1, 
+                        int color=1, int style=20, int lw=2, bool abs=0){
+
+  //Create graph
+  TGraph *gr = new TGraph();
+  gr->SetMarkerStyle(style);gr->SetMarkerColor(color);
+  gr->SetLineWidth(lw);gr->SetLineColor(color);
+
+  //Read input file
+  ifstream in;
+  in.open(infile,ios::in);
+
+  //Write to Graph
+  double Q2(0),x(0),y(0);
+  int counter(0);
+
+  while(in.good()){
+    in >> Q2 >> x >> y;
+
+    if( in.good() && fabs(Q2-Q2_set)<0.5 ){
+
+      if(abs)
+        gr->SetPoint(counter,x,fabs(y));
+      else
+        gr->SetPoint(counter,x,y);
+
+      counter++;
+    }
+  }
+
+  cout<<"For Q2 = "<<Q2_set<<" GeV^2... ";
+  cout<<"We read "<<counter<<" matching lines from data file "<<infile<<" !"<<endl;
+  in.close();
+  return gr;
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+void theory_compare(){
 
     //Constants
     const double alpha(1./137.036);
-    const double s_cm = 4.*27.5*920.;
+    const double s_cm = 4.*18*275;
     const double fbgev(1./(0.3894E12));
+    const double Mp(0.9383);
 
     //Cross Section Bins
-    const int nbins_Q2=8;
-    double Q2_low[] = {1.8, 3.25, 6.0,  9.0, 18, 55, 110, 175};
-    double Q2_hi[] =  {2.2, 3.75, 7.0, 11.0, 26, 65, 130, 225};
-            
+    double Q2_min = 1E-1;
+    double Q2_max = 1E4;
+	const int nbins_Q2 = 25;
+	double log_bw_Q2 = (log10(Q2_max) - log10(Q2_min))/nbins_Q2;
+    double log_low_Q2,log_hi_Q2;
+    double Q2_low[nbins_Q2],Q2_hi[nbins_Q2];
+    for(int i=0;i<nbins_Q2;i++){
+		log_low_Q2 = log10(Q2_min) + (i*log_bw_Q2);
+		log_hi_Q2 = log10(Q2_min) + (i+1)*log_bw_Q2;
+		Q2_low[i] = pow(10,log_low_Q2);
+		Q2_hi[i] = pow(10,log_hi_Q2);
+	}
+   
     double x_min = 1E-5;
     double x_max = 1;
 	const int nbins = 25;
@@ -25,10 +76,6 @@ void hera_compare(){
 		x_hi[i] = pow(10,log_hi);
 	}
 
-    //Remove edge x points
-    double xcut_low[] = {2.5E-5, 4E-5,   6E-5, 1E-4, 2.5E-4, 6E-4, 1.5E-3, 2.5E-3};
-    double xcut_hi[] =  {1.5E-1, 2.5E-1, 7E-1, 7E-1, 7E-1,   1.,   1.,     1.};
-
     //Bin Yields/Kinematics/Factors
     //int nbins_tot = nbins_Q2*nbins;
     double yield[nbins][nbins_Q2];
@@ -40,6 +87,10 @@ void hera_compare(){
     double Q2_width[nbins_Q2];
     double x_width[nbins];
     double rcs_factor[nbins][nbins_Q2];
+    bool cut_ul[nbins][nbins_Q2];
+    bool cut_lr[nbins][nbins_Q2];
+    double ymax = 1;double ymin = 0.001; double W2min = 10;
+    double y_temp, W2_temp;
 
     for(int i=0;i<nbins;i++){ //x loop
         for(int j=0;j<nbins_Q2;j++){ //Q2 loop
@@ -56,7 +107,45 @@ void hera_compare(){
             rcs_factor[i][j] = fbgev * ( pow(Q2_center[j],2)*x_center[i] ) / 
                             ( TMath::TwoPi() * pow(alpha,2) * ( 1.+pow((1.-y[i][j]),2) ) );
 
+            //Print out bins and centers
+            //cout<<"i, j = "<< i <<" , "<< j << endl;
+            //cout<<"x, Q2 = "<< x_center[i] <<" , "<< Q2_center[j] << endl;
+
+            //Cut Bins with top-left edge > ymax and bottom-right edge < ymin and > W2min
+            y_temp = (Q2_hi[j])/(x_low[i]*s_cm); //Upper left
+            if(y_temp>ymax) //Remove bin
+                cut_ul[i][j] = 0;
+            else
+                cut_ul[i][j] = 1;
+
+            //cout<<"y_temp = "<<y_temp<<endl;
+
+            y_temp = (Q2_low[j])/(x_hi[i]*s_cm); //Lower Right
+            W2_temp = Mp*Mp + Q2_low[j]*( (1./x_hi[i]) - 1.);
+            if(y_temp<ymin || W2_temp<W2min) //Remove bin
+                cut_lr[i][j] = 0;
+            else
+                cut_lr[i][j] = 1;
+
+            //cout<<"y_temp = "<<y_temp<<endl;
+            //cout<<"W2_temp = "<<W2_temp<<endl;
+
         }
+    }
+
+    //Q2 bins (center) to plot; 8 bins
+    const int num_plot = 8;
+    int Q2_bin_plot[num_plot] = {6,8,9,10,11,13,15,18};
+
+    //Read in Theory for RCS 
+    TGraph *CT18ptxg[nbins_Q2];
+    TGraph *NNPDF31_nnlo_pch_as_0118_SF[nbins_Q2];
+    TGraph *JAM4EIC[nbins_Q2];
+
+    for(int i=0;i<num_plot;i++){
+        CT18ptxg[i] = Theory_Graph("input_files/CT18ptxg_rcs.txt",Q2_center[Q2_bin_plot[i]],kBlack,20,2);
+        NNPDF31_nnlo_pch_as_0118_SF[i] = Theory_Graph("input_files/NNPDF31_nnlo_pch_as_0118_SF_rcs.txt",Q2_center[Q2_bin_plot[i]],kBlue,20,2);
+        JAM4EIC[i] = Theory_Graph("input_files/JAM4EIC_p_rcs.txt",Q2_center[Q2_bin_plot[i]],kGreen,20,2);
     }
 
     //---------------------------------
@@ -68,17 +157,19 @@ void hera_compare(){
     erhic::ParticleMC *particle(NULL); //Particle Class
 
     TChain *t = new TChain("EICTree");
-    for(int i=0;i<=9;i++){
-        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/hera/ep_hera_%d.root",i));
+    for(int i=0;i<15;i++){
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
     }
 
     t->SetBranchAddress("event",&event);
     double Q2_event; //Get this from scattered electron (may differ from true if rad. effect included)
     double x_event; //''
+    double y_event; //''
+    double W2_event; //''
 
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
-    double cross_tot = 0.8876E9; //Total Cross Section in fb
+    double cross_tot = 1.67E9; //Total Cross Section in fb
     double lum = ( (double) nevents)/cross_tot; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
@@ -93,10 +184,13 @@ void hera_compare(){
 
         Q2_event = event->GetQ2();
         x_event = event->GetX();
+        y_event = event->GetY();
+        W2_event = event->GetW2();
 
         for(int i=0;i<nbins;i++){
             for(int j=0;j<nbins_Q2;j++){
-                if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j])
+                if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j] &&
+                    y_event>ymin && W2_event>W2min && y_event<ymax) //pythia has a hard cut W>2GeV applied
                     yield[i][j]+=1.;
             }
         }
@@ -123,7 +217,7 @@ void hera_compare(){
     int counter(0);
     for(int j=0;j<nbins_Q2;j++){
         for(int i=0;i<nbins;i++){
-            if(yield[i][j]>50 && x_center[i]>xcut_low[j] && x_center[i]<xcut_hi[j]){
+            if(yield[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
                 gr1[j]->SetPoint(counter,x_center[i],rcs[i][j]);
                 gr1[j]->SetPointError(counter,0,error[i][j]);
                 counter++;
@@ -131,7 +225,6 @@ void hera_compare(){
         }
         counter=0;
     }
-
 
     //---------------------------------
     //Analyse DJANGOH simulation
@@ -142,15 +235,15 @@ void hera_compare(){
     erhic::ParticleMC *particle_d(NULL); //Particle Class
 
     TChain *t_d = new TChain("EICTree");
-    for(int i=0;i<=24;i++){
-        t_d->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/hera/djangoh_hera_%d.root",i));
+    for(int i=0;i<10;i++){
+        t_d->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/18_275/djangoh.NC.18x275_%d.root",i));
     }
 
     t_d->SetBranchAddress("event",&event_d);
 
     //Calculate Generated Luminosity
     int nevents_d = t_d->GetEntries();
-    double cross_tot_d = 0.724E9; //Total Cross Section in fb
+    double cross_tot_d = 1.51E9; //Total Cross Section in fb
     double lum_d = ( (double) nevents_d)/cross_tot_d; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
@@ -174,10 +267,13 @@ void hera_compare(){
 
         Q2_event = event_d->GetQ2();
         x_event = event_d->GetX();
+        y_event = event_d->GetY();
+        W2_event = event_d->GetW2();
 
         for(int i=0;i<nbins;i++){
             for(int j=0;j<nbins_Q2;j++){
-                if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j])
+                if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j] &&
+                    y_event>ymin && W2_event>W2min && y_event<ymax) //djangoh has a hard cut W>3GeV applied for Rad=0 unpol. NC)
                     yield[i][j]+=1.;
             }
         }
@@ -203,7 +299,7 @@ void hera_compare(){
     
     for(int j=0;j<nbins_Q2;j++){
         for(int i=0;i<nbins;i++){
-            if(yield[i][j]>50 && x_center[i]>xcut_low[j] && x_center[i]<xcut_hi[j]){
+            if(yield[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
                 gr1_d[j]->SetPoint(counter,x_center[i],rcs[i][j]);
                 gr1_d[j]->SetPointError(counter,0,error[i][j]);
                 counter++;
@@ -212,71 +308,31 @@ void hera_compare(){
         counter=0;
     }
 
-    //---------------------------------
-    //Read-in and fill HERA data
-    //---------------------------------
-    ifstream in;
-    in.open("hera_data.txt",ios::in);
-  
-    double read_q2,read_x,read_sr,read_pe,read_s;
-    int line1(0);
-
-    int hera_counter[nbins_Q2];
-    TGraphErrors *gr2[nbins_Q2];
-    for(int j=0;j<nbins_Q2;j++){
-
-        hera_counter[j]=0;
-
-        gr2[j] = new TGraphErrors();
-        gr2[j]->SetLineWidth(2);
-        gr2[j]->SetLineColor(kBlue);
-        gr2[j]->SetMarkerStyle(22);
-        gr2[j]->SetMarkerColor(kBlue);
-    }
-
-    while(in.good()){
-        in >> read_q2 >> read_x >> read_sr >> read_pe >> read_s;
-
-        if(in.good()){
-            for(int j=0;j<nbins_Q2;j++){
-                if( fabs(read_q2-Q2_center[j])<0.1 && fabs(read_s-319)<0.1 ){
-                    gr2[j]->SetPoint(hera_counter[j],read_x,read_sr);
-                    gr2[j]->SetPointError(hera_counter[j],0, (read_pe/100.)*read_sr );
-                    hera_counter[j]++;
-                }
-            }
-            line1++;
-        }
-    }
-
-    cout << "We read " << line1 << " HERA data lines."<<endl;
-    in.close();
-
     //Latex Labels
-    TLatex *tex1[nbins_Q2];
-    for(int j=0;j<nbins_Q2;j++){
-        tex1[j] = new TLatex(1E-2,1.8,Form("Q^{2} = %.0f GeV^{2}",Q2_center[j]));
-        tex1[j]->SetTextFont(42);
-        tex1[j]->SetTextSize(0.06);
+    TLatex *tex1[num_plot];
+    for(int i=0;i<num_plot;i++){
+        tex1[i] = new TLatex(2.5E-2,1.8,Form("Q^{2} = %.1f GeV^{2}",Q2_center[Q2_bin_plot[i]]));
+        tex1[i]->SetTextFont(42);
+        tex1[i]->SetTextSize(0.06);
     }
 
-    TLatex *tex2 = new TLatex(2E-3,1.6,"HERA e^{+}p, #sqrt{s}=319 GeV");
-    tex2->SetTextColor(kBlue);tex2->SetTextFont(42);
+    TLatex *tex2 = new TLatex(7E-4,1.6,"18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+    tex2->SetTextColor(kBlack);tex2->SetTextFont(42);
 
-    TLatex *tex3 = new TLatex(2E-3,1.45,"Pythia6 e^{+}p, #sqrt{s}=319 GeV");
-    tex3->SetTextColor(kRed);tex3->SetTextFont(42);
+    TLatex *tex3 = new TLatex(7E-4,1.45,"Pythia6 e^{-}p, y>0.001 and W^{2}>10GeV^{2}");
+    tex3->SetTextColor(kRed);tex3->SetTextFont(62);
 
-    TLatex *tex4 = new TLatex(2E-3,1.3,"Djangoh e^{+}p, #sqrt{s}=319 GeV");
-    tex4->SetTextColor(kMagenta);tex4->SetTextFont(42);
+    TLatex *tex4 = new TLatex(7E-4,1.3,"Djangoh e^{-}p, y>0.001 and W^{2}>10GeV^{2}");
+    tex4->SetTextColor(kMagenta);tex4->SetTextFont(62);
 
-    TLatex *tex2a = new TLatex(3E-5,0.6,"HERA e^{+}p, #sqrt{s}=319 GeV");
-    tex2a->SetTextColor(kBlue);tex2a->SetTextFont(42);
+    TLatex *tex5 = new TLatex(1E-3,1.45,"CT18ptxg");
+    tex5->SetTextColor(kBlack);tex5->SetTextFont(62);
 
-    TLatex *tex3a = new TLatex(3E-5,0.45,"Pythia6 e^{+}p, #sqrt{s}=319 GeV");
-    tex3a->SetTextColor(kRed);tex3a->SetTextFont(42);
+    TLatex *tex6 = new TLatex(1E-3,1.6,"NNPDF31_nnlo_pch_as_0118_SF");
+    tex6->SetTextColor(kBlue);tex6->SetTextFont(62);
 
-    TLatex *tex4a = new TLatex(3E-5,0.3,"Djangoh e^{+}p, #sqrt{s}=319 GeV");
-    tex4a->SetTextColor(kMagenta);tex4a->SetTextFont(42);
+    TLatex *tex7 = new TLatex(1E-3,1.3,"JAM4EIC");
+    tex7->SetTextColor(kGreen);tex7->SetTextFont(62);
 
     //Draw plots
     gStyle->SetPadBorderMode(0);
@@ -307,11 +363,15 @@ void hera_compare(){
     gPad->SetTopMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky(); 
-    TH1 *hframe = gPad->DrawFrame(1E-5,0,1,2);
+    TH1 *hframe = gPad->DrawFrame(1E-4,0,1,2);
     hframe->GetXaxis()->SetTitle("x");hframe->GetXaxis()->CenterTitle();
-    hframe->GetYaxis()->SetTitle("#sigma_{r,NC}^{+}");hframe->GetYaxis()->CenterTitle();
-    gr2[0]->Draw("PL Same");gr1[0]->Draw("P Same");gr1_d[0]->Draw("P Same");
-    tex1[0]->Draw();
+    hframe->GetYaxis()->SetTitle("#sigma_{r,NC}^{-}");hframe->GetYaxis()->CenterTitle();
+    counter = 0;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();
 
     c1->cd(2); 
     gPad->SetLogx();
@@ -322,9 +382,13 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[1]->Draw("PL Same");gr1[1]->Draw("P Same");gr1_d[1]->Draw("P Same");
-    tex1[1]->Draw();
-    
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex5->Draw();tex6->Draw();tex7->Draw();
+
     c1->cd(3);
     gPad->SetLogx();
     gPad->SetTopMargin(small);
@@ -334,8 +398,11 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[2]->Draw("PL Same");gr1[2]->Draw("P Same");gr1_d[2]->Draw("P Same");
-    tex1[2]->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
     
     c1->cd(4);
     gPad->SetLogx();
@@ -346,8 +413,11 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[3]->Draw("PL Same");gr1[3]->Draw("P Same");gr1_d[3]->Draw("P Same");
-    tex1[3]->Draw();tex2->Draw();tex3->Draw();tex4->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
 
     TCanvas *c2 = new TCanvas("c2");
     c2->Divide(2,2,small,small);
@@ -361,8 +431,12 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[4]->Draw("PL Same");gr1[4]->Draw("P Same");gr1_d[4]->Draw("P Same");
-    tex1[4]->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();
 
     c2->cd(2);
     gPad->SetLogx();
@@ -373,8 +447,12 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[5]->Draw("PL Same");gr1[5]->Draw("P Same");gr1_d[5]->Draw("P Same");
-    tex1[5]->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex5->Draw();tex6->Draw();tex7->Draw();
     
     c2->cd(3);
     gPad->SetLogx();
@@ -385,8 +463,11 @@ void hera_compare(){
     gPad->SetTickx();
     gPad->SetTicky();
     hframe->Draw();
-    gr2[6]->Draw("PL Same");gr1[6]->Draw("P Same");gr1_d[6]->Draw("P Same");
-    tex1[6]->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
     
     c2->cd(4);
     gPad->SetLogx();
@@ -398,13 +479,16 @@ void hera_compare(){
     gPad->SetTicky();
     hframe->Draw();
     hframe->Draw();
-    gr2[7]->Draw("PL Same");gr1[7]->Draw("P Same");gr1_d[7]->Draw("P Same");
-    tex1[7]->Draw();tex2a->Draw();tex3a->Draw();tex4a->Draw();
+    counter++;
+    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
+    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
 
     //Print to File
-    c1->Print("plots/hera_compare.pdf[");
-    c1->Print("plots/hera_compare.pdf");
-    c2->Print("plots/hera_compare.pdf");
-    c2->Print("plots/hera_compare.pdf]");
+    c1->Print("plots/theory_compare.pdf[");
+    c1->Print("plots/theory_compare.pdf");
+    c2->Print("plots/theory_compare.pdf");
+    c2->Print("plots/theory_compare.pdf]");
 
 }
