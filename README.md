@@ -19,7 +19,7 @@ If you have either a BNL RACF account, you automatically have access to the soft
 
 Follow these instructions if you have an EIC account: [EIC Environment Setup](https://wiki.bnl.gov/eic/index.php/Computing).
 
-The EIC environmental setup described on the EIC wiki page above will link to a ROOT5 build. To link to the most up-to-date version of eic-smear along with ROOT6, set your environment as follows:
+The EIC environmental setup described on the EIC wiki page above will link to the 'pro' setup. To link to the 'dev' version of eic-smear along with ROOT6, set your environment as follows:
 
 setenv EIC_LEVEL dev
 
