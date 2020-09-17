@@ -319,7 +319,7 @@ void theory_compare(){
 
     TChain *t = new TChain("EICTree");
     for(int i=0;i<15;i++){
-        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275_nlopdf/ep_18_275_newtune_%d.root",i));
     }
 
     t->SetBranchAddress("event",&event);
@@ -330,7 +330,7 @@ void theory_compare(){
 
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
-    double cross_tot = 1.67E9; //Total Cross Section in fb
+    double cross_tot = 1.52E9; //Total Cross Section in fb
     double lum = ( (double) nevents)/cross_tot; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
