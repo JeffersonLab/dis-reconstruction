@@ -7,7 +7,7 @@ void systematic_tables(){
 
     //Constants
     const double alpha(1./137.036);
-    const double s_cm = 4.*18*275;
+    const double s_cm = 4.*10*100;
     const double fbgev(1./(0.3894E12));
     const double Mp(0.9383);
 
