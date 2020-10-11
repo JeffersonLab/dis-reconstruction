@@ -7,7 +7,7 @@ void systematic_tables(){
 
     //Constants
     const double alpha(1./137.036);
-    const double s_cm = 4.*18*275;
+    const double s_cm = 4.*5*41;
     const double fbgev(1./(0.3894E12));
     const double Mp(0.9383);
 
@@ -59,7 +59,7 @@ void systematic_tables(){
     double ptp_err_bad[nbins][nbins_Q2];
     double norm_err_bad[nbins][nbins_Q2];
 
-    double ymax = 0.98; double ymin = 0.001; double W2min = 0.; //10;
+    double ymax = 0.95; double ymin = 0.01; double W2min = 0.; double Q2_min_good = 1.; //10;
     double ymax_bad = 0.95; double ymin_bad = 0.01; double W2min_bad = 0.; double Q2_min_bad = 1.;
     double y_temp, W2_temp;
 
@@ -138,17 +138,12 @@ void systematic_tables(){
 
     TChain *t = new TChain("EICTree");
     for(int i=0;i<15;i++){
-        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d.root",i));
     }
 
     for(int i=0;i<25;i++){
-        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/additional/18_275/ep_18_275_newtune_%d.root",i));
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/additional/5_41/ep_5_41_newtune_%d.root",i));
     }
-
-    for(int i=0;i<25;i++){
-        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/additional2/18_275/ep_18_275_newtune_%d.root",i));
-    }
-
 
     t->SetBranchAddress("event",&event);
     double Q2_event; //Get this from scattered electron (may differ from true if rad. effect included)
@@ -158,7 +153,7 @@ void systematic_tables(){
 
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
-    double cross_tot = 1.67E9; //Total Cross Section in fb
+    double cross_tot = 0.716E9; //Total Cross Section in fb
     double lum = ( (double) nevents)/cross_tot; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
@@ -207,13 +202,13 @@ void systematic_tables(){
                     shift++;
 
                 //Print to files
-                if(yield[i][j]>1 && cut_lr[i][j] && cut_ul[i][j]){
+                if(yield[i][j]>10 && cut_lr[i][j] && cut_ul[i][j] && Q2_center[j]>Q2_min_good){
                     myfile_good << setprecision(3) << x_center[i] << setw(15+shift) << setprecision(3) << Q2_center[j] 
                     << setw(15) << setprecision(3) << y_center[i][j] << setw(15) << setprecision(4)
                     << W2_center[i][j] << setw(15) << setprecision(3) << error_10[i][j] 
                     << setw(10) << ptp_err[i][j] << setw(10) << norm_err[i][j] << endl;
                 }
-                if(yield[i][j]>1 && cut_lr_bad[i][j] && cut_ul_bad[i][j] && Q2_center[j]>Q2_min_bad){
+                if(yield[i][j]>10 && cut_lr_bad[i][j] && cut_ul_bad[i][j] && Q2_center[j]>Q2_min_bad){
                     myfile_bad << setprecision(3) << x_center[i] << setw(15+shift) << setprecision(3) << Q2_center[j] 
                     << setw(15) << setprecision(3) << y_center[i][j] << setw(15) << setprecision(4)
                     << W2_center[i][j] << setw(15) << setprecision(3) << error_10[i][j] 

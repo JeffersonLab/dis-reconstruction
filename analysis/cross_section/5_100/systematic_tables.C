@@ -141,6 +141,14 @@ void systematic_tables(){
         t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_100/ep_5_100_newtune_%d.root",i));
     }
 
+    for(int i=0;i<25;i++){
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/additional/5_100/ep_5_100_newtune_%d.root",i));
+    }
+
+    for(int i=0;i<25;i++){
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/additional2/5_100/ep_5_100_newtune_%d.root",i));
+    }
+
     t->SetBranchAddress("event",&event);
     double Q2_event; //Get this from scattered electron (may differ from true if rad. effect included)
     double x_event; //''
@@ -198,13 +206,13 @@ void systematic_tables(){
                     shift++;
 
                 //Print to files
-                if(yield[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
+                if(yield[i][j]>5 && cut_lr[i][j] && cut_ul[i][j]){
                     myfile_good << setprecision(3) << x_center[i] << setw(15+shift) << setprecision(3) << Q2_center[j] 
                     << setw(15) << setprecision(3) << y_center[i][j] << setw(15) << setprecision(4)
                     << W2_center[i][j] << setw(15) << setprecision(3) << error_10[i][j] 
                     << setw(10) << ptp_err[i][j] << setw(10) << norm_err[i][j] << endl;
                 }
-                if(yield[i][j]>50 && cut_lr_bad[i][j] && cut_ul_bad[i][j] && Q2_center[j]>Q2_min_bad){
+                if(yield[i][j]>5 && cut_lr_bad[i][j] && cut_ul_bad[i][j] && Q2_center[j]>Q2_min_bad){
                     myfile_bad << setprecision(3) << x_center[i] << setw(15+shift) << setprecision(3) << Q2_center[j] 
                     << setw(15) << setprecision(3) << y_center[i][j] << setw(15) << setprecision(4)
                     << W2_center[i][j] << setw(15) << setprecision(3) << error_10[i][j] 
