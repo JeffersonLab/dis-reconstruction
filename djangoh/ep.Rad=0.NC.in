@@ -43,7 +43,7 @@ NFLAVORS
 IOUNITS
             6  10  11
 RNDM-SEEDS
-            -1 -1
+            1  1
 START
             100000
 SOPHIA
