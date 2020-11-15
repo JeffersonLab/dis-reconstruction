@@ -1,0 +1,10 @@
+Universe       = vanilla
+Notification   = Never
+Executable     = smear_5_41.sh
+GetEnv         = True
+Input	       = /dev/null
+Arguments      = "$(Process)"
+Output         = jobout/smear_5_41.out.$(Process)
+Error          = jobout/smear_5_41.err.$(Process)
+Log            = jobout/smear_5_41.log.$(Process)
+Queue 15
