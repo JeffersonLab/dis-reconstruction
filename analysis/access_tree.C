@@ -28,6 +28,7 @@ void access_tree(){
   Float_t Eta[500];
   Float_t Px[500];
   Int_t Status[500];
+  Int_t id[500];
   
   //Loop Over Events
   for(Int_t i=0;i<10;i++){
@@ -49,11 +50,13 @@ void access_tree(){
       Eta[j] =  (Float_t) particle->GetEta();
       Px[j] = (Float_t) particle->GetPx();
       Status[j] = (Int_t) particle->GetStatus(); //Can also do particle->KS
+      id[j] = (Int_t) particle->Id();
       
       if(Status[j]==1){
 	printf("For Event %d, particle %d Eta = %.3f!\n",i,j,Eta[j]);
 	printf("For Event %d, particle %d Px = %.3f GeV/c!\n",i,j,Px[j]);
 	printf("For Event %d, particle %d Status = %d!\n",i,j,Status[j]);
+	printf("For Event %d, particle %d Id = %d!\n",i,j,id[j]); 
       }
 
     }

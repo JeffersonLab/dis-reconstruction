@@ -54,12 +54,12 @@ void access_smeared(){
       
       if(particle_s){ //make sure not null pointer
 	Status[j] = (Int_t) particle_s->GetStatus();
-	id[j] = (Int_t) particle_s->id;
+	id[j] = (Int_t) particle_s->Id();
 	Px[j] = (Float_t) particle_s->GetPx();
 	Py[j] = (Float_t) particle_s->GetPy();
 	Pz[j] = (Float_t) particle_s->GetPz();
-	theta[j] = (Float_t) ( particle_s->theta * TMath::RadToDeg() );
-	phi[j] = (Float_t) ( particle_s->phi * TMath::RadToDeg() );
+	theta[j] = (Float_t) ( particle_s->GetTheta() * TMath::RadToDeg() );
+	phi[j] = (Float_t) ( particle_s->GetPhi() * TMath::RadToDeg() );
 
 	if(Status[j]==21) beam_count++;
 	if(Status[j]==1) det_count++;

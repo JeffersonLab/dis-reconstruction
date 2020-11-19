@@ -116,7 +116,7 @@ int main(int argc, char **argv){
 
       // Get final state election
       if(id[j]==11 && Status[j]==1){
-      	ef.SetPxPyPzE(particle->px,particle->py,particle->pz,particle->E);
+      	ef.SetPxPyPzE(particle->GetPx(),particle->GetPy(),particle->GetPz(),particle->GetE());
         nfinal++;
       } 
     }//Finished Loop Over Particles
@@ -139,7 +139,7 @@ int main(int argc, char **argv){
 	id_s[j] = (Int_t) particle_s->Id();
 	
 	if(Status_s[j]==1 && id_s[j]==11){
-          ef_s.SetPxPyPzE(particle_s->px,particle_s->py,particle_s->pz,particle_s->E);
+          ef_s.SetPxPyPzE(particle_s->GetPx(),particle_s->GetPy(),particle_s->GetPz(),particle_s->GetE());
           nfinal_s++;
 	}//Final State Particles
       }//Particle NULL check
@@ -147,12 +147,14 @@ int main(int argc, char **argv){
 
  
     //Fill MC Histograms
-    h1->Fill(ef_s.E()-ef.E());
-    h2->Fill(ef_s.P()-ef.P());
-    h3->Fill(ef_s.Pt()-ef.Pt());
-    h4->Fill(ef_s.Pz()-ef.Pz());
-    h5->Fill(ef_s.Theta()-ef.Theta());
-    h6->Fill(ef_s.Phi()-ef.Phi());
+    if(nfinal_s==1){ //avoid events with more than 1 detected electron
+    	h1->Fill(ef_s.E()-ef.E());
+    	h2->Fill(ef_s.P()-ef.P());
+    	h3->Fill(ef_s.Pt()-ef.Pt());
+    	h4->Fill(ef_s.Pz()-ef.Pz());
+    	h5->Fill(ef_s.Theta()-ef.Theta());
+    	h6->Fill(ef_s.Phi()-ef.Phi());
+    }
 
   }//Finished Event Loop
 

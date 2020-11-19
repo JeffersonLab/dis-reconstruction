@@ -93,7 +93,7 @@ int main(int argc, char **argv){
       particle = event->GetTrack(j);
       Status[j] = (Int_t) particle->GetStatus();
       id[j] = (Int_t) particle->Id();
-      orig[j] = (Int_t) particle->orig;
+      orig[j] = (Int_t) particle->GetParentIndex(); //particle->orig;
 
       particle_s = event_s->GetTrack(j);
 
@@ -103,9 +103,9 @@ int main(int argc, char **argv){
 
         if(Status_s[j]==1 /*&& id_s[j]==11*/ && 
 	   id[j]==11 && Status[j]==1 && orig[j]==3){
-      		h1->Fill(particle->E,particle_s->E);
-        	h2->Fill(particle->p,particle_s->p);
-                h3->Fill(particle->theta*TMath::RadToDeg(),particle_s->theta*TMath::RadToDeg());
+      		h1->Fill(particle->GetE(),particle_s->GetE());
+        	h2->Fill(particle->GetP(),particle_s->GetP());
+                h3->Fill(particle->GetTheta()*TMath::RadToDeg(),particle_s->GetTheta()*TMath::RadToDeg());
       	}//Scattered Electron
       }//Particle NULL check 
     }//Finished Loop Over Particles
