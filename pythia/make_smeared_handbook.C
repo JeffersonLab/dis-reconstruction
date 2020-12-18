@@ -1,7 +1,6 @@
 R__LOAD_LIBRARY(libeicsmear);
-//R__LOAD_LIBRARY(/sphenix/user/baschmoo/myfork/dis-reconstruction/detectors/smearHandBook_cxx.so); //For sphenix account
-R__LOAD_LIBRARY(/eic/data/baraks/dis-reconstruction/detectors/smearHandBook_cxx.so); //For eic account
-//R__LOAD_LIBRARY(/work/halla/gmp12/baraks/dis-reconstruction/detectors/smearHandBook_cxx.so); //For JLAB account
+//need to update for JLab and SPhenix accounts
+R__LOAD_LIBRARY(/eic/data/baraks/dis-reconstruction/detectors/SmearHandBook_1_2_cxx.so); //For eic account
 
 void make_smeared_handbook(std::string filstr){
 
@@ -11,6 +10,6 @@ void make_smeared_handbook(std::string filstr){
   std:string inputstr = dirstr + "/" + filstr + ".root";
   std::string outputstr = dirstr + "/" + filstr + "_handbook_smeared.root";
 
-  SmearTree(BuildHandBookDetector(),inputstr,outputstr);
+  SmearTree(BuildHandBook_1_2(),inputstr,outputstr);
 
 }
