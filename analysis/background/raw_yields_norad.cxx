@@ -92,17 +92,24 @@ int main(int argc, char **argv){
     double Eta_low[] = {-3.5, -2.0, -1.0, 0.0, 1.0, 2.0};
     double Eta_hi[] =  {-2.0, -1.0,  0.0, 1.0, 2.0, 3.5};
 
+    int nEta_fine = 6; //Number of finer eta bins for eta<0;
+    double Eta_fine_low[] = {-4.0, -3.0, -2.0, -1.5, -1.0, -0.5};
+    double Eta_fine_hi[] =  {-3.0, -2.0, -1.5, -1.0, -0.5,  0.0};
+
     TH1* h_se[nEta];
     TH1* h_ae[nEta];
     TH1* h_pos[nEta];
     TH1* h_npi[nEta];
 
     //Four 'topological' distributions for scattered electron and negative pions
-    //1) Number of particles with R<0.7
-    //2) Number of additional particles that have |eta|<3.5
-    //3) Phi difference with sum of all particles that have |eta|<3.5
+    //1)  Number of particles with R<0.7
+    //2)  Number of additional particles that have |eta|<3.5
+    //3)  Phi difference with sum of all particles that have |eta|<3.5
     //3a) Phi difference with sum of all particles that have |eta|<4.0
-    //4) |Pt| difference with sum of all particles that have |eta|<3.5
+    //4)  |Pt| difference with sum of all particles that have |eta|<3.5
+    //4a) |Pt| difference with sum of all particles that have |eta|<4.0
+    //5)  Total E-P_z - 2E_e for all particles that have |eta|<3.5
+    //6)  Momentum distributions w/ cuts on 4) and 5)
     TH1* h_se_1[nEta];
     TH1* h_npi_1[nEta];
     TH1* h_se_2[nEta];
@@ -115,6 +122,10 @@ int main(int argc, char **argv){
     TH1* h_npi_4[nEta];
     TH1* h_se_4a[nEta];
     TH1* h_npi_4a[nEta];
+    TH1* h_se_5[nEta];
+    TH1* h_npi_5[nEta];
+    TH1* h_se_6[nEta];
+    TH1* h_npi_6[nEta];
 
     for(int ihist=0;ihist<nEta;ihist++){
         h_se[ihist] = new TH1D(Form("h_se[%d]",ihist),"",1000,0,50);
@@ -164,6 +175,29 @@ int main(int argc, char **argv){
 
         h_npi_4a[ihist] = new TH1D(Form("h_npi_4a[%d]",ihist),"",100,-3,3);
         h_npi_4a[ihist]->SetLineColor(kBlue);h_npi_4a[ihist]->SetLineWidth(2);
+
+        h_se_5[ihist] = new TH1D(Form("h_se_5[%d]",ihist),"",100,-22,2);
+        h_se_5[ihist]->SetLineColor(kGreen);h_se_5[ihist]->SetLineWidth(2);
+
+        h_npi_5[ihist] = new TH1D(Form("h_npi_5[%d]",ihist),"",100,-22,2);
+        h_npi_5[ihist]->SetLineColor(kBlue);h_npi_5[ihist]->SetLineWidth(2);
+
+        h_se_6[ihist] = new TH1D(Form("h_se_6[%d]",ihist),"",1000,0,50);
+        h_se_6[ihist]->SetLineColor(kGreen);h_se_6[ihist]->SetLineWidth(2);
+
+        h_npi_6[ihist] = new TH1D(Form("h_npi_6[%d]",ihist),"",1000,0,50);
+        h_npi_6[ihist]->SetLineColor(kBlue);h_npi_6[ihist]->SetLineWidth(2);
+    }
+
+    TH1* h_se_fine[nEta_fine];
+    TH1* h_npi_fine[nEta_fine];
+
+    for(int ihist=0;ihist<nEta_fine;ihist++){
+        h_se_fine[ihist] = new TH1D(Form("h_se_fine[%d]",ihist),"",1000,0,50);
+        h_se_fine[ihist]->SetLineColor(kGreen);h_se_fine[ihist]->SetLineWidth(2);
+
+        h_npi_fine[ihist] = new TH1D(Form("h_npi_fine[%d]",ihist),"",1000,0,50);
+        h_npi_fine[ihist]->SetLineColor(kBlue);h_npi_fine[ihist]->SetLineWidth(2);
     }
 
     //Load ROOT Files
@@ -172,11 +206,20 @@ int main(int argc, char **argv){
     erhic::ParticleMC *part_se(NULL);
 
     TChain *t = new TChain("EICTree");
+
+    //Using files created with standard installation
+    /*
     for(int i=0;i<15;i++){
         t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/10_100/ep_minbias_%d.root",i));
     }
     for(int i=0;i<85;i++){
         t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/10_100/additional/ep_minbias_%d.root",i));
+    }
+    */
+
+   //Using files created with my installation
+   for(int i=0;i<100;i++){
+        t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/10_100/local_build/ep_minbias_%d.root",i));
     }
 
     t->SetBranchAddress("event",&event);
@@ -187,8 +230,10 @@ int main(int argc, char **argv){
     //sets of quantities are the same when the QED effects are turned OFF.
     //When using the true quantities, it seems like they have any accuracy limit
     //of 10^-11; so events generated at lower x or Q2 will be put at the limiting value.
-    //This is probably be just a problem with the writing out of those variables, rather 
+    //This is just a problem with the writing out of those variables, rather 
     //than an issue with the event generation for the very low x and Q2 events.
+    //I fixed this issue in my personal version of pythiaeRHIC, and now I see the
+    //events generated all the way down to the minimum allowed values.
     double Q2_true;
     double x_true;
     double y_true;
@@ -211,6 +256,7 @@ int main(int argc, char **argv){
     double pxsum_npi[50],pysum_npi[50];
     double pxsum_se_a(0),pysum_se_a(0);
     double pxsum_npi_a[50],pysum_npi_a[50];
+    double empztot(0);
 
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
@@ -250,6 +296,7 @@ int main(int argc, char **argv){
         ntotal = 0;
         pxsum_se = 0; pysum_se = 0;
         pxsum_se_a = 0; pysum_se_a = 0;
+        empztot = 0;
 
         // Loop over all particles in event
         for(int iParticle=0;iParticle<nParticles;iParticle++){
@@ -267,6 +314,11 @@ int main(int argc, char **argv){
                         index_se = iParticle;
                         bin_se = iEta;
                         part_se = event->GetTrack(iParticle);
+                    }
+                }
+                for(int iEta=0;iEta<nEta_fine;iEta++){
+                    if(particle->GetEta()>Eta_fine_low[iEta] && particle->GetEta()<Eta_fine_hi[iEta]){
+                        h_se_fine[iEta]->Fill(particle->GetP());
                     }
                 }
             }
@@ -297,6 +349,11 @@ int main(int argc, char **argv){
                         p_npi[num_npi] = particle->GetP();
                         pt_npi[num_npi] = particle->GetPt();
                         num_npi++;
+                    }
+                }
+                for(int iEta=0;iEta<nEta_fine;iEta++){
+                    if(particle->GetEta()>Eta_fine_low[iEta] && particle->GetEta()<Eta_fine_hi[iEta]){
+                        h_npi_fine[iEta]->Fill(particle->GetP());
                     }
                 }
             }
@@ -333,11 +390,12 @@ int main(int argc, char **argv){
                 if( iParticle!=index_se && fabs(particle->GetEta())<3.5 ){
                     pxsum_se+=particle->GetPx();
                     pysum_se+=particle->GetPy();
+
                 }
                 if( iParticle!=index_se && fabs(particle->GetEta())<4.0 ){
                     pxsum_se_a+=particle->GetPx();
                     pysum_se_a+=particle->GetPy();
-                }
+                }       
             }
 
             //Negative pions
@@ -366,9 +424,15 @@ int main(int argc, char **argv){
                 }
             }
 
-            //Total mulitiplicity for eta<|3.5|
-            if(status==1 && fabs(particle->GetEta())<3.5 )
+            //Total mulitiplicity for |eta|<3.5
+            if(status==1 && fabs(particle->GetEta())<3.5 ){
                 ntotal++;
+            }
+
+            //Total E-pz for event (particles with |eta|<3.5)
+            if(status==1 && fabs(particle->GetEta())<3.5 ){
+                empztot+=( particle->GetE()-particle->GetPz() );
+            }
         }
 
         if(part_se!=NULL && part_se->GetP()>0.1 ){ //Only consider electrons that have P>0.1 GeV/c
@@ -380,6 +444,11 @@ int main(int argc, char **argv){
                 phi_diff = TMath::TwoPi() - phi_diff;
             h_se_3[bin_se]->Fill(phi_diff);
 
+            //Filled here to use |eta|<3.5 phi_diff
+            if( (empztot - (2.*10.))>-5 && phi_diff>2 ){
+                h_se_6[bin_se]->Fill(part_se->GetP());
+            }
+
             phi_diff = fabs( part_se->GetPhi() - atan2(pysum_se_a,pxsum_se_a) );
             if(phi_diff>TMath::Pi())
                 phi_diff = TMath::TwoPi() - phi_diff;
@@ -387,6 +456,8 @@ int main(int argc, char **argv){
 
             h_se_4[bin_se]->Fill( part_se->GetPt() - sqrt(pxsum_se*pxsum_se - pysum_se*pysum_se) );
             h_se_4a[bin_se]->Fill( part_se->GetPt() - sqrt(pxsum_se_a*pxsum_se_a - pysum_se_a*pysum_se_a) );
+
+            h_se_5[bin_se]->Fill( empztot - (2.*10.) );       
         }
 
         for(int iPion=0;iPion<num_npi;iPion++){
@@ -399,6 +470,11 @@ int main(int argc, char **argv){
                     phi_diff = TMath::TwoPi() - phi_diff;
                 h_npi_3[bin_npi[iPion]]->Fill(phi_diff);
 
+                //Filled here to use |eta|<3.5 phi_diff
+                if( (empztot - (2.*10.))>-5 && phi_diff>2 ){
+                    h_npi_6[bin_npi[iPion]]->Fill(p_npi[iPion]);
+                }
+
                 phi_diff = fabs( phi_npi[iPion] - atan2(pysum_npi_a[iPion],pxsum_npi_a[iPion]) );
                 if(phi_diff>TMath::Pi())
                     phi_diff = TMath::TwoPi() - phi_diff;
@@ -406,11 +482,61 @@ int main(int argc, char **argv){
 
                 h_npi_4[bin_npi[iPion]]->Fill( pt_npi[iPion] - sqrt(pxsum_npi[iPion]*pxsum_npi[iPion] - pysum_npi[iPion]*pysum_npi[iPion]) );
                 h_npi_4a[bin_npi[iPion]]->Fill( pt_npi[iPion] - sqrt(pxsum_npi_a[iPion]*pxsum_npi_a[iPion] - pysum_npi_a[iPion]*pysum_npi_a[iPion]) );
+
+                h_npi_5[bin_npi[iPion]]->Fill( empztot - (2.*10.) );
             }
         }
 
     }
-    
+
+    //Scale down pion momentum histograms by 10^4 suppression
+    TH1* h_npi_sup[nEta];
+    TH1* h_npi_6_sup[nEta];
+
+    for(int ihist=0;ihist<nEta;ihist++){
+        h_npi_sup[ihist] = (TH1*) h_npi[ihist]->Clone(Form("h_npi_sup[%d]",ihist));
+        h_npi_sup[ihist]->SetLineColor(kMagenta);
+
+        h_npi_sup[ihist]->Scale(1E-4);
+
+        h_npi_6_sup[ihist] = (TH1*) h_npi_6[ihist]->Clone(Form("h_npi_6_sup[%d]",ihist));
+        h_npi_6_sup[ihist]->SetLineColor(kMagenta);
+
+        h_npi_6_sup[ihist]->Scale(1E-4);
+    }
+
+    TH1* h_npi_fine_sup[nEta_fine];
+
+    for(int ihist=0;ihist<nEta_fine;ihist++){
+        h_npi_fine_sup[ihist] = (TH1*) h_npi_fine[ihist]->Clone(Form("h_npi_fine_sup[%d]",ihist));
+        h_npi_fine_sup[ihist]->SetLineColor(kMagenta);
+
+        h_npi_fine_sup[ihist]->Scale(1E-4);
+    }
+
+    //Create vertical lines at minimum momentum values --
+    //defined as electron minimum electron momentum in that eta range... 
+    //satifying both Q2>1 and y<0.95
+    double mom_low[] = {1.390,0.527,0.568,1.000,4.195,27.80};
+    TLine *linea[nEta];
+
+    for(int iline=0;iline<nEta;iline++){
+        linea[iline] = new TLine(mom_low[iline],1E-1,mom_low[iline],1E6);
+        linea[iline]->SetLineColor(kOrange);
+        linea[iline]->SetLineWidth(2);
+        linea[iline]->SetLineStyle(2);
+    }
+
+    double mom_low_fine[] = {10.11,1.390,0.527,0.527,0.568,0.684};
+    TLine *linea_fine[nEta_fine];
+
+    for(int iline=0;iline<nEta_fine;iline++){
+        linea_fine[iline] = new TLine(mom_low_fine[iline],1E-1,mom_low_fine[iline],1E6);
+        linea_fine[iline]->SetLineColor(kOrange);
+        linea_fine[iline]->SetLineWidth(2);
+        linea_fine[iline]->SetLineStyle(2);
+    }
+
     //Draw plots
     gStyle->SetPadBorderMode(0);
     gStyle->SetFrameBorderMode(0);
@@ -521,6 +647,93 @@ int main(int argc, char **argv){
         }
     }
     c3->Print("plots/raw_yields_norad.pdf");
+
+    TCanvas *c3a = new TCanvas("c3a");
+    c3a->Divide(3,2);
+
+    TLatex *tex3d = new TLatex(2,3E5,"w/10^{4} suppression");
+    tex3d->SetTextColor(kMagenta);tex3d->SetTextFont(42);
+
+    TLatex *tex3e = new TLatex(2,2E6,"P_{min.} Value");
+    tex3e->SetTextColor(kOrange);tex3e->SetTextFont(42);
+
+    for(int iCan=0;iCan<nEta;iCan++){
+        c3a->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3[iCan]->Draw();
+        h_se[iCan]->Draw("same");
+        h_npi[iCan]->Draw("same");
+        h_npi_sup[iCan]->Draw("hist same");
+
+        linea[iCan]->Draw();
+
+        if(iCan==0){
+            tex3a->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();tex3d->Draw();
+        }
+        if(iCan==3){
+            tex3e->Draw();
+        }
+    }
+    c3a->Print("plots/raw_yields_norad.pdf");
+
+    TCanvas *c3b = new TCanvas("c3b");
+    c3b->Divide(3,2);
+
+    TH1 *hframe3b[nEta_fine];
+
+    for(int iCan=0;iCan<nEta_fine;iCan++){
+        c3b->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3b[iCan] = gPad->DrawFrame(0.1,0.1,50,1E7);
+        hframe3b[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe3b[iCan]->GetXaxis()->CenterTitle();
+        hframe3b[iCan]->GetYaxis()->SetTitle("Yield");hframe3b[iCan]->GetYaxis()->CenterTitle();
+        hframe3b[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_fine_low[iCan],Eta_fine_hi[iCan]));
+
+        h_se_fine[iCan]->Draw("same");
+        h_npi_fine[iCan]->Draw("same");
+
+        if(iCan==0){
+            tex3a->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();
+        }
+    }
+    c3b->Print("plots/raw_yields_norad.pdf");
+
+    TCanvas *c3c = new TCanvas("c3c");
+    c3c->Divide(3,2);
+    
+    for(int iCan=0;iCan<nEta_fine;iCan++){
+        c3c->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3b[iCan]->Draw();
+        h_se_fine[iCan]->Draw("same");
+        h_npi_fine[iCan]->Draw("same");
+        h_npi_fine_sup[iCan]->Draw("hist same");
+
+        linea_fine[iCan]->Draw();
+
+        if(iCan==0){
+            tex3a->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();tex3d->Draw();
+        }
+        if(iCan==3){
+            tex3e->Draw();
+        }
+    }
+    c3c->Print("plots/raw_yields_norad.pdf");
 
     TCanvas *c4 = new TCanvas("c4");
     c4->Divide(3,2);
@@ -749,7 +962,76 @@ int main(int argc, char **argv){
         }
     }
     c8a->Print("plots/raw_yields_norad.pdf");
-    c8a->Print("plots/raw_yields_norad.pdf]");
+
+    TCanvas *c9 = new TCanvas("c9");
+    c9->Divide(3,2);
+    TH1 *hframe9[nEta];
+
+    TLatex *tex9a = new TLatex(-20,2E7,"10 GeV e^{-} on 100 GeV p");
+    tex9a->SetTextColor(kBlack);tex9a->SetTextFont(42);
+
+    TLatex *tex9b = new TLatex(-20,2E7,"Scattered Electron, p>0.1 GeV/c");
+    tex9b->SetTextColor(kGreen);tex9b->SetTextFont(42);
+
+    TLatex *tex9c = new TLatex(-20,7E6,"Negative Pions, p>0.1 GeV/c");
+    tex9c->SetTextColor(kBlue);tex9c->SetTextFont(42);
+
+    TLatex *tex9d = new TLatex(-20,2E6,"Sum particles w/|#eta|<3.5");
+    tex9d->SetTextColor(kBlack);tex9d->SetTextFont(42);
+
+    for(int iCan=0;iCan<nEta;iCan++){
+        c9->cd(iCan+1);
+        gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe9[iCan] = gPad->DrawFrame(-22,0.1,2,1E8);
+        hframe9[iCan]->GetXaxis()->SetTitle("(E - P_{z})^{Tot.} - 2E_{e}");hframe9[iCan]->GetXaxis()->CenterTitle();
+        hframe9[iCan]->GetXaxis()->SetTitleSize(0.045);
+        hframe9[iCan]->GetYaxis()->SetTitle("Yield");hframe9[iCan]->GetYaxis()->CenterTitle();
+        hframe9[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
+
+        h_se_5[iCan]->Draw("same");
+        h_npi_5[iCan]->Draw("same");
+
+        if(iCan==0){
+            tex9a->Draw();
+        }
+        if(iCan==2){
+            tex9b->Draw();tex9c->Draw();tex9d->Draw();
+        }
+    }
+    c9->Print("plots/raw_yields_norad.pdf");
+
+    TCanvas *c10 = new TCanvas("c10");
+    c10->Divide(3,2);
+
+    TLatex *tex10a = new TLatex(2,8E4,"all w/kin. cuts");
+    tex10a->SetTextColor(kBlack);tex10a->SetTextFont(42);
+
+    for(int iCan=0;iCan<nEta;iCan++){
+        c10->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3[iCan]->Draw();
+        h_se_6[iCan]->Draw("same");
+        h_npi_6[iCan]->Draw("same");
+        h_npi_6_sup[iCan]->Draw("hist same");
+
+        linea[iCan]->Draw();
+        
+        if(iCan==0){
+            tex3a->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();tex3d->Draw();tex10a->Draw();
+        }
+        if(iCan==3){
+            tex3e->Draw();
+        }
+    }
+    c10->Print("plots/raw_yields_norad.pdf");
+    c10->Print("plots/raw_yields_norad.pdf]");
 
     myapp->Run();
     return 0;
