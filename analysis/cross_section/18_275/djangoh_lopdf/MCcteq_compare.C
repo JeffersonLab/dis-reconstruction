@@ -1,14 +1,13 @@
-//Only want to show cteq LO (cteq6l1) pdf that was used in the MC
-//But we keep JAM in the code since it is used as a baseline
-//We also keep the CT and NNPDF bin centering parts
-//We will only draw the first 2 pages, and only show the 1 cteq curve
+//Only want to show cteq LO (cteq6l1, 10042) pdf that was used in the MC
+//We show 3 sets of plots:
+//1) Average MC diff. cs in bin vs. cteq diff. cs
+//2) Bin-centered MC vs. cteq diff. cs
+//3) Average MC diff. cs in bin vs. average cteq diff. cs in bin
 
 R__LOAD_LIBRARY(libeicsmear);
 
 //Globals
-std::vector<double> vec_Q2bc_a, vec_xbc_a, vec_sigcenter_a, vec_sigaverage_a, vec_bc_a; //JAM
-std::vector<double> vec_Q2bc_b, vec_xbc_b, vec_sigcenter_b, vec_sigaverage_b, vec_bc_b; //cteq61
-std::vector<double> vec_Q2bc_c, vec_xbc_c, vec_sigcenter_c, vec_sigaverage_c, vec_bc_c; //cteq6l1
+std::vector<double> vec_Q2bc_a, vec_xbc_a, vec_sigcenter_a, vec_sigaverage_a, vec_bc_a; //cteq6l1
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -72,21 +71,6 @@ void read_bc(const char* infile,int model){
                 vec_sigaverage_a.push_back(cs_average_temp);
                 vec_bc_a.push_back(bc_temp);
             }
-            else if(model==2){
-                vec_Q2bc_b.push_back(Q2_temp);
-                vec_xbc_b.push_back(x_temp);
-                vec_sigcenter_b.push_back(cs_center_temp);
-                vec_sigaverage_b.push_back(cs_average_temp);
-                vec_bc_b.push_back(bc_temp);
-            }
-            else if(model==3){
-                vec_Q2bc_c.push_back(Q2_temp);
-                vec_xbc_c.push_back(x_temp);
-                vec_sigcenter_c.push_back(cs_center_temp);
-                vec_sigaverage_c.push_back(cs_average_temp);
-                vec_bc_c.push_back(bc_temp);
-            }
-
             counter++;
         }
     }
@@ -96,6 +80,8 @@ void read_bc(const char* infile,int model){
 
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 double get_bc_fac(double x_center,double Q2_center,int model){
     
     double bc_fac = 0;
@@ -112,76 +98,28 @@ double get_bc_fac(double x_center,double Q2_center,int model){
             }
         }
     }
-    else if(model==2){
-        size = (int) vec_Q2bc_b.size();
-
-        for(int i=0;i<size;i++){
-            if( fabs( (vec_xbc_b[i]-x_center)/x_center ) < 0.02 && fabs( (vec_Q2bc_b[i]-Q2_center)/Q2_center ) < 0.02 ){
-                bc_fac = vec_bc_b[i];
-                //cout <<x_center<<" "<<Q2_center<<" "<<bc_fac <<endl;
-                break;
-            }
-        }
-    }
-    else if(model==3){
-        size = (int) vec_Q2bc_c.size();
-
-        for(int i=0;i<size;i++){
-            if( fabs( (vec_xbc_c[i]-x_center)/x_center ) < 0.02 && fabs( (vec_Q2bc_c[i]-Q2_center)/Q2_center ) < 0.02 ){
-                bc_fac = vec_bc_c[i];
-                //cout <<x_center<<" "<<Q2_center<<" "<<bc_fac <<endl;
-                break;
-            }
-        }
-    }
 
     return bc_fac;
 }
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-TGraph* Ratio_Theory(TGraph *gr_bottom, TGraph *gr_top, int color=1, int style=20, int lw=2){
+double get_model_average(double x_center,double Q2_center,int model){
+    double average_cs = 0;
+    int size = 0;
 
-  //Create graph
-  TGraph *gr = new TGraph();
-  gr->SetMarkerStyle(style);gr->SetMarkerColor(color);
-  gr->SetLineWidth(lw);gr->SetLineColor(color);
+    if(model==1){
+        size = (int) vec_Q2bc_a.size();
 
-  double xup(0),yup(0),xdown(0),ydown(0);
+        for(int i=0;i<size;i++){
+            if( fabs( (vec_xbc_a[i]-x_center)/x_center ) < 0.02 && fabs( (vec_Q2bc_a[i]-Q2_center)/Q2_center ) < 0.02 ){
+                average_cs = vec_sigaverage_a[i];
+                
+                break;
+            }
+        }
+    }
 
-  for(int i=0;i<gr_top->GetN();i++){
-    gr_top->GetPoint(i,xup,yup);
-    gr_bottom->GetPoint(i,xdown,ydown); //xup should always equal xdown as we generate the theory grids at the same x
-
-    gr->SetPoint(i,xup,(yup/ydown));
-  }
-
-  return gr;
-
-}
-
-TGraphErrors* Ratio_Data(TGraph *gr_theory, TGraphErrors *gr_data, int color=1, int style=20, int lw=2){
-
-  //Create graph
-  TGraphErrors *gr = new TGraphErrors();
-  gr->SetMarkerStyle(style);gr->SetMarkerColor(color);
-  gr->SetLineWidth(lw);gr->SetLineColor(color);
-
-  double xdata(0),ydata(0),yerr(0);
-  double ytheory(0);
-
-  for(int i=0;i<gr_data->GetN();i++){
-    gr_data->GetPoint(i,xdata,ydata);
-    yerr = gr_data->GetErrorY(i);
-
-    ytheory = gr_theory->Eval(xdata,0,"S"); //Theory grid points aren't same as center of data bins
-
-    gr->SetPoint(i,xdata,(ydata/ytheory));
-    gr->SetPointError(i,0,(yerr/ytheory));
-  }
-
-  return gr;
-
+    return average_cs;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -236,8 +174,7 @@ void MCcteq_compare(){
     bool cut_ul[nbins][nbins_Q2];
     bool cut_lr[nbins][nbins_Q2];
     double bc_fac_a[nbins][nbins_Q2];
-    double bc_fac_b[nbins][nbins_Q2];
-    double bc_fac_c[nbins][nbins_Q2];
+    double model_average[nbins][nbins_Q2];
     double ymax = 0.98;double ymin = 0.001; double W2min = 10;
     double y_temp, W2_temp;
 
@@ -248,8 +185,7 @@ void MCcteq_compare(){
             error_10[i][j]=0;
             rcs[i][j]=0;  
             bc_fac_a[i][j]=0;
-            bc_fac_b[i][j]=0;
-            bc_fac_c[i][j]=0;
+            model_average[i][j]=0;
 
             Q2_center[j] = (Q2_hi[j]+Q2_low[j])/2.;
             x_center[i] = (x_hi[i]+x_low[i])/2.;
@@ -291,28 +227,14 @@ void MCcteq_compare(){
     int Q2_bin_plot[num_plot] = {6,8,9,10,11,13,15,18};
 
     //Read in Theory for RCS 
-    TGraph *cteq61[num_plot];
     TGraph *cteq6l1[num_plot];
-    TGraph *JAM4EIC[num_plot];
-
-    TGraph *ratio_cteq61[num_plot];  //Ratio to JAM
-    TGraph *ratio_cteq6l1[num_plot]; //''
-    TGraph *ratio_JAM[num_plot];   //''
 
     for(int i=0;i<num_plot;i++){
-        cteq61[i] = Theory_Graph("input_files/cteq61_SF_rcs.txt",Q2_center[Q2_bin_plot[i]],kBlack,20,2);
         cteq6l1[i] = Theory_Graph("input_files/cteq6l1_SF_rcs.txt",Q2_center[Q2_bin_plot[i]],kBlue,20,2);
-        JAM4EIC[i] = Theory_Graph("input_files/JAM4EIC_p_rcs.txt",Q2_center[Q2_bin_plot[i]],kGreen,20,2);
-
-        ratio_cteq61[i] = Ratio_Theory(JAM4EIC[i],cteq61[i],kBlack,20,2);
-        ratio_cteq6l1[i] = Ratio_Theory(JAM4EIC[i],cteq6l1[i],kBlue,20,2);
-        ratio_JAM[i] = Ratio_Theory(JAM4EIC[i],JAM4EIC[i],kGreen,20,2);
     }
 
     //Read in Bin-Centering Correction Files
-    read_bc("input_files/JAM4EIC_p_bin_centering.txt",1);
-    read_bc("input_files/CT18ptxg_bin_centering.txt",2);
-    read_bc("input_files/NNPDF31_nnlo_pch_as_0118_SF_bin_centering.txt",3);
+    read_bc("input_files/cteq6l1_SF_bin_centering.txt",1);
 
     //---------------------------------
     //Analyse PYTHIA6 simulation
@@ -366,9 +288,10 @@ void MCcteq_compare(){
     for(int i=0;i<nbins;i++){
         for(int j=0;j<nbins_Q2;j++){
             rcs[i][j] = rcs_factor[i][j] * (yield[i][j]) / (lum*x_width[i]*Q2_width[j]);
+
             bc_fac_a[i][j] = get_bc_fac(x_center[i],Q2_center[j],1);
-            bc_fac_b[i][j] = get_bc_fac(x_center[i],Q2_center[j],2);
-            bc_fac_c[i][j] = get_bc_fac(x_center[i],Q2_center[j],3);
+            model_average[i][j] = rcs_factor[i][j] * get_model_average(x_center[i],Q2_center[j],1);
+            
             if(yield[i][j]>0) { 
                 error[i][j] = (rcs[i][j]) / (sqrt(yield[i][j]));
                 error_10[i][j] = 100.*( 1./ sqrt(yield[i][j]*(10./lum)) ); //% Error for 10 fb^-1
@@ -379,8 +302,9 @@ void MCcteq_compare(){
     //Create and fill TGraphs
     TGraphErrors *gr1[nbins_Q2]; //Without Bin-Centering Correction
     TGraphErrors *gr2[nbins_Q2]; //With Bin-Centering Correction
-    TGraph *gbc1[nbins_Q2],*gbc2[nbins_Q2],*gbc3[nbins_Q2]; //Bin-Centering Correction Factor
+    TGraph *gbc1[nbins_Q2]; //Bin-Centering Correction Factor
     TGraph *ge1[nbins_Q2]; //Expected Statistical Errors (%) for L=10 fb^-1
+    TGraph *cteq6l1_a[nbins_Q2]; //Average model cross section (divided by RCS factor at bin center) 
 
     for(int j=0;j<nbins_Q2;j++){
         gr1[j] = new TGraphErrors();
@@ -395,29 +319,23 @@ void MCcteq_compare(){
         gr2[j]->SetMarkerStyle(20);
         gr2[j]->SetMarkerColor(kRed);
 
-        gbc1[j] = new TGraph(); //Correction comes from JAMEIC
+        gbc1[j] = new TGraph(); //Correction comes from cteq6l1
         gbc1[j]->SetLineWidth(2);
         gbc1[j]->SetLineColor(kGreen);
         gbc1[j]->SetMarkerStyle(21);
         gbc1[j]->SetMarkerColor(kGreen);
-
-        gbc2[j] = new TGraph(); //Correction comes from cteq61
-        gbc2[j]->SetLineWidth(2);
-        gbc2[j]->SetLineColor(kBlack);
-        gbc2[j]->SetMarkerStyle(20);
-        gbc2[j]->SetMarkerColor(kBlack);
-
-        gbc3[j] = new TGraph(); //Correction comes from cteq6l1
-        gbc3[j]->SetLineWidth(2);
-        gbc3[j]->SetLineColor(kBlue);
-        gbc3[j]->SetMarkerStyle(22);
-        gbc3[j]->SetMarkerColor(kBlue);
 
         ge1[j] = new TGraph();
         ge1[j]->SetLineWidth(2);
         ge1[j]->SetLineColor(kRed);
         ge1[j]->SetMarkerStyle(20);
         ge1[j]->SetMarkerColor(kRed);
+
+        cteq6l1_a[j] = new TGraph();
+        cteq6l1_a[j]->SetLineWidth(2);
+        cteq6l1_a[j]->SetLineColor(kBlue);
+        cteq6l1_a[j]->SetMarkerStyle(21);
+        cteq6l1_a[j]->SetMarkerColor(kBlue);
     }
     
     int counter(0);
@@ -428,13 +346,13 @@ void MCcteq_compare(){
                 gr1[j]->SetPointError(counter,0,error[i][j]);
 
                 gbc1[j]->SetPoint(counter,x_center[i],bc_fac_a[i][j]);
-                gbc2[j]->SetPoint(counter,x_center[i],bc_fac_b[i][j]);
-                gbc3[j]->SetPoint(counter,x_center[i],bc_fac_c[i][j]);
 
                 ge1[j]->SetPoint(counter,x_center[i],error_10[i][j]);
 
                 gr2[j]->SetPoint(counter,x_center[i],rcs[i][j]*bc_fac_a[i][j]);
                 gr2[j]->SetPointError(counter,0,error[i][j]*bc_fac_a[i][j]);
+
+                cteq6l1_a[j]->SetPoint(counter,x_center[i],model_average[i][j]);
                 
                 counter++;
             }
@@ -589,17 +507,8 @@ void MCcteq_compare(){
     TLatex *tex4 = new TLatex(3E-4,1.3,Form("Djangoh e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
     tex4->SetTextColor(kMagenta);tex4->SetTextFont(62);
 
-    TLatex *tex5 = new TLatex(1E-3,1.45,"cteq61");
-    tex5->SetTextColor(kBlack);tex5->SetTextFont(62);
-
-    TLatex *tex6 = new TLatex(1E-3,1.6,"cteq6l1");
+    TLatex *tex6 = new TLatex(1E-3,1.6,"cteq6l1 (10042)");
     tex6->SetTextColor(kBlue);tex6->SetTextFont(62);
-
-    TLatex *tex7 = new TLatex(1E-3,1.3,"JAM4EIC");
-    tex7->SetTextColor(kGreen);tex7->SetTextFont(62);
-
-    TLatex *tex7a = new TLatex(2.5E-2,0.99,"JAM4EIC");
-    tex7a->SetTextColor(kGreen);tex7a->SetTextFont(62);
 
     TLatex *tex8 = new TLatex(1E-2,0.075,"Pythia6");
     tex8->SetTextColor(kRed);tex8->SetTextFont(62);
@@ -612,44 +521,6 @@ void MCcteq_compare(){
 
     TLatex *tex9b = new TLatex(2E-4,0.92,"Djangoh");
     tex9b->SetTextColor(kMagenta);tex9a->SetTextFont(62);
-
-    TLatex *tex9c = new TLatex(2E-4,0.90,"JAM4EIC");
-    tex9c->SetTextColor(kGreen);tex9c->SetTextFont(62);
-
-    TLatex *tex9d = new TLatex(2E-4,0.88,"CT18ptxg");
-    tex9d->SetTextColor(kBlack);tex9d->SetTextFont(62);
-
-    TLatex *tex9e = new TLatex(2E-4,0.86,"NNPDF31_nnlo_pch_as_0118_SF");
-    tex9e->SetTextColor(kBlue);tex9e->SetTextFont(62);
-
-    TLatex *tex10a = new TLatex(2E-4,0.995,"JAM4EIC");
-    tex10a->SetTextColor(kGreen);tex10a->SetTextFont(62);
-
-    TLatex *tex10b = new TLatex(2E-4,0.994,"CT18ptxg");
-    tex10b->SetTextColor(kBlack);tex10b->SetTextFont(62);
-
-    TLatex *tex10c = new TLatex(2E-4,0.993,"NNPDF31_nnlo_pch_as_0118_SF");
-    tex10c->SetTextColor(kBlue);tex10c->SetTextFont(62);
-
-    //Data to Theory (JAM) Ratio
-    TGraph *ratio_pythia[num_plot];  //Ratio (with bin-centering corr.) to JAM
-    TGraph *ratio_djangoh[num_plot]; //''
-
-    for(int i=0;i<num_plot;i++){
-        ratio_pythia[i] = Ratio_Data(JAM4EIC[i],gr2[Q2_bin_plot[i]],kRed,20,2);
-        ratio_djangoh[i] = Ratio_Data(JAM4EIC[i],gr2_d[Q2_bin_plot[i]],kMagenta,23,2);
-    }
-
-    //Bin-Centering Ratios
-    TGraph *ratio_BC_CT18[num_plot];  //Ratio to JAM
-    TGraph *ratio_BC_NNPDF[num_plot]; //''
-    TGraph *ratio_BC_JAM[num_plot];   //''
-
-    for(int i=0;i<num_plot;i++){
-        ratio_BC_CT18[i] = Ratio_Theory(gbc1[Q2_bin_plot[i]],gbc2[Q2_bin_plot[i]],kBlack,22,2);
-        ratio_BC_NNPDF[i] = Ratio_Theory(gbc1[Q2_bin_plot[i]],gbc3[Q2_bin_plot[i]],kBlue,23,2);
-        ratio_BC_JAM[i] = Ratio_Theory(gbc1[Q2_bin_plot[i]],gbc1[Q2_bin_plot[i]],kGreen,20,2);
-    }
 
     //Draw plots
     gStyle->SetPadBorderMode(0);
@@ -669,7 +540,7 @@ void MCcteq_compare(){
 
     float small = 1E-20;
 
-    //Cross Section (no bin-centering)
+    //Average MC diff. cs in bin vs. cteq diff. cs
     //------------------------------------
     TCanvas *c1 = new TCanvas("c1");
     c1->Divide(2,2,small,small);
@@ -686,7 +557,6 @@ void MCcteq_compare(){
     hframe->GetXaxis()->SetTitle("x");hframe->GetXaxis()->CenterTitle();
     hframe->GetYaxis()->SetTitle("#sigma_{r,NC}^{-}");hframe->GetYaxis()->CenterTitle();
     counter = 0;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
@@ -702,11 +572,9 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    //tex5->Draw();
     tex6->Draw();
 
     c1->cd(3);
@@ -719,7 +587,6 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
@@ -734,7 +601,6 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
@@ -752,7 +618,6 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
@@ -768,11 +633,9 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    //tex5->Draw();
     tex6->Draw();
     
     c2->cd(3);
@@ -785,7 +648,6 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
@@ -800,13 +662,11 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    //cteq61[counter]->Draw("C Same");
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
-    /*
-    //Bin-centering correction factor (from JAM4EIC)
+    //Bin-centered MC vs. cteq diff. cs
     //------------------------------------
     TCanvas *c1a = new TCanvas("c1a");
     c1a->Divide(2,2,small,small);
@@ -819,13 +679,12 @@ void MCcteq_compare(){
     gPad->SetTopMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky(); 
-    TH1 *hframe_1a = gPad->DrawFrame(1E-4,0.7,1,1.1);
-    hframe_1a->GetXaxis()->SetTitle("x");hframe_1a->GetXaxis()->CenterTitle();
-    hframe_1a->GetYaxis()->SetTitle("Bin-Centering Correction");hframe_1a->GetYaxis()->CenterTitle();
+    hframe->Draw();
     counter = 0;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
-    tex2a->Draw();tex7a->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();
 
     c1a->cd(2); 
     gPad->SetLogx();
@@ -835,10 +694,12 @@ void MCcteq_compare(){
     gPad->SetTopMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex6->Draw();
 
     c1a->cd(3);
     gPad->SetLogx();
@@ -848,10 +709,11 @@ void MCcteq_compare(){
     gPad->SetBottomMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
     
     c1a->cd(4);
     gPad->SetLogx();
@@ -861,10 +723,11 @@ void MCcteq_compare(){
     gPad->SetBottomMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
 
     TCanvas *c2a = new TCanvas("c2a");
     c2a->Divide(2,2,small,small);
@@ -877,11 +740,12 @@ void MCcteq_compare(){
     gPad->SetTopMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
-    tex2a->Draw();tex7a->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();
 
     c2a->cd(2);
     gPad->SetLogx();
@@ -891,10 +755,12 @@ void MCcteq_compare(){
     gPad->SetTopMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
+    tex6->Draw();
     
     c2a->cd(3);
     gPad->SetLogx();
@@ -904,10 +770,11 @@ void MCcteq_compare(){
     gPad->SetBottomMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
     
     c2a->cd(4);
     gPad->SetLogx();
@@ -917,137 +784,13 @@ void MCcteq_compare(){
     gPad->SetBottomMargin(0.15);
     gPad->SetTickx();
     gPad->SetTicky();
-    hframe_1a->Draw();
+    hframe->Draw();
     counter++;
-    gbc1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1a[counter]->Draw();
+    cteq6l1[counter]->Draw("C Same");
+    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    tex1[counter]->Draw();
 
-    //Bin-Centering Model Ratios
-    //------------------------------------
-    TCanvas *c1ar = new TCanvas("c1ar");
-    c1ar->Divide(2,2,small,small);
-
-    c1ar->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky(); 
-    TH1 *hframe_1ar = gPad->DrawFrame(1E-4,0.99,1,1.01);
-    hframe_1ar->GetXaxis()->SetTitle("x");hframe_1ar->GetXaxis()->CenterTitle();
-    hframe_1ar->GetYaxis()->SetTitle("B.C. Correction Ratio");hframe_1ar->GetYaxis()->CenterTitle();
-    hframe_1ar->GetYaxis()->SetTitleOffset(1.1);
-    counter = 0;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-
-    c1ar->cd(2); 
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-
-    c1ar->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-    
-    c1ar->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-    tex10a->Draw();tex10b->Draw();tex10c->Draw();
-
-    TCanvas *c2ar = new TCanvas("c2ar");
-    c2ar->Divide(2,2,small,small);
-
-    c2ar->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-
-    c2ar->cd(2);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-    
-    c2ar->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-
-    c2ar->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1ar->Draw();
-    counter++;
-    ratio_BC_JAM[counter]->Draw("L Same");
-    ratio_BC_CT18[counter]->Draw("P Same");ratio_BC_NNPDF[counter]->Draw("P Same");
-    tex1f[counter]->Draw();
-    tex10a->Draw();tex10b->Draw();tex10c->Draw();
-
-    //Cross section including bin-centering correction
+    //Average MC diff. cs in bin vs. average cteq diff. cs in bin
     //------------------------------------
     TCanvas *c1b = new TCanvas("c1b");
     c1b->Divide(2,2,small,small);
@@ -1062,9 +805,8 @@ void MCcteq_compare(){
     gPad->SetTicky(); 
     hframe->Draw();
     counter = 0;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex2->Draw();tex3->Draw();tex4->Draw();
 
@@ -1078,11 +820,10 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex5->Draw();tex6->Draw();tex7->Draw();
+    tex6->Draw();
 
     c1b->cd(3);
     gPad->SetLogx();
@@ -1094,9 +835,8 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c1b->cd(4);
@@ -1109,9 +849,8 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     TCanvas *c2b = new TCanvas("c2b");
@@ -1127,9 +866,8 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex2->Draw();tex3->Draw();tex4->Draw();
 
@@ -1143,11 +881,10 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex5->Draw();tex6->Draw();tex7->Draw();
+    tex6->Draw();
     
     c2b->cd(3);
     gPad->SetLogx();
@@ -1159,9 +896,8 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2b->cd(4);
@@ -1174,258 +910,18 @@ void MCcteq_compare(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    CT18ptxg[counter]->Draw("C Same");JAM4EIC[counter]->Draw("C Same");
-    NNPDF31_nnlo_pch_as_0118_SF[counter]->Draw("C Same");
-    gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-
-    //Ratio Plots
-    //------------------------------------
-    TCanvas *c1r = new TCanvas("c1r");
-    c1r->Divide(2,2,small,small);
-
-    c1r->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky(); 
-    TH1 *hframe_1r = gPad->DrawFrame(1E-4,0.8,1,1.2);
-    hframe_1r->GetXaxis()->SetTitle("x");hframe_1r->GetXaxis()->CenterTitle();
-    hframe_1r->GetYaxis()->SetTitle("Cross Section Ratio");hframe_1r->GetYaxis()->CenterTitle();
-    counter = 0;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1d[counter]->Draw();
-
-    c1r->cd(2); 
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1d[counter]->Draw();
-
-    c1r->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1d[counter]->Draw();
-    
-    c1r->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1d[counter]->Draw();
-    tex9a->Draw();tex9b->Draw();tex9c->Draw();tex9d->Draw();tex9e->Draw();
-
-    TCanvas *c2r = new TCanvas("c2r");
-    c2r->Divide(2,2,small,small);
-
-    c2r->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1e[counter]->Draw();
-
-    c2r->cd(2);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1e[counter]->Draw();
-    
-    c2r->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1e[counter]->Draw();
-    
-    c2r->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1r->Draw();
-    counter++;
-    ratio_JAM[counter]->Draw("L Same");ratio_CT18[counter]->Draw("L Same");ratio_NNPDF[counter]->Draw("L Same");
-    ratio_pythia[counter]->Draw("P Same");ratio_djangoh[counter]->Draw("P Same");
-    tex1e[counter]->Draw();
-    tex9a->Draw();tex9b->Draw();tex9c->Draw();tex9d->Draw();tex9e->Draw();
-    
-    //Expected Statistical uncertainties (%) for 10 fb^-1 (pythia only)
-    //------------------------------------
-    TCanvas *c1c = new TCanvas("c1c");
-    c1c->Divide(2,2,small,small);
-
-    c1c->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky(); 
-    TH1 *hframe_1c = gPad->DrawFrame(1E-4,0,1,0.1);
-    hframe_1c->GetXaxis()->SetTitle("x");hframe_1c->GetXaxis()->CenterTitle();
-    hframe_1c->GetYaxis()->SetTitle("#intL=10 fb^{-1} Stat. Uncer. [%]");hframe_1c->GetYaxis()->CenterTitle();
-    counter = 0;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1b[counter]->Draw();
-    tex2b->Draw();tex8->Draw();
-    
-    c1c->cd(2); 
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1c->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1b[counter]->Draw();
-
-    c1c->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1c->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1b[counter]->Draw();
-    
-    c1c->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1c->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1b[counter]->Draw();
-
-    TCanvas *c2c = new TCanvas("c2c");
-    c2c->Divide(2,2,small,small);
-
-    c2c->cd(1);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    TH1 *hframe_1d = gPad->DrawFrame(1E-4,0,1,0.35);
-    hframe_1d->GetXaxis()->SetTitle("x");hframe_1d->GetXaxis()->CenterTitle();
-    hframe_1d->GetYaxis()->SetTitle("#intL=10 fb^{-1} Stat. Uncer. [%]");hframe_1d->GetYaxis()->CenterTitle();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1c[counter]->Draw();
-    tex2c->Draw();tex8a->Draw();
-
-    c2c->cd(2);
-    gPad->SetLogx();
-    gPad->SetBottomMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetTopMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1d->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1c[counter]->Draw();
-    
-    c2c->cd(3);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(small);
-    gPad->SetLeftMargin(0.25);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1d->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1c[counter]->Draw();
-    
-    c2c->cd(4);
-    gPad->SetLogx();
-    gPad->SetTopMargin(small);
-    gPad->SetRightMargin(0.25);
-    gPad->SetLeftMargin(small);
-    gPad->SetBottomMargin(0.15);
-    gPad->SetTickx();
-    gPad->SetTicky();
-    hframe_1d->Draw();
-    counter++;
-    ge1[Q2_bin_plot[counter]]->Draw("P Same");
-    tex1c[counter]->Draw();
-    */
 
     //Print to File
     c1->Print("plots/MCcteq_compare.pdf[");
     c1->Print("plots/MCcteq_compare.pdf");
     c2->Print("plots/MCcteq_compare.pdf");
-    c2->Print("plots/MCcteq_compare.pdf]");
+    c1a->Print("plots/MCcteq_compare.pdf");
+    c2a->Print("plots/MCcteq_compare.pdf");
+    c1b->Print("plots/MCcteq_compare.pdf");
+    c2b->Print("plots/MCcteq_compare.pdf");
+    c2b->Print("plots/MCcteq_compare.pdf]");
 
 }
