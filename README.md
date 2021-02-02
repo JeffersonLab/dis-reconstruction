@@ -23,7 +23,7 @@ The EIC environmental setup described on the EIC wiki page above will link to th
 
 setenv EIC_LEVEL dev
 
-source /afs/rhic.bnl.gov/eic/restructured/etc/eic_cshrc.csh
+source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_cshrc.csh
 
 (N.B. The above commands should also allow you to setup the EIC environment if you are working on a STAR account.)
 
