@@ -96,6 +96,10 @@ int main(int argc, char **argv){
     double Eta_fine_low[] = {-4.0, -3.0, -2.0, -1.5, -1.0, -0.5};
     double Eta_fine_hi[] =  {-3.0, -2.0, -1.5, -1.0, -0.5,  0.0};
 
+    int nEta_finer = 3; //Number of finer eta bins for -1<eta<0;
+    double Eta_finer_low[] = {-1.0, -0.6, -0.3};
+    double Eta_finer_hi[] =  {-0.6, -0.3,  0.0};
+
     TH1* h_se[nEta];
     TH1* h_ae[nEta];
     TH1* h_pos[nEta];
@@ -200,6 +204,17 @@ int main(int argc, char **argv){
         h_npi_fine[ihist]->SetLineColor(kBlue);h_npi_fine[ihist]->SetLineWidth(2);
     }
 
+    TH1* h_se_finer[nEta_finer];
+    TH1* h_npi_finer[nEta_finer];
+
+    for(int ihist=0;ihist<nEta_finer;ihist++){
+        h_se_finer[ihist] = new TH1D(Form("h_se_finer[%d]",ihist),"",1000,0,50);
+        h_se_finer[ihist]->SetLineColor(kGreen);h_se_finer[ihist]->SetLineWidth(2);
+
+        h_npi_finer[ihist] = new TH1D(Form("h_npi_finer[%d]",ihist),"",1000,0,50);
+        h_npi_finer[ihist]->SetLineColor(kBlue);h_npi_finer[ihist]->SetLineWidth(2);
+    }
+
     //Load ROOT Files
     erhic::EventPythia *event(NULL); //Event Class
     erhic::ParticleMC *particle(NULL); //Particle Class
@@ -218,7 +233,7 @@ int main(int argc, char **argv){
     */
 
    //Using files created with my installation
-   for(int i=0;i<100;i++){
+   for(int i=0;i<300;i++){
         t->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/10_100/local_build/ep_minbias_%d.root",i));
     }
 
@@ -321,6 +336,11 @@ int main(int argc, char **argv){
                         h_se_fine[iEta]->Fill(particle->GetP());
                     }
                 }
+                for(int iEta=0;iEta<nEta_finer;iEta++){
+                    if(particle->GetEta()>Eta_finer_low[iEta] && particle->GetEta()<Eta_finer_hi[iEta]){
+                        h_se_finer[iEta]->Fill(particle->GetP());
+                    }
+                }
             }
 
             if(id==11 && status==1){ //All Electrons
@@ -354,6 +374,11 @@ int main(int argc, char **argv){
                 for(int iEta=0;iEta<nEta_fine;iEta++){
                     if(particle->GetEta()>Eta_fine_low[iEta] && particle->GetEta()<Eta_fine_hi[iEta]){
                         h_npi_fine[iEta]->Fill(particle->GetP());
+                    }
+                }
+                for(int iEta=0;iEta<nEta_finer;iEta++){
+                    if(particle->GetEta()>Eta_finer_low[iEta] && particle->GetEta()<Eta_finer_hi[iEta]){
+                        h_npi_finer[iEta]->Fill(particle->GetP());
                     }
                 }
             }
@@ -514,6 +539,19 @@ int main(int argc, char **argv){
         h_npi_fine_sup[ihist]->Scale(1E-4);
     }
 
+    TH1* h_npi_finer_sup[nEta_finer];
+    TH1* h_npi_finer_sup_a[nEta_finer];
+
+    for(int ihist=0;ihist<nEta_finer;ihist++){
+        h_npi_finer_sup[ihist] = (TH1*) h_npi_finer[ihist]->Clone(Form("h_npi_finer_sup[%d]",ihist));
+        h_npi_finer_sup[ihist]->SetLineColor(kMagenta);
+        h_npi_finer_sup[ihist]->Scale(1E-4);
+
+        h_npi_finer_sup_a[ihist] = (TH1*) h_npi_finer[ihist]->Clone(Form("h_npi_finer_sup_a[%d]",ihist));
+        h_npi_finer_sup_a[ihist]->SetLineColor(kRed);
+        h_npi_finer_sup_a[ihist]->Scale(1E-5);
+    }
+
     //Create vertical lines at minimum momentum values --
     //defined as electron minimum electron momentum in that eta range... 
     //satifying both Q2>1 and y<0.95
@@ -521,7 +559,7 @@ int main(int argc, char **argv){
     TLine *linea[nEta];
 
     for(int iline=0;iline<nEta;iline++){
-        linea[iline] = new TLine(mom_low[iline],1E-1,mom_low[iline],1E6);
+        linea[iline] = new TLine(mom_low[iline],1E-1,mom_low[iline],2E6);
         linea[iline]->SetLineColor(kOrange);
         linea[iline]->SetLineWidth(2);
         linea[iline]->SetLineStyle(2);
@@ -531,10 +569,20 @@ int main(int argc, char **argv){
     TLine *linea_fine[nEta_fine];
 
     for(int iline=0;iline<nEta_fine;iline++){
-        linea_fine[iline] = new TLine(mom_low_fine[iline],1E-1,mom_low_fine[iline],1E6);
+        linea_fine[iline] = new TLine(mom_low_fine[iline],1E-1,mom_low_fine[iline],2E6);
         linea_fine[iline]->SetLineColor(kOrange);
         linea_fine[iline]->SetLineWidth(2);
         linea_fine[iline]->SetLineStyle(2);
+    }
+
+    double mom_low_finer[] = {0.568,0.651,0.774};
+    TLine *linea_finer[nEta_finer];
+
+    for(int iline=0;iline<nEta_finer;iline++){
+        linea_finer[iline] = new TLine(mom_low_finer[iline],1E-1,mom_low_finer[iline],2E6);
+        linea_finer[iline]->SetLineColor(kOrange);
+        linea_finer[iline]->SetLineWidth(2);
+        linea_finer[iline]->SetLineStyle(2);
     }
 
     //Draw plots
@@ -617,13 +665,13 @@ int main(int argc, char **argv){
 
     TH1 *hframe3[nEta];
 
-    TLatex *tex3a = new TLatex(0.15,2E6,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex3a = new TLatex(0.15,4E6,"10 GeV e^{-} on 100 GeV p");
     tex3a->SetTextColor(kBlack);tex3a->SetTextFont(42);
 
-    TLatex *tex3b = new TLatex(2,3E6,"Scattered Electron");
+    TLatex *tex3b = new TLatex(2,5E6,"Scattered Electron");
     tex3b->SetTextColor(kGreen);tex3b->SetTextFont(42);
 
-    TLatex *tex3c = new TLatex(2,1E6,"Negative Pions");
+    TLatex *tex3c = new TLatex(2,1.5E6,"Negative Pions");
     tex3c->SetTextColor(kBlue);tex3c->SetTextFont(42);
     
     for(int iCan=0;iCan<nEta;iCan++){
@@ -631,7 +679,7 @@ int main(int argc, char **argv){
         gPad->SetLogx();gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe3[iCan] = gPad->DrawFrame(0.1,0.1,50,1E7);
+        hframe3[iCan] = gPad->DrawFrame(0.1,0.1,50,2E7);
         hframe3[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe3[iCan]->GetXaxis()->CenterTitle();
         hframe3[iCan]->GetYaxis()->SetTitle("Yield");hframe3[iCan]->GetYaxis()->CenterTitle();
         hframe3[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
@@ -651,7 +699,7 @@ int main(int argc, char **argv){
     TCanvas *c3a = new TCanvas("c3a");
     c3a->Divide(3,2);
 
-    TLatex *tex3d = new TLatex(2,3E5,"w/10^{4} suppression");
+    TLatex *tex3d = new TLatex(2,5E5,"w/10^{4} suppression");
     tex3d->SetTextColor(kMagenta);tex3d->SetTextFont(42);
 
     TLatex *tex3e = new TLatex(2,2E6,"P_{min.} Value");
@@ -691,7 +739,7 @@ int main(int argc, char **argv){
         gPad->SetLogx();gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe3b[iCan] = gPad->DrawFrame(0.1,0.1,50,1E7);
+        hframe3b[iCan] = gPad->DrawFrame(0.1,0.1,50,2E7);
         hframe3b[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe3b[iCan]->GetXaxis()->CenterTitle();
         hframe3b[iCan]->GetYaxis()->SetTitle("Yield");hframe3b[iCan]->GetYaxis()->CenterTitle();
         hframe3b[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_fine_low[iCan],Eta_fine_hi[iCan]));
@@ -735,16 +783,66 @@ int main(int argc, char **argv){
     }
     c3c->Print("plots/raw_yields_norad.pdf");
 
+    TCanvas *c3d = new TCanvas("c3d");
+    c3d->Divide(3,2);
+
+    TH1 *hframe3d[nEta_finer];
+
+    TLatex *tex3f = new TLatex(2,2E5,"+DIRC suppression");
+    tex3f->SetTextColor(kRed);tex3f->SetTextFont(42);
+
+    for(int iCan=0;iCan<nEta_finer;iCan++){
+        c3d->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3d[iCan] = gPad->DrawFrame(0.1,0.1,50,2E7);
+        hframe3d[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe3d[iCan]->GetXaxis()->CenterTitle();
+        hframe3d[iCan]->GetYaxis()->SetTitle("Yield");hframe3d[iCan]->GetYaxis()->CenterTitle();
+        hframe3d[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_finer_low[iCan],Eta_finer_hi[iCan]));
+
+        h_se_finer[iCan]->Draw("same");
+        h_npi_finer[iCan]->Draw("same");
+
+        if(iCan==0){
+            tex3a->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();
+        }
+    }
+    for(int iCan=0;iCan<nEta_finer;iCan++){
+        c3d->cd(iCan+4);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe3d[iCan]->Draw();
+        h_se_finer[iCan]->Draw("same");
+        h_npi_finer[iCan]->Draw("same");
+        h_npi_finer_sup[iCan]->Draw("hist same");
+        h_npi_finer_sup_a[iCan]->Draw("hist same");
+
+        linea_finer[iCan]->Draw();
+
+        if(iCan==0){
+            tex3a->Draw();tex3e->Draw();
+        }
+        if(iCan==2){
+            tex3b->Draw();tex3c->Draw();tex3d->Draw();tex3f->Draw();
+        }
+    }
+    c3d->Print("plots/raw_yields_norad.pdf");
+
     TCanvas *c4 = new TCanvas("c4");
     c4->Divide(3,2);
 
-    TLatex *tex4a = new TLatex(2,3E6,"All Electrons");
+    TLatex *tex4a = new TLatex(2,5E6,"All Electrons");
     tex4a->SetTextColor(kBlack);tex4a->SetTextFont(42);
 
-    TLatex *tex4b = new TLatex(2,1E6,"All Positrons");
+    TLatex *tex4b = new TLatex(2,1.5E6,"All Positrons");
     tex4b->SetTextColor(kRed);tex4b->SetTextFont(42);
     
-    TLatex *tex4c = new TLatex(2,3E5,"Negative Pions");
+    TLatex *tex4c = new TLatex(2,6E5,"Negative Pions");
     tex4c->SetTextColor(kBlue);tex4c->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -770,13 +868,13 @@ int main(int argc, char **argv){
     c5->Divide(3,2);
     TH1 *hframe5[nEta];
 
-    TLatex *tex5a = new TLatex(0.5,2E7,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex5a = new TLatex(0.5,3E7,"10 GeV e^{-} on 100 GeV p");
     tex5a->SetTextColor(kBlack);tex5a->SetTextFont(42);
 
-    TLatex *tex5b = new TLatex(1.5,2E7,"Scattered Electron, p>0.1 GeV/c");
+    TLatex *tex5b = new TLatex(1.5,3E7,"Scattered Electron, p>0.1 GeV/c");
     tex5b->SetTextColor(kGreen);tex5b->SetTextFont(42);
 
-    TLatex *tex5c = new TLatex(1.5,7E6,"Negative Pions, p>0.1 GeV/c");
+    TLatex *tex5c = new TLatex(1.5,8E6,"Negative Pions, p>0.1 GeV/c");
     tex5c->SetTextColor(kBlue);tex5c->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -784,7 +882,7 @@ int main(int argc, char **argv){
         gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe5[iCan] = gPad->DrawFrame(0,0.1,10,1E8);
+        hframe5[iCan] = gPad->DrawFrame(0,0.1,10,2E8);
         hframe5[iCan]->GetXaxis()->SetTitle("Number of Particles with R<0.7");hframe5[iCan]->GetXaxis()->CenterTitle();
         hframe5[iCan]->GetXaxis()->CenterLabels();
         hframe5[iCan]->GetYaxis()->SetTitle("Yield");hframe5[iCan]->GetYaxis()->CenterTitle();
@@ -806,13 +904,13 @@ int main(int argc, char **argv){
     c6->Divide(3,2);
     TH1 *hframe6[nEta];
 
-    TLatex *tex6a = new TLatex(1,2E7,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex6a = new TLatex(1,3E7,"10 GeV e^{-} on 100 GeV p");
     tex6a->SetTextColor(kBlack);tex6a->SetTextFont(42);
 
-    TLatex *tex6b = new TLatex(3,2E7,"Scattered Electron, p>0.1 GeV/c");
+    TLatex *tex6b = new TLatex(3,3E7,"Scattered Electron, p>0.1 GeV/c");
     tex6b->SetTextColor(kGreen);tex6b->SetTextFont(42);
 
-    TLatex *tex6c = new TLatex(3,7E6,"Negative Pions, p>0.1 GeV/c");
+    TLatex *tex6c = new TLatex(3,8E6,"Negative Pions, p>0.1 GeV/c");
     tex6c->SetTextColor(kBlue);tex6c->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -820,7 +918,7 @@ int main(int argc, char **argv){
         gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe6[iCan] = gPad->DrawFrame(0,0.1,20,1E8);
+        hframe6[iCan] = gPad->DrawFrame(0,0.1,20,2E8);
         hframe6[iCan]->GetXaxis()->SetTitle("Number of additional particles w/|#eta|<3.5");hframe6[iCan]->GetXaxis()->CenterTitle();
         hframe6[iCan]->GetYaxis()->SetTitle("Yield");hframe6[iCan]->GetYaxis()->CenterTitle();
         hframe6[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
@@ -841,19 +939,19 @@ int main(int argc, char **argv){
     c7->Divide(3,2);
     TH1 *hframe7[nEta];
 
-    TLatex *tex7a = new TLatex(0.1,2E7,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex7a = new TLatex(0.1,3E7,"10 GeV e^{-} on 100 GeV p");
     tex7a->SetTextColor(kBlack);tex7a->SetTextFont(42);
 
-    TLatex *tex7b = new TLatex(0.4,2E7,"Scattered Electron, p>0.1 GeV/c");
+    TLatex *tex7b = new TLatex(0.4,3E7,"Scattered Electron, p>0.1 GeV/c");
     tex7b->SetTextColor(kGreen);tex7b->SetTextFont(42);
 
-    TLatex *tex7c = new TLatex(0.4,7E6,"Negative Pions, p>0.1 GeV/c");
+    TLatex *tex7c = new TLatex(0.4,9E6,"Negative Pions, p>0.1 GeV/c");
     tex7c->SetTextColor(kBlue);tex7c->SetTextFont(42);
 
-    TLatex *tex7d = new TLatex(0.4,2E6,"Compare particles w/|#eta|<3.5");
+    TLatex *tex7d = new TLatex(0.4,2.5E6,"Compare particles w/|#eta|<3.5");
     tex7d->SetTextColor(kBlack);tex7d->SetTextFont(42);
 
-    TLatex *tex7e = new TLatex(0.4,2E6,"Compare particles w/|#eta|<4.0");
+    TLatex *tex7e = new TLatex(0.4,2.5E6,"Compare particles w/|#eta|<4.0");
     tex7e->SetTextColor(kBlack);tex7e->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -861,7 +959,7 @@ int main(int argc, char **argv){
         gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe7[iCan] = gPad->DrawFrame(-0.1,0.1,3.25,1E8);
+        hframe7[iCan] = gPad->DrawFrame(-0.1,0.1,3.25,2E8);
         hframe7[iCan]->GetXaxis()->SetTitle("#phi Difference");hframe7[iCan]->GetXaxis()->CenterTitle();
         hframe7[iCan]->GetYaxis()->SetTitle("Yield");hframe7[iCan]->GetYaxis()->CenterTitle();
         hframe7[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
@@ -904,19 +1002,19 @@ int main(int argc, char **argv){
     c8->Divide(3,2);
     TH1 *hframe8[nEta];
 
-    TLatex *tex8a = new TLatex(-2.8,2E7,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex8a = new TLatex(-2.8,3E7,"10 GeV e^{-} on 100 GeV p");
     tex8a->SetTextColor(kBlack);tex8a->SetTextFont(42);
 
-    TLatex *tex8b = new TLatex(-2.2,2E7,"Scattered Electron, p>0.1 GeV/c");
+    TLatex *tex8b = new TLatex(-2.2,3E7,"Scattered Electron, p>0.1 GeV/c");
     tex8b->SetTextColor(kGreen);tex8b->SetTextFont(42);
 
-    TLatex *tex8c = new TLatex(-2.2,7E6,"Negative Pions, p>0.1 GeV/c");
+    TLatex *tex8c = new TLatex(-2.2,9E6,"Negative Pions, p>0.1 GeV/c");
     tex8c->SetTextColor(kBlue);tex8c->SetTextFont(42);
 
-    TLatex *tex8d = new TLatex(-2.2,2E6,"Compare particles w/|#eta|<3.5");
+    TLatex *tex8d = new TLatex(-2.2,2.5E6,"Compare particles w/|#eta|<3.5");
     tex8d->SetTextColor(kBlack);tex8d->SetTextFont(42);
 
-    TLatex *tex8e = new TLatex(-2.2,2E6,"Compare particles w/|#eta|<4.0");
+    TLatex *tex8e = new TLatex(-2.2,2.5E6,"Compare particles w/|#eta|<4.0");
     tex8e->SetTextColor(kBlack);tex8e->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -924,7 +1022,7 @@ int main(int argc, char **argv){
         gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe8[iCan] = gPad->DrawFrame(-3,0.1,3,1E8);
+        hframe8[iCan] = gPad->DrawFrame(-3,0.1,3,2E8);
         hframe8[iCan]->GetXaxis()->SetTitle("|P_{T}| Difference");hframe8[iCan]->GetXaxis()->CenterTitle();
         hframe8[iCan]->GetYaxis()->SetTitle("Yield");hframe8[iCan]->GetYaxis()->CenterTitle();
         hframe8[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
@@ -967,16 +1065,16 @@ int main(int argc, char **argv){
     c9->Divide(3,2);
     TH1 *hframe9[nEta];
 
-    TLatex *tex9a = new TLatex(-20,2E7,"10 GeV e^{-} on 100 GeV p");
+    TLatex *tex9a = new TLatex(-20,3E7,"10 GeV e^{-} on 100 GeV p");
     tex9a->SetTextColor(kBlack);tex9a->SetTextFont(42);
 
-    TLatex *tex9b = new TLatex(-20,2E7,"Scattered Electron, p>0.1 GeV/c");
+    TLatex *tex9b = new TLatex(-20,3E7,"Scattered Electron, p>0.1 GeV/c");
     tex9b->SetTextColor(kGreen);tex9b->SetTextFont(42);
 
-    TLatex *tex9c = new TLatex(-20,7E6,"Negative Pions, p>0.1 GeV/c");
+    TLatex *tex9c = new TLatex(-20,9E6,"Negative Pions, p>0.1 GeV/c");
     tex9c->SetTextColor(kBlue);tex9c->SetTextFont(42);
 
-    TLatex *tex9d = new TLatex(-20,2E6,"Sum particles w/|#eta|<3.5");
+    TLatex *tex9d = new TLatex(-20,2.5E6,"Sum particles w/|#eta|<3.5");
     tex9d->SetTextColor(kBlack);tex9d->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){
@@ -984,7 +1082,7 @@ int main(int argc, char **argv){
         gPad->SetLogy();
         gPad->SetTickx();gPad->SetTicky();
 
-        hframe9[iCan] = gPad->DrawFrame(-22,0.1,2,1E8);
+        hframe9[iCan] = gPad->DrawFrame(-22,0.1,2,2E8);
         hframe9[iCan]->GetXaxis()->SetTitle("(E - P_{z})^{Tot.} - 2E_{e}");hframe9[iCan]->GetXaxis()->CenterTitle();
         hframe9[iCan]->GetXaxis()->SetTitleSize(0.045);
         hframe9[iCan]->GetYaxis()->SetTitle("Yield");hframe9[iCan]->GetYaxis()->CenterTitle();
@@ -1005,7 +1103,7 @@ int main(int argc, char **argv){
     TCanvas *c10 = new TCanvas("c10");
     c10->Divide(3,2);
 
-    TLatex *tex10a = new TLatex(2,8E4,"all w/kin. cuts");
+    TLatex *tex10a = new TLatex(2,1.5E5,"all w/kin. cuts");
     tex10a->SetTextColor(kBlack);tex10a->SetTextFont(42);
 
     for(int iCan=0;iCan<nEta;iCan++){

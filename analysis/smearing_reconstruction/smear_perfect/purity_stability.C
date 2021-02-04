@@ -138,6 +138,16 @@ void purity_stability(){
   h3_6->GetXaxis()->SetTitle("x");h3_6->GetXaxis()->CenterTitle();
   h3_6->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_6->GetYaxis()->CenterTitle();
 
+  TH2D *h3_7 = new TH2D("h3_7","Purity: using 4-momentum of X",25,x_bins,25,Q2_bins);
+  h3_7->GetXaxis()->SetTitle("x");h3_7->GetXaxis()->CenterTitle();
+  h3_7->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_7->GetYaxis()->CenterTitle();
+  TH2D *h3_8 = new TH2D("h3_8","Stability: using 4-momentum of X",25,x_bins,25,Q2_bins);
+  h3_8->GetXaxis()->SetTitle("x");h3_8->GetXaxis()->CenterTitle();
+  h3_8->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_8->GetYaxis()->CenterTitle();
+  TH2D *h3_9 = new TH2D("h3_9","Reconstructed: using 4-momentum of X",25,x_bins,25,Q2_bins);
+  h3_9->GetXaxis()->SetTitle("x");h3_9->GetXaxis()->CenterTitle();
+  h3_9->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_9->GetYaxis()->CenterTitle();
+
   //DA Method
   TH2D *h4_1 = new TH2D("h4_1","DA Method Purity",25,x_bins,25,Q2_bins);
   h4_1->GetXaxis()->SetTitle("x");h4_1->GetXaxis()->CenterTitle();
@@ -218,6 +228,8 @@ void purity_stability(){
   Double_t Theta_h_nm_s(0), Q2_da_s(0), y_da_s(0), x_da_s(0); //DA Method
   Double_t mass[500];
   bool detected_elec(false);
+  TLorentzVector eh_s_tot;
+  TLorentzVector q_h_s;
 
   //FastJet Variables
   vector<fastjet::PseudoJet> holdParticles;
@@ -301,6 +313,8 @@ void purity_stability(){
       orig[j] = (Int_t) particle->GetParentIndex();
 
       particle_s = event_s->GetTrack(j);
+
+      //if(!particle_s and Status[j]==1) cout<<"Missing particle "<<j<<" in event "<<i<<" with id = "<< id[j] <<endl;
       
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
@@ -452,6 +466,28 @@ void purity_stability(){
         h3_5->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
       }
 
+      //2.3) Using 4-Vector of outgoing X
+      eh_s_tot.SetPxPyPzE(pxtot_sumh_s,pytot_sumh_s,pztot_sumh_s,Etot_sumh_s);
+
+      q_h_s= (eh_s_tot - pni);
+      Q2_jb_sumh_s = -1.0*(q_h_s*q_h_s);
+      y_jb_sumh_s = (pni*q_h_s)/(pni*ei);
+      //x_jb_sumh_s = Q2_jb_sumh_s/(2*pni*q_h_s);
+      x_jb_sumh_s = Q2_jb_sumh_s/(s_nm*y_jb_sumh_s); //Using Q2 = xsy, instead of 4-vector product Q2_jb_sumh_s/(2*pni*q_h_s); 
+
+      gen2 = h3_9->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
+      if(gen1 == gen2){
+        h3_7->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
+        h3_8->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
+      }
+
+      /*
+      if(fabs(x_e-x_jb_sumh_s)/x_e>1e-3 || fabs(Q2_e-Q2_jb_sumh_s)/Q2_e>1e-3){
+        cout<<"Event = "<<i<<" x_gen = "<<x_e<<" Q2_gen = "<<Q2_e<<" xe_rec = "<<x_e_nm_s<<" Q2e_rec = "
+            <<Q2_e_nm_s<<" xh_rec = "<<x_jb_sumh_s<<" Q2h_rec = "<<Q2_jb_sumh_s<<endl;
+      }
+      */
+
       //3.2) Using Smeared DA Method (Summing Over Hadrons)
       if(detected_elec){
         Theta_h_nm_s = 2.* TMath::ATan( (Etot_sumh_s - pztot_sumh_s)/pttot_sumh_s);
@@ -488,6 +524,9 @@ void purity_stability(){
 
   h3_4->Divide(h3_6);
   h3_5->Divide(h0);
+
+  h3_7->Divide(h3_9);
+  h3_8->Divide(h0);
 
   h4_1->Divide(h4_3);
   h4_2->Divide(h0);
@@ -531,15 +570,21 @@ void purity_stability(){
 
   TCanvas *c5 = new TCanvas("c5");
   c5->Divide(2,1);
-  c5->cd(1);gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
+  c5->cd(1);gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
   tex_energy->Draw();
-  c5->cd(2);gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+  c5->cd(2);gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
 
   TCanvas *c6 = new TCanvas("c6");
   c6->Divide(2,1);
-  c6->cd(1);gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
+  c6->cd(1);gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
   tex_energy->Draw();
-  c6->cd(2);gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
+  c6->cd(2);gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+
+  TCanvas *c7 = new TCanvas("c7");
+  c7->Divide(2,1);
+  c7->cd(1);gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
+  tex_energy->Draw();
+  c7->cd(2);gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
 
   //Print to File
   if(energy_set == 1){
@@ -550,6 +595,7 @@ void purity_stability(){
     c4->Print("./plots/purity_stability_5_41.pdf");
     c5->Print("./plots/purity_stability_5_41.pdf");
     c6->Print("./plots/purity_stability_5_41.pdf");
-    c6->Print("./plots/purity_stability_5_41.pdf]");
+    c7->Print("./plots/purity_stability_5_41.pdf");
+    c7->Print("./plots/purity_stability_5_41.pdf]");
   }
 }
