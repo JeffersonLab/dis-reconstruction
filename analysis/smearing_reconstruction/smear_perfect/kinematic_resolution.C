@@ -3,7 +3,7 @@ R__LOAD_LIBRARY(libfastjet);
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
 
-void purity_stability(){
+void kinematic_resolution(){
 
   int energy_set(0);
 
@@ -19,23 +19,19 @@ void purity_stability(){
 
   if(energy_set == 1) s_cm = 4.*5*41;
 
-  //Cross Section Bins  
-  //Q2 Binning                                                                        
-  double Q2_min = 1E-1;
-  double Q2_max = 1E4;
-  const int nbins_Q2 = 25;
-  double log_bw_Q2 = (log10(Q2_max) - log10(Q2_min))/(nbins_Q2); //Determine bin width                                                         
-  double log_Q2_div;
-  double Q2_bins[nbins_Q2+1];
-  for(int i=0;i<nbins_Q2+1;i++){
-    log_Q2_div = log10(Q2_min) + (i*log_bw_Q2);
-    Q2_bins[i] = pow(10,log_Q2_div);
-  }
+  //We won't use these cuts when calculating the resolutions right now.
+  //But keep them in case we want to make use of them in the future.
+  //----
+  //Since this is a study on resolution effects, we may want to remove the edge bins
+  //which are affected by generation ranges on angle and/or momentum acceptance losses.
+  double y_max = 0.98;double y_min = 0.001;double W2_min = 10;
+
+  //Histograms
 
   //x Binning                                                                                                                       
-  double x_min = 1E-5;
+  double x_min = 1E-4;
   double x_max = 1;
-  const int nbins_x = 25;
+  const int nbins_x = 100;
   double log_bw_x = (log10(x_max) - log10(x_min))/(nbins_x); //Determine bin width                                                             
   double log_x_div;
   double x_bins[nbins_x+1];
@@ -44,130 +40,106 @@ void purity_stability(){
     x_bins[i] = pow(10,log_x_div);
   }
 
-  //Bin Yields/Kinematics/Factors                                   
-  double y[nbins_x][nbins_Q2];
-  double Q2_center[nbins_Q2];
-  double x_center[nbins_x];
-  double Q2_width[nbins_Q2];
-  double x_width[nbins_x];
+  //Electron Method using ecal energy
+  TH2 *h1a_1 = new TH2D("h1a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h1a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h1a_1->GetXaxis()->CenterTitle();
+  h1a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h1a_1->GetYaxis()->CenterTitle();
+  TH2 *h1a_2 = new TH2D("h1a_2","Q^{2} Resolution vs. y",200,0,1,200,-10,10);
+  h1a_2->GetXaxis()->SetTitle("True y");h1a_2->GetXaxis()->CenterTitle();
+  h1a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h1a_2->GetYaxis()->CenterTitle();
+  TH2 *h1a_3 = new TH2D("h1a_3","Q^{2} Resolution vs. x",100,x_bins,200,-10,10);
+  h1a_3->GetXaxis()->SetTitle("True x");h1a_3->GetXaxis()->CenterTitle();
+  h1a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h1a_3->GetYaxis()->CenterTitle();
 
-  //We won't use these cuts when calculating the purity/stability right now.
-  //But keep them in case we want to make use of them in the future.
-  //----
-  //Since this is a study on resolution effects, we may want to remove the edge bins
-  //which are affected by generation ranges on angle and/or momentum acceptance losses.
-  bool cut_ul[nbins_x][nbins_Q2];
-  bool cut_lr[nbins_x][nbins_Q2];
-  double y_max = 0.98;double y_min = 0.001;double W2_min = 10;
-  double y_temp, W2_temp;
+  TH2 *h1b_1 = new TH2D("h1b_1","y Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h1b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h1b_1->GetXaxis()->CenterTitle();
+  h1b_1->GetYaxis()->SetTitle("Difference from true y [%]");h1b_1->GetYaxis()->CenterTitle();
+  TH2 *h1b_2 = new TH2D("h1b_2","y Resolution vs. y",200,0,1,200,-10,10);
+  h1b_2->GetXaxis()->SetTitle("True y");h1b_2->GetXaxis()->CenterTitle();
+  h1b_2->GetYaxis()->SetTitle("Difference from true y [%]");h1b_2->GetYaxis()->CenterTitle();
+  TH2 *h1b_3 = new TH2D("h1b_3","y Resolution vs. x",100,x_bins,200,-10,10);
+  h1b_3->GetXaxis()->SetTitle("True x");h1b_3->GetXaxis()->CenterTitle();
+  h1b_3->GetYaxis()->SetTitle("Difference from true y [%]");h1b_3->GetYaxis()->CenterTitle();
 
-  //Index holding variables
-  int gen1(0), gen2(0);
-  for(int i=0;i<nbins_x;i++){ //x loop                                                                                             
-    for(int j=0;j<nbins_Q2;j++){ //Q2 loop
-
-      Q2_center[j] = (Q2_bins[j+1] + Q2_bins[j])/2.;
-      x_center[i] = (x_bins[i+1] + x_bins[i])/2.;
-      Q2_width[j] = (Q2_bins[j+1] - Q2_bins[j]);
-      x_width[i] = (x_bins[i+1] - x_bins[i]);
-
-      y[i][j] = Q2_center[j]/(x_center[i]*s_cm);
-
-      //Cut Bins with top-left edge > ymax and bottom-right edge < ymin and > W2min                                                                  
-      y_temp = (Q2_bins[j+1])/(x_bins[i]*s_cm); //Upper left                                                                                         
-      if(y_temp>y_max) //Remove bin                                                                                                                  
-        cut_ul[i][j] = 0;
-      else
-        cut_ul[i][j] = 1;
-
-      y_temp = (Q2_bins[j])/(x_bins[i+1]*s_cm); //Lower Right                                                                                        
-      W2_temp = Mp*Mp + Q2_bins[j]*( (1./x_bins[i+1]) - 1.);
-   
-      if(y_temp<y_min || W2_temp<W2_min) //Remove bin                                                                                                
-        cut_lr[i][j] = 0;
-      else
-        cut_lr[i][j] = 1;
-    }
-  }
-
-  //Histograms
-  TH2D *h0 = new TH2D("h0","Generated",25,x_bins,25,Q2_bins);
-  h0->GetXaxis()->SetTitle("x");h0->GetXaxis()->CenterTitle();
-  h0->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h0->GetYaxis()->CenterTitle();
-
-  //Electron Method using full energy
-  TH2D *h1_1 = new TH2D("h1_1","Electron Method (using ECal energy) Purity",25,x_bins,25,Q2_bins);
-  h1_1->GetXaxis()->SetTitle("x");h1_1->GetXaxis()->CenterTitle();
-  h1_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_1->GetYaxis()->CenterTitle();
-  TH2D *h1_2 = new TH2D("h1_2","Electron Method (using ECal energy) Stability",25,x_bins,25,Q2_bins);
-  h1_2->GetXaxis()->SetTitle("x");h1_2->GetXaxis()->CenterTitle();
-  h1_2->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_2->GetYaxis()->CenterTitle();
-  TH2D *h1_3 = new TH2D("h1_3","Electron Method (using ECal energy) Reconstructed",25,x_bins,25,Q2_bins);
-  h1_3->GetXaxis()->SetTitle("x");h1_3->GetXaxis()->CenterTitle();
-  h1_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_3->GetYaxis()->CenterTitle();
+  TH2 *h1c_1 = new TH2D("h1c_1","x Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h1c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h1c_1->GetXaxis()->CenterTitle();
+  h1c_1->GetYaxis()->SetTitle("Difference from true x [%]");h1c_1->GetYaxis()->CenterTitle();
+  TH2 *h1c_2 = new TH2D("h1c_2","x Resolution vs. y",200,0,1,200,-10,10);
+  h1c_2->GetXaxis()->SetTitle("True y");h1c_2->GetXaxis()->CenterTitle();
+  h1c_2->GetYaxis()->SetTitle("Difference from true x [%]");h1c_2->GetYaxis()->CenterTitle();
+  TH2 *h1c_3 = new TH2D("h1c_3","x Resolution vs. x",100,x_bins,200,-10,10);
+  h1c_3->GetXaxis()->SetTitle("True x");h1c_3->GetXaxis()->CenterTitle();
+  h1c_3->GetYaxis()->SetTitle("Difference from true x [%]");h1c_3->GetYaxis()->CenterTitle();
 
   //Electron Method using momentum as energy
-  TH2D *h2_1 = new TH2D("h2_1","Electron Method (using track momentum) Purity",25,x_bins,25,Q2_bins);
-  h2_1->GetXaxis()->SetTitle("x");h2_1->GetXaxis()->CenterTitle();
-  h2_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h2_1->GetYaxis()->CenterTitle();
-  TH2D *h2_2 = new TH2D("h2_2","Electron Method (using track momentum) Stability",25,x_bins,25,Q2_bins);
-  h2_2->GetXaxis()->SetTitle("x");h2_2->GetXaxis()->CenterTitle();
-  h2_2->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h2_2->GetYaxis()->CenterTitle();
-  TH2D *h2_3 = new TH2D("h2_3","Electron Method (using track momentum) Reconstructed",25,x_bins,25,Q2_bins);
-  h2_3->GetXaxis()->SetTitle("x");h2_3->GetXaxis()->CenterTitle();
-  h2_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h2_3->GetYaxis()->CenterTitle();
+  TH2 *h2a_1 = new TH2D("h2a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h2a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2a_1->GetXaxis()->CenterTitle();
+  h2a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h2a_1->GetYaxis()->CenterTitle();
+  TH2 *h2a_2 = new TH2D("h2a_2","Q^{2} Resolution vs. y",200,0,1,200,-10,10);
+  h2a_2->GetXaxis()->SetTitle("True y");h2a_2->GetXaxis()->CenterTitle();
+  h2a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h2a_2->GetYaxis()->CenterTitle();
+  TH2 *h2a_3 = new TH2D("h2a_3","Q^{2} Resolution vs. x",100,x_bins,200,-10,10);
+  h2a_3->GetXaxis()->SetTitle("True x");h2a_3->GetXaxis()->CenterTitle();
+  h2a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h2a_3->GetYaxis()->CenterTitle();
 
-  //JB Method
-  TH2D *h3_1 = new TH2D("h3_1","JB Method Purity",25,x_bins,25,Q2_bins);
-  h3_1->GetXaxis()->SetTitle("x");h3_1->GetXaxis()->CenterTitle();
-  h3_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_1->GetYaxis()->CenterTitle();
-  TH2D *h3_2 = new TH2D("h3_2","JB Method Stability",25,x_bins,25,Q2_bins);
-  h3_2->GetXaxis()->SetTitle("x");h3_2->GetXaxis()->CenterTitle();
-  h3_2->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_2->GetYaxis()->CenterTitle();
-  TH2D *h3_3 = new TH2D("h3_3","JB Method Reconstructed",25,x_bins,25,Q2_bins);
-  h3_3->GetXaxis()->SetTitle("x");h3_3->GetXaxis()->CenterTitle();
-  h3_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_3->GetYaxis()->CenterTitle();
+  TH2 *h2b_1 = new TH2D("h2b_1","y Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h2b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2b_1->GetXaxis()->CenterTitle();
+  h2b_1->GetYaxis()->SetTitle("Difference from true y [%]");h2b_1->GetYaxis()->CenterTitle();
+  TH2 *h2b_2 = new TH2D("h2b_2","y Resolution vs. y",200,0,1,200,-10,10);
+  h2b_2->GetXaxis()->SetTitle("True y");h2b_2->GetXaxis()->CenterTitle();
+  h2b_2->GetYaxis()->SetTitle("Difference from true y [%]");h2b_2->GetYaxis()->CenterTitle();
+  TH2 *h2b_3 = new TH2D("h2b_3","y Resolution vs. x",100,x_bins,200,-10,10);
+  h2b_3->GetXaxis()->SetTitle("True x");h2b_3->GetXaxis()->CenterTitle();
+  h2b_3->GetYaxis()->SetTitle("Difference from true y [%]");h2b_3->GetYaxis()->CenterTitle();
 
-  TH2D *h3_4 = new TH2D("h3_4","JB Method Purity (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h3_4->GetXaxis()->SetTitle("x");h3_4->GetXaxis()->CenterTitle();
-  h3_4->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_4->GetYaxis()->CenterTitle();
-  TH2D *h3_5 = new TH2D("h3_5","JB Method Stability (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h3_5->GetXaxis()->SetTitle("x");h3_5->GetXaxis()->CenterTitle();
-  h3_5->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_5->GetYaxis()->CenterTitle();
-  TH2D *h3_6 = new TH2D("h3_6","JB Method Reconstructed (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h3_6->GetXaxis()->SetTitle("x");h3_6->GetXaxis()->CenterTitle();
-  h3_6->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_6->GetYaxis()->CenterTitle();
+  TH2 *h2c_1 = new TH2D("h2c_1","x Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h2c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2c_1->GetXaxis()->CenterTitle();
+  h2c_1->GetYaxis()->SetTitle("Difference from true x [%]");h2c_1->GetYaxis()->CenterTitle();
+  TH2 *h2c_2 = new TH2D("h2c_2","x Resolution vs. y",200,0,1,200,-10,10);
+  h2c_2->GetXaxis()->SetTitle("True y");h2c_2->GetXaxis()->CenterTitle();
+  h2c_2->GetYaxis()->SetTitle("Difference from true x [%]");h2c_2->GetYaxis()->CenterTitle();
+  TH2 *h2c_3 = new TH2D("h2c_3","x Resolution vs. x",100,x_bins,200,-10,10);
+  h2c_3->GetXaxis()->SetTitle("True x");h2c_3->GetXaxis()->CenterTitle();
+  h2c_3->GetYaxis()->SetTitle("Difference from true x [%]");h2c_3->GetYaxis()->CenterTitle();
 
-  TH2D *h3_7 = new TH2D("h3_7","Purity: using 4-momentum of X",25,x_bins,25,Q2_bins);
-  h3_7->GetXaxis()->SetTitle("x");h3_7->GetXaxis()->CenterTitle();
-  h3_7->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_7->GetYaxis()->CenterTitle();
-  TH2D *h3_8 = new TH2D("h3_8","Stability: using 4-momentum of X",25,x_bins,25,Q2_bins);
-  h3_8->GetXaxis()->SetTitle("x");h3_8->GetXaxis()->CenterTitle();
-  h3_8->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_8->GetYaxis()->CenterTitle();
-  TH2D *h3_9 = new TH2D("h3_9","Reconstructed: using 4-momentum of X",25,x_bins,25,Q2_bins);
-  h3_9->GetXaxis()->SetTitle("x");h3_9->GetXaxis()->CenterTitle();
-  h3_9->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h3_9->GetYaxis()->CenterTitle();
+  //JB Method -- using jet
+  
+  //JB Method -- Summing over all particles
 
-  //DA Method
-  TH2D *h4_1 = new TH2D("h4_1","DA Method Purity",25,x_bins,25,Q2_bins);
-  h4_1->GetXaxis()->SetTitle("x");h4_1->GetXaxis()->CenterTitle();
-  h4_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_1->GetYaxis()->CenterTitle();
-  TH2D *h4_2 = new TH2D("h4_2","DA Method Stability",25,x_bins,25,Q2_bins);
-  h4_2->GetXaxis()->SetTitle("x");h4_2->GetXaxis()->CenterTitle();
-  h4_2->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_2->GetYaxis()->CenterTitle();
-  TH2D *h4_3 = new TH2D("h4_3","DA Method Reconstructed",25,x_bins,25,Q2_bins);
-  h4_3->GetXaxis()->SetTitle("x");h4_3->GetXaxis()->CenterTitle();
-  h4_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_3->GetYaxis()->CenterTitle();
+  //JB 4-Vector Method
+  TH2 *h5a_1 = new TH2D("h5a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h5a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h5a_1->GetXaxis()->CenterTitle();
+  h5a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h5a_1->GetYaxis()->CenterTitle();
+  TH2 *h5a_2 = new TH2D("h5a_2","Q^{2} Resolution vs. y",200,0,1,200,-10,10);
+  h5a_2->GetXaxis()->SetTitle("True y");h5a_2->GetXaxis()->CenterTitle();
+  h5a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h5a_2->GetYaxis()->CenterTitle();
+  TH2 *h5a_3 = new TH2D("h5a_3","Q^{2} Resolution vs. x",100,x_bins,200,-10,10);
+  h5a_3->GetXaxis()->SetTitle("True x");h5a_3->GetXaxis()->CenterTitle();
+  h5a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h5a_3->GetYaxis()->CenterTitle();
 
-  TH2D *h4_4 = new TH2D("h4_4","DA Method Purity (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h4_4->GetXaxis()->SetTitle("x");h4_4->GetXaxis()->CenterTitle();
-  h4_4->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_4->GetYaxis()->CenterTitle();
-  TH2D *h4_5 = new TH2D("h4_5","DA Method Stability (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h4_5->GetXaxis()->SetTitle("x");h4_5->GetXaxis()->CenterTitle();
-  h4_5->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_5->GetYaxis()->CenterTitle();
-  TH2D *h4_6 = new TH2D("h4_6","DA Method Reconstructed (Summing over all particles)",25,x_bins,25,Q2_bins);
-  h4_6->GetXaxis()->SetTitle("x");h4_6->GetXaxis()->CenterTitle();
-  h4_6->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_6->GetYaxis()->CenterTitle();
+  TH2 *h5b_1 = new TH2D("h5b_1","y Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h5b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h5b_1->GetXaxis()->CenterTitle();
+  h5b_1->GetYaxis()->SetTitle("Difference from true y [%]");h5b_1->GetYaxis()->CenterTitle();
+  TH2 *h5b_2 = new TH2D("h5b_2","y Resolution vs. y",200,0,1,200,-10,10);
+  h5b_2->GetXaxis()->SetTitle("True y");h5b_2->GetXaxis()->CenterTitle();
+  h5b_2->GetYaxis()->SetTitle("Difference from true y [%]");h5b_2->GetYaxis()->CenterTitle();
+  TH2 *h5b_3 = new TH2D("h5b_3","y Resolution vs. x",100,x_bins,200,-10,10);
+  h5b_3->GetXaxis()->SetTitle("True x");h5b_3->GetXaxis()->CenterTitle();
+  h5b_3->GetYaxis()->SetTitle("Difference from true y [%]");h5b_3->GetYaxis()->CenterTitle();
+
+  TH2 *h5c_1 = new TH2D("h5c_1","x Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h5c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h5c_1->GetXaxis()->CenterTitle();
+  h5c_1->GetYaxis()->SetTitle("Difference from true x [%]");h5c_1->GetYaxis()->CenterTitle();
+  TH2 *h5c_2 = new TH2D("h5c_2","x Resolution vs. y",200,0,1,200,-10,10);
+  h5c_2->GetXaxis()->SetTitle("True y");h5c_2->GetXaxis()->CenterTitle();
+  h5c_2->GetYaxis()->SetTitle("Difference from true x [%]");h5c_2->GetYaxis()->CenterTitle();
+  TH2 *h5c_3 = new TH2D("h5c_3","x Resolution vs. x",100,x_bins,200,-10,10);
+  h5c_3->GetXaxis()->SetTitle("True x");h5c_3->GetXaxis()->CenterTitle();
+  h5c_3->GetYaxis()->SetTitle("Difference from true x [%]");h5c_3->GetYaxis()->CenterTitle();
+  
+  //DA Method -- using jet
+
+  //DA Method -- Summing over all particles
 
   //--------------------------------//
   //   Analyse PYTHIA Simulation    //
@@ -313,8 +285,6 @@ void purity_stability(){
       orig[j] = (Int_t) particle->GetParentIndex();
 
       particle_s = event_s->GetTrack(j);
-
-      //if(!particle_s and Status[j]==1) cout<<"Missing particle "<<j<<" in event "<<i<<" with id = "<< id[j] <<endl;
       
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
@@ -382,8 +352,6 @@ void purity_stability(){
     x_e = Q2_e/(2*pni*q_e); 
     s_nm = 4*Ei_e*E_pn;
 
-    gen1 = h0->Fill(x_e,Q2_e);
-
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
   
     if(detected_elec){
@@ -392,15 +360,17 @@ void purity_stability(){
       y_e_nm_s = 1. - ( (Ef_e_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
       x_e_nm_s = Q2_e_nm_s/(s_nm*y_e_nm_s);
 
-      gen2 = h1_3->Fill(x_e_nm_s,Q2_e_nm_s);
-      if(gen1 == gen2){
-        h1_1->Fill(x_e_nm_s,Q2_e_nm_s);
-        h1_2->Fill(x_e_nm_s,Q2_e_nm_s);
-      }
-      /*else{
-        cout<<"Event = "<<i<<" x_gen = "<<x_e<<" Q2_gen = "<<Q2_e<<" xe_rec = "<<x_e_nm_s<<" Q2e_rec = "
-            <<Q2_e_nm_s<<" gen bin = "<<gen1<<" rec bin = "<<gen2<<endl;
-      }*/
+      h1a_1->Fill(Q2_e, 100.*(Q2_e-Q2_e_nm_s)/Q2_e );
+      h1a_2->Fill(y_e, 100.*(Q2_e-Q2_e_nm_s)/Q2_e );
+      h1a_3->Fill(x_e, 100.*(Q2_e-Q2_e_nm_s)/Q2_e );
+
+      h1b_1->Fill(Q2_e, 100.*(y_e-y_e_nm_s)/y_e );
+      h1b_2->Fill(y_e, 100.*(y_e-y_e_nm_s)/y_e );
+      h1b_3->Fill(x_e, 100.*(y_e-y_e_nm_s)/y_e );
+
+      h1c_1->Fill(Q2_e, 100.*(x_e-x_e_nm_s)/x_e );
+      h1c_2->Fill(y_e, 100.*(x_e-x_e_nm_s)/x_e );
+      h1c_3->Fill(x_e, 100.*(x_e-x_e_nm_s)/x_e );
 
       //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.  
       Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3) ); 
@@ -408,11 +378,18 @@ void purity_stability(){
       y_e_nm_p_s = 1. - ( (Ef_e_p_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
       x_e_nm_p_s = Q2_e_nm_p_s/(s_nm*y_e_nm_p_s);
 
-      gen2 = h2_3->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-      if(gen1 == gen2){
-        h2_1->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-        h2_2->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-      }
+      h2a_1->Fill(Q2_e, 100.*(Q2_e-Q2_e_nm_p_s)/Q2_e );
+      h2a_2->Fill(y_e, 100.*(Q2_e-Q2_e_nm_p_s)/Q2_e );
+      h2a_3->Fill(x_e, 100.*(Q2_e-Q2_e_nm_p_s)/Q2_e );
+
+      h2b_1->Fill(Q2_e, 100.*(y_e-y_e_nm_p_s)/y_e );
+      h2b_2->Fill(y_e, 100.*(y_e-y_e_nm_p_s)/y_e );
+      h2b_3->Fill(x_e, 100.*(y_e-y_e_nm_p_s)/y_e );
+
+      h2c_1->Fill(Q2_e, 100.*(x_e-x_e_nm_p_s)/x_e );
+      h2c_2->Fill(y_e, 100.*(x_e-x_e_nm_p_s)/x_e );
+      h2c_3->Fill(x_e, 100.*(x_e-x_e_nm_p_s)/x_e );
+
     } //detected electron
 
     if(!(holdParticles.empty())){
@@ -431,12 +408,6 @@ void purity_stability(){
         y_jb_jet_s = (Etot_jet_s - pztot_jet_s)/(2*Ei_e);
         Q2_jb_jet_s = (pttot_jet_s*pttot_jet_s)/(1. - y_jb_jet_s);
         x_jb_jet_s = Q2_jb_jet_s/(s_nm*y_jb_jet_s);
-
-        gen2 = h3_3->Fill(x_jb_jet_s,Q2_jb_jet_s);
-        if(gen1 == gen2){
-          h3_1->Fill(x_jb_jet_s,Q2_jb_jet_s);
-          h3_2->Fill(x_jb_jet_s,Q2_jb_jet_s);
-        }
         
         //3.1) Using Smeared DA Method
         if(detected_elec){
@@ -445,12 +416,6 @@ void purity_stability(){
                    ( 1./(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.)) );
           y_da_s = TMath::Tan(Theta_h_nm_s/2.)/(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.));
           x_da_s = Q2_da_s/(s_nm*y_da_s);  
-
-          gen2 = h4_3->Fill(x_da_s,Q2_da_s);
-          if(gen1 == gen2){
-            h4_1->Fill(x_da_s,Q2_da_s);
-            h4_2->Fill(x_da_s,Q2_da_s);
-          }
         }
 
       }//jets.empty()
@@ -459,12 +424,6 @@ void purity_stability(){
       y_jb_sumh_s = (Etot_sumh_s - pztot_sumh_s)/(2*Ei_e);
       Q2_jb_sumh_s = (pttot_sumh_s*pttot_sumh_s)/(1. - y_jb_sumh_s);
       x_jb_sumh_s = Q2_jb_sumh_s/(s_nm*y_jb_sumh_s);
-
-      gen2 = h3_6->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-      if(gen1 == gen2){
-        h3_4->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-        h3_5->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-      }
 
       //2.3) Using 4-Vector of outgoing X
       eh_s_tot.SetPxPyPzE(pxtot_sumh_s,pytot_sumh_s,pztot_sumh_s,Etot_sumh_s);
@@ -475,18 +434,17 @@ void purity_stability(){
       //x_jb_sumh_s = Q2_jb_sumh_s/(2*pni*q_h_s);
       x_jb_sumh_s = Q2_jb_sumh_s/(s_nm*y_jb_sumh_s); //Using Q2 = xsy, instead of 4-vector product Q2_jb_sumh_s/(2*pni*q_h_s); 
 
-      gen2 = h3_9->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-      if(gen1 == gen2){
-        h3_7->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-        h3_8->Fill(x_jb_sumh_s,Q2_jb_sumh_s);
-      }
+      h5a_1->Fill(Q2_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
+      h5a_2->Fill(y_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
+      h5a_3->Fill(x_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
 
-      /*
-      if(fabs(x_e-x_jb_sumh_s)/x_e>1e-3 || fabs(Q2_e-Q2_jb_sumh_s)/Q2_e>1e-3){
-        cout<<"Event = "<<i<<" x_gen = "<<x_e<<" Q2_gen = "<<Q2_e<<" xe_rec = "<<x_e_nm_s<<" Q2e_rec = "
-            <<Q2_e_nm_s<<" xh_rec = "<<x_jb_sumh_s<<" Q2h_rec = "<<Q2_jb_sumh_s<<endl;
-      }
-      */
+      h5b_1->Fill(Q2_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+      h5b_2->Fill(y_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+      h5b_3->Fill(x_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+
+      h5c_1->Fill(Q2_e, 100.*(x_e-x_jb_sumh_s)/x_e );
+      h5c_2->Fill(y_e, 100.*(x_e-x_jb_sumh_s)/x_e );
+      h5c_3->Fill(x_e, 100.*(x_e-x_jb_sumh_s)/x_e );
 
       //3.2) Using Smeared DA Method (Summing Over Hadrons)
       if(detected_elec){
@@ -495,108 +453,148 @@ void purity_stability(){
           ( 1./(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.)) );
         y_da_s = TMath::Tan(Theta_h_nm_s/2.)/(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.));
         x_da_s = Q2_da_s/(s_nm*y_da_s);
-
-        gen2 = h4_6->Fill(x_da_s,Q2_da_s);
-        if(gen1 == gen2){
-          h4_4->Fill(x_da_s,Q2_da_s);
-          h4_5->Fill(x_da_s,Q2_da_s);
-        }
       }
 
     }//holdParticles.empty()
 
     //reset variables
-    gen1 = 0;
-    gen2 = 0;
     detected_elec = false;
 
   }//Finished Event Loop
 
-  //Divide histograms
-  h1_1->Divide(h1_3);
-  h1_2->Divide(h0);
-
-  h2_1->Divide(h2_3);
-  h2_2->Divide(h0);
-
-  h3_1->Divide(h3_3);
-  h3_2->Divide(h0);
-
-  h3_4->Divide(h3_6);
-  h3_5->Divide(h0);
-
-  h3_7->Divide(h3_9);
-  h3_8->Divide(h0);
-
-  h4_1->Divide(h4_3);
-  h4_2->Divide(h0);
-
-  h4_4->Divide(h4_6);
-  h4_5->Divide(h0);
-
   //Make Latex
   TLatex *tex_energy = new TLatex();
   if(energy_set == 1){
-    tex_energy->SetText(1e-4,1e3,"5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
+    tex_energy->SetText(0.1,6,"5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
     tex_energy->SetTextColor(kBlack);
-    tex_energy->SetTextSize(0.035);
-  }  
+  }
+
+  TLatex *tex1_1 = new TLatex(20,5,"#frac{True - Electron Method (using ECal Energy)}{True} vs. True");
+  tex1_1->SetTextColor(kBlack);tex1_1->SetTextSize(0.04);
+
+  TLatex *tex2_1 = new TLatex(20,5,"#frac{True - Electron Method (using track momentum)}{True} vs. True");
+  tex2_1->SetTextColor(kBlack);tex2_1->SetTextSize(0.04);
+
+  TLatex *tex5_1 = new TLatex(20,5,"#frac{True - J.B. 4-Vector Method}{True} vs. True");
+  tex5_1->SetTextColor(kBlack);tex5_1->SetTextSize(0.04);
 
   //Make Plots
   gStyle->SetOptStat(0);
 
-  TCanvas *c1 = new TCanvas("c1");
-  c1->Divide(2,1);
-  c1->cd(1);gPad->SetLogx();gPad->SetLogy();h1_1->Draw("colz");
-  c1->cd(2);gPad->SetLogx();gPad->SetLogy();h1_2->Draw("colz");
+  //Electron Method using ecal energy
+  TCanvas *c1a = new TCanvas("c1a");
+  c1a->Divide(2,2);
+  c1a->cd(1);
+  h1a_1->Draw("colz");
+  tex1_1->Draw();
+  c1a->cd(2);
+  h1a_2->Draw("colz");
   tex_energy->Draw();
+  c1a->cd(3);
+  gPad->SetLogx();h1a_3->Draw("colz");
 
-  TCanvas *c2 = new TCanvas("c2");
-  c2->Divide(2,1);
-  c2->cd(1);gPad->SetLogx();gPad->SetLogy();h2_1->Draw("colz");
-  c2->cd(2);gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
+  TCanvas *c1b = new TCanvas("c1b");
+  c1b->Divide(2,2);
+  c1b->cd(1);
+  h1b_1->Draw("colz");
+  tex1_1->Draw();
+  c1b->cd(2);
+  h1b_2->Draw("colz");
   tex_energy->Draw();
+  c1b->cd(3);
+  gPad->SetLogx();h1b_3->Draw("colz");
 
-  TCanvas *c3 = new TCanvas("c3");
-  c3->Divide(2,1);
-  c3->cd(1);gPad->SetLogx();gPad->SetLogy();h3_1->Draw("colz");
-  c3->cd(2);gPad->SetLogx();gPad->SetLogy();h3_2->Draw("colz");
+  TCanvas *c1c = new TCanvas("c1c");
+  c1c->Divide(2,2);
+  c1c->cd(1);
+  h1c_1->Draw("colz");
+  tex1_1->Draw();
+  c1c->cd(2);
+  h1c_2->Draw("colz");
   tex_energy->Draw();
+  c1c->cd(3);
+  gPad->SetLogx();h1c_3->Draw("colz");
 
-  TCanvas *c4 = new TCanvas("c4");
-  c4->Divide(2,1);
-  c4->cd(1);gPad->SetLogx();gPad->SetLogy();h3_4->Draw("colz");
-  c4->cd(2);gPad->SetLogx();gPad->SetLogy();h3_5->Draw("colz");
+  //Electron Method using momentum as energy
+  TCanvas *c2a = new TCanvas("c2a");
+  c2a->Divide(2,2);
+  c2a->cd(1);
+  h2a_1->Draw("colz");
+  tex2_1->Draw();
+  c2a->cd(2);
+  h2a_2->Draw("colz");
   tex_energy->Draw();
+  c2a->cd(3);
+  gPad->SetLogx();h2a_3->Draw("colz");
 
-  TCanvas *c5 = new TCanvas("c5");
-  c5->Divide(2,1);
-  c5->cd(1);gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
-  c5->cd(2);gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
+  TCanvas *c2b = new TCanvas("c2b");
+  c2b->Divide(2,2);
+  c2b->cd(1);
+  h2b_1->Draw("colz");
+  tex2_1->Draw();
+  c2b->cd(2);
+  h2b_2->Draw("colz");
   tex_energy->Draw();
+  c2b->cd(3);
+  gPad->SetLogx();h2b_3->Draw("colz");
 
-  TCanvas *c6 = new TCanvas("c6");
-  c6->Divide(2,1);
-  c6->cd(1);gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
-  c6->cd(2);gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+  TCanvas *c2c = new TCanvas("c2c");
+  c2c->Divide(2,2);
+  c2c->cd(1);
+  h2c_1->Draw("colz");
+  tex2_1->Draw();
+  c2c->cd(2);
+  h2c_2->Draw("colz");
   tex_energy->Draw();
+  c2c->cd(3);
+  gPad->SetLogx();h2c_3->Draw("colz");
 
-  TCanvas *c7 = new TCanvas("c7");
-  c7->Divide(2,1);
-  c7->cd(1);gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
-  c7->cd(2);gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
+  //JB 4-Vector Method
+  TCanvas *c5a = new TCanvas("c5a");
+  c5a->Divide(2,2);
+  c5a->cd(1);
+  h5a_1->Draw("colz");
+  tex5_1->Draw();
+  c5a->cd(2);
+  h5a_2->Draw("colz");
   tex_energy->Draw();
+  c5a->cd(3);
+  gPad->SetLogx();h5a_3->Draw("colz");
+
+  TCanvas *c5b = new TCanvas("c5b");
+  c5b->Divide(2,2);
+  c5b->cd(1);
+  h5b_1->Draw("colz");
+  tex5_1->Draw();
+  c5b->cd(2);
+  h5b_2->Draw("colz");
+  tex_energy->Draw();
+  c5b->cd(3);
+  gPad->SetLogx();h5b_3->Draw("colz");
+
+  TCanvas *c5c = new TCanvas("c5c");
+  c5c->Divide(2,2);
+  c5c->cd(1);
+  h5c_1->Draw("colz");
+  tex5_1->Draw();
+  c5c->cd(2);
+  h5c_2->Draw("colz");
+  tex_energy->Draw();
+  c5c->cd(3);
+  gPad->SetLogx();h5c_3->Draw("colz");
 
   //Print to File
   if(energy_set == 1){
-    c1->Print("./plots/purity_stability_5_41.pdf[");
-    c1->Print("./plots/purity_stability_5_41.pdf");    
-    c2->Print("./plots/purity_stability_5_41.pdf");
-    c3->Print("./plots/purity_stability_5_41.pdf");
-    c4->Print("./plots/purity_stability_5_41.pdf");
-    c5->Print("./plots/purity_stability_5_41.pdf");
-    c6->Print("./plots/purity_stability_5_41.pdf");
-    c7->Print("./plots/purity_stability_5_41.pdf");
-    c7->Print("./plots/purity_stability_5_41.pdf]");
+    c1a->Print("./plots/kinematic_resolution_5_41.pdf[");
+    c1a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c1b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c1c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c2a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c2b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c2c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c5a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c5b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c5c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c5c->Print("./plots/kinematic_resolution_5_41.pdf]");
   }
 }
