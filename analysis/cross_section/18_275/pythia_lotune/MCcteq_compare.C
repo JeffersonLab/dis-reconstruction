@@ -370,7 +370,8 @@ void MCcteq_compare(){
 
     TChain *t_d = new TChain("EICTree");
     for(int i=0;i<15;i++){
-        t_d->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/18_275/ep_minbias_%d.root",i));
+        //t_d->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/other_studies/18_275/ep_minbias_%d.root",i)); //alpha_s tune
+        t_d->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i)); //process 99 only
     }
 
     t_d->SetBranchAddress("event",&event_d);
@@ -505,7 +506,8 @@ void MCcteq_compare(){
     TLatex *tex3 = new TLatex(3E-4,1.45,Form("Pythia6 e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
     tex3->SetTextColor(kRed);tex3->SetTextFont(62);
 
-    TLatex *tex4 = new TLatex(3E-4,1.3,"Pythia6 e^{-}p, w/parameter tuning");
+    //TLatex *tex4 = new TLatex(3E-4,1.3,"Pythia6 e^{-}p, w/parameter tuning"); //alpha_s tuning
+    TLatex *tex4 = new TLatex(3E-4,1.3,"Pythia6 e^{-}p, process 99 only");
     tex4->SetTextColor(kMagenta);tex4->SetTextFont(62);
 
     TLatex *tex6 = new TLatex(1E-3,1.6,"cteq6l1 (10042)");
