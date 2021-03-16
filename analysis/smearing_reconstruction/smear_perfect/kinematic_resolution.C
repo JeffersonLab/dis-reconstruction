@@ -28,6 +28,20 @@ void kinematic_resolution(){
 
   //Histograms
 
+  //Set Style
+  gStyle->SetOptStat(0);
+  gStyle->SetPadBorderMode(0);
+  gStyle->SetFrameBorderMode(0);
+  gStyle->SetFrameLineWidth(2);
+  gStyle->SetLabelSize(0.035,"X");
+  gStyle->SetLabelSize(0.035,"Y");
+  //gStyle->SetLabelOffset(0.01,"X");
+  //gStyle->SetLabelOffset(0.01,"Y");
+  gStyle->SetTitleXSize(0.04);
+  gStyle->SetTitleXOffset(0.9);
+  gStyle->SetTitleYSize(0.04);
+  gStyle->SetTitleYOffset(0.9);
+
   //x Binning                                                                                                                       
   double x_min = 1E-4;
   double x_max = 1;
@@ -71,6 +85,16 @@ void kinematic_resolution(){
   h1c_3->GetXaxis()->SetTitle("True x");h1c_3->GetXaxis()->CenterTitle();
   h1c_3->GetYaxis()->SetTitle("Difference from true x [%]");h1c_3->GetYaxis()->CenterTitle();
 
+  TH2 *h1d_1 = new TH2D("h1d_1","Recontructed vs. True Q^{2}",200,0,200,200,0,200);
+  h1d_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h1d_1->GetXaxis()->CenterTitle();
+  h1d_1->GetYaxis()->SetTitle("Reconstructed Q^{2} [GeV^{2}]");h1d_1->GetYaxis()->CenterTitle();
+  TH2 *h1d_2 = new TH2D("h1d_2","Recontructed vs. True y",200,0,1,200,0,1);
+  h1d_2->GetXaxis()->SetTitle("True y");h1d_2->GetXaxis()->CenterTitle();
+  h1d_2->GetYaxis()->SetTitle("Reconstructed y");h1d_2->GetYaxis()->CenterTitle();
+  TH2 *h1d_3 = new TH2D("h1d_3","Recontructed vs. True x",100,x_bins,100,x_bins);
+  h1d_3->GetXaxis()->SetTitle("True x");h1d_3->GetXaxis()->CenterTitle();
+  h1d_3->GetYaxis()->SetTitle("Reconstructed x");h1d_3->GetYaxis()->CenterTitle();
+
   //Electron Method using momentum as energy
   TH2 *h2a_1 = new TH2D("h2a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
   h2a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2a_1->GetXaxis()->CenterTitle();
@@ -102,9 +126,97 @@ void kinematic_resolution(){
   h2c_3->GetXaxis()->SetTitle("True x");h2c_3->GetXaxis()->CenterTitle();
   h2c_3->GetYaxis()->SetTitle("Difference from true x [%]");h2c_3->GetYaxis()->CenterTitle();
 
+  TH2 *h2d_1 = new TH2D("h2d_1","Recontructed vs. True Q^{2}",200,0,200,200,0,200);
+  h2d_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2d_1->GetXaxis()->CenterTitle();
+  h2d_1->GetYaxis()->SetTitle("Reconstructed Q^{2} [GeV^{2}]");h2d_1->GetYaxis()->CenterTitle();
+  TH2 *h2d_2 = new TH2D("h2d_2","Recontructed vs. True y",200,0,1,200,0,1);
+  h2d_2->GetXaxis()->SetTitle("True y");h2d_2->GetXaxis()->CenterTitle();
+  h2d_2->GetYaxis()->SetTitle("Reconstructed y");h2d_2->GetYaxis()->CenterTitle();
+  TH2 *h2d_3 = new TH2D("h2d_3","Recontructed vs. True x",100,x_bins,100,x_bins);
+  h2d_3->GetXaxis()->SetTitle("True x");h2d_3->GetXaxis()->CenterTitle();
+  h2d_3->GetYaxis()->SetTitle("Reconstructed x");h2d_3->GetYaxis()->CenterTitle();
+
   //JB Method -- using jet
+  TH2 *h3a_1 = new TH2D("h3a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h3a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h3a_1->GetXaxis()->CenterTitle();
+  h3a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h3a_1->GetYaxis()->CenterTitle();
+  TH2 *h3a_2 = new TH2D("h3a_2","Q^{2} Resolution vs. y",200,0,1,200,-120,120);
+  h3a_2->GetXaxis()->SetTitle("True y");h3a_2->GetXaxis()->CenterTitle();
+  h3a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h3a_2->GetYaxis()->CenterTitle();
+  TH2 *h3a_3 = new TH2D("h3a_3","Q^{2} Resolution vs. x",100,x_bins,200,-120,120);
+  h3a_3->GetXaxis()->SetTitle("True x");h3a_3->GetXaxis()->CenterTitle();
+  h3a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h3a_3->GetYaxis()->CenterTitle();
+
+  TH2 *h3b_1 = new TH2D("h3b_1","y Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h3b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h3b_1->GetXaxis()->CenterTitle();
+  h3b_1->GetYaxis()->SetTitle("Difference from true y [%]");h3b_1->GetYaxis()->CenterTitle();
+  TH2 *h3b_2 = new TH2D("h3b_2","y Resolution vs. y",200,0,1,200,-120,120);
+  h3b_2->GetXaxis()->SetTitle("True y");h3b_2->GetXaxis()->CenterTitle();
+  h3b_2->GetYaxis()->SetTitle("Difference from true y [%]");h3b_2->GetYaxis()->CenterTitle();
+  TH2 *h3b_3 = new TH2D("h3b_3","y Resolution vs. x",100,x_bins,200,-120,120);
+  h3b_3->GetXaxis()->SetTitle("True x");h3b_3->GetXaxis()->CenterTitle();
+  h3b_3->GetYaxis()->SetTitle("Difference from true y [%]");h3b_3->GetYaxis()->CenterTitle();
+
+  TH2 *h3c_1 = new TH2D("h3c_1","x Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h3c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h3c_1->GetXaxis()->CenterTitle();
+  h3c_1->GetYaxis()->SetTitle("Difference from true x [%]");h3c_1->GetYaxis()->CenterTitle();
+  TH2 *h3c_2 = new TH2D("h3c_2","x Resolution vs. y",200,0,1,200,-120,120);
+  h3c_2->GetXaxis()->SetTitle("True y");h3c_2->GetXaxis()->CenterTitle();
+  h3c_2->GetYaxis()->SetTitle("Difference from true x [%]");h3c_2->GetYaxis()->CenterTitle();
+  TH2 *h3c_3 = new TH2D("h3c_3","x Resolution vs. x",100,x_bins,200,-120,120);
+  h3c_3->GetXaxis()->SetTitle("True x");h3c_3->GetXaxis()->CenterTitle();
+  h3c_3->GetYaxis()->SetTitle("Difference from true x [%]");h3c_3->GetYaxis()->CenterTitle();
+
+  TH2 *h3d_1 = new TH2D("h3d_1","Recontructed vs. True Q^{2}",200,0,200,200,0,200);
+  h3d_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h3d_1->GetXaxis()->CenterTitle();
+  h3d_1->GetYaxis()->SetTitle("Reconstructed Q^{2} [GeV^{2}]");h3d_1->GetYaxis()->CenterTitle();
+  TH2 *h3d_2 = new TH2D("h3d_2","Recontructed vs. True y",200,0,1,200,0,1);
+  h3d_2->GetXaxis()->SetTitle("True y");h3d_2->GetXaxis()->CenterTitle();
+  h3d_2->GetYaxis()->SetTitle("Reconstructed y");h3d_2->GetYaxis()->CenterTitle();
+  TH2 *h3d_3 = new TH2D("h3d_3","Recontructed vs. True x",100,x_bins,100,x_bins);
+  h3d_3->GetXaxis()->SetTitle("True x");h3d_3->GetXaxis()->CenterTitle();
+  h3d_3->GetYaxis()->SetTitle("Reconstructed x");h3d_3->GetYaxis()->CenterTitle();
   
   //JB Method -- Summing over all particles
+  TH2 *h4a_1 = new TH2D("h4a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h4a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h4a_1->GetXaxis()->CenterTitle();
+  h4a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h4a_1->GetYaxis()->CenterTitle();
+  TH2 *h4a_2 = new TH2D("h4a_2","Q^{2} Resolution vs. y",200,0,1,200,-10,10);
+  h4a_2->GetXaxis()->SetTitle("True y");h4a_2->GetXaxis()->CenterTitle();
+  h4a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h4a_2->GetYaxis()->CenterTitle();
+  TH2 *h4a_3 = new TH2D("h4a_3","Q^{2} Resolution vs. x",100,x_bins,200,-10,10);
+  h4a_3->GetXaxis()->SetTitle("True x");h4a_3->GetXaxis()->CenterTitle();
+  h4a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h4a_3->GetYaxis()->CenterTitle();
+
+  TH2 *h4b_1 = new TH2D("h4b_1","y Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h4b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h4b_1->GetXaxis()->CenterTitle();
+  h4b_1->GetYaxis()->SetTitle("Difference from true y [%]");h4b_1->GetYaxis()->CenterTitle();
+  TH2 *h4b_2 = new TH2D("h4b_2","y Resolution vs. y",200,0,1,200,-10,10);
+  h4b_2->GetXaxis()->SetTitle("True y");h4b_2->GetXaxis()->CenterTitle();
+  h4b_2->GetYaxis()->SetTitle("Difference from true y [%]");h4b_2->GetYaxis()->CenterTitle();
+  TH2 *h4b_3 = new TH2D("h4b_3","y Resolution vs. x",100,x_bins,200,-10,10);
+  h4b_3->GetXaxis()->SetTitle("True x");h4b_3->GetXaxis()->CenterTitle();
+  h4b_3->GetYaxis()->SetTitle("Difference from true y [%]");h4b_3->GetYaxis()->CenterTitle();
+
+  TH2 *h4c_1 = new TH2D("h4c_1","x Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h4c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h4c_1->GetXaxis()->CenterTitle();
+  h4c_1->GetYaxis()->SetTitle("Difference from true x [%]");h4c_1->GetYaxis()->CenterTitle();
+  TH2 *h4c_2 = new TH2D("h4c_2","x Resolution vs. y",200,0,1,200,-10,10);
+  h4c_2->GetXaxis()->SetTitle("True y");h4c_2->GetXaxis()->CenterTitle();
+  h4c_2->GetYaxis()->SetTitle("Difference from true x [%]");h4c_2->GetYaxis()->CenterTitle();
+  TH2 *h4c_3 = new TH2D("h4c_3","x Resolution vs. x",100,x_bins,200,-10,10);
+  h4c_3->GetXaxis()->SetTitle("True x");h4c_3->GetXaxis()->CenterTitle();
+  h4c_3->GetYaxis()->SetTitle("Difference from true x [%]");h4c_3->GetYaxis()->CenterTitle();
+
+  TH2 *h4d_1 = new TH2D("h4d_1","Recontructed vs. True Q^{2}",200,0,200,200,0,200);
+  h4d_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h4d_1->GetXaxis()->CenterTitle();
+  h4d_1->GetYaxis()->SetTitle("Reconstructed Q^{2} [GeV^{2}]");h4d_1->GetYaxis()->CenterTitle();
+  TH2 *h4d_2 = new TH2D("h4d_2","Recontructed vs. True y",200,0,1,200,0,1);
+  h4d_2->GetXaxis()->SetTitle("True y");h4d_2->GetXaxis()->CenterTitle();
+  h4d_2->GetYaxis()->SetTitle("Reconstructed y");h4d_2->GetYaxis()->CenterTitle();
+  TH2 *h4d_3 = new TH2D("h4d_3","Recontructed vs. True x",100,x_bins,100,x_bins);
+  h4d_3->GetXaxis()->SetTitle("True x");h4d_3->GetXaxis()->CenterTitle();
+  h4d_3->GetYaxis()->SetTitle("Reconstructed x");h4d_3->GetYaxis()->CenterTitle();
 
   //JB 4-Vector Method
   TH2 *h5a_1 = new TH2D("h5a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
@@ -138,8 +250,70 @@ void kinematic_resolution(){
   h5c_3->GetYaxis()->SetTitle("Difference from true x [%]");h5c_3->GetYaxis()->CenterTitle();
   
   //DA Method -- using jet
+  TH2 *h6a_1 = new TH2D("h6a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h6a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h6a_1->GetXaxis()->CenterTitle();
+  h6a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h6a_1->GetYaxis()->CenterTitle();
+  TH2 *h6a_2 = new TH2D("h6a_2","Q^{2} Resolution vs. y",200,0,1,200,-120,120);
+  h6a_2->GetXaxis()->SetTitle("True y");h6a_2->GetXaxis()->CenterTitle();
+  h6a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h6a_2->GetYaxis()->CenterTitle();
+  TH2 *h6a_3 = new TH2D("h6a_3","Q^{2} Resolution vs. x",100,x_bins,200,-120,120);
+  h6a_3->GetXaxis()->SetTitle("True x");h6a_3->GetXaxis()->CenterTitle();
+  h6a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h6a_3->GetYaxis()->CenterTitle();
+
+  TH2 *h6b_1 = new TH2D("h6b_1","y Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h6b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h6b_1->GetXaxis()->CenterTitle();
+  h6b_1->GetYaxis()->SetTitle("Difference from true y [%]");h6b_1->GetYaxis()->CenterTitle();
+  TH2 *h6b_2 = new TH2D("h6b_2","y Resolution vs. y",200,0,1,200,-120,120);
+  h6b_2->GetXaxis()->SetTitle("True y");h6b_2->GetXaxis()->CenterTitle();
+  h6b_2->GetYaxis()->SetTitle("Difference from true y [%]");h6b_2->GetYaxis()->CenterTitle();
+  TH2 *h6b_3 = new TH2D("h6b_3","y Resolution vs. x",100,x_bins,200,-120,120);
+  h6b_3->GetXaxis()->SetTitle("True x");h6b_3->GetXaxis()->CenterTitle();
+  h6b_3->GetYaxis()->SetTitle("Difference from true y [%]");h6b_3->GetYaxis()->CenterTitle();
+
+  TH2 *h6c_1 = new TH2D("h6c_1","x Resolution vs. Q^{2}",200,0,200,200,-120,120);
+  h6c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h6c_1->GetXaxis()->CenterTitle();
+  h6c_1->GetYaxis()->SetTitle("Difference from true x [%]");h6c_1->GetYaxis()->CenterTitle();
+  TH2 *h6c_2 = new TH2D("h6c_2","x Resolution vs. y",200,0,1,200,-120,120);
+  h6c_2->GetXaxis()->SetTitle("True y");h6c_2->GetXaxis()->CenterTitle();
+  h6c_2->GetYaxis()->SetTitle("Difference from true x [%]");h6c_2->GetYaxis()->CenterTitle();
+  TH2 *h6c_3 = new TH2D("h6c_3","x Resolution vs. x",100,x_bins,200,-120,120);
+  h6c_3->GetXaxis()->SetTitle("True x");h6c_3->GetXaxis()->CenterTitle();
+  h6c_3->GetYaxis()->SetTitle("Difference from true x [%]");h6c_3->GetYaxis()->CenterTitle();
 
   //DA Method -- Summing over all particles
+  TH2 *h7a_1 = new TH2D("h7a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h7a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h7a_1->GetXaxis()->CenterTitle();
+  h7a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h7a_1->GetYaxis()->CenterTitle();
+  TH2 *h7a_2 = new TH2D("h7a_2","Q^{2} Resolution vs. y",200,0,1,200,-10,10);
+  h7a_2->GetXaxis()->SetTitle("True y");h7a_2->GetXaxis()->CenterTitle();
+  h7a_2->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h7a_2->GetYaxis()->CenterTitle();
+  TH2 *h7a_3 = new TH2D("h7a_3","Q^{2} Resolution vs. x",100,x_bins,200,-10,10);
+  h7a_3->GetXaxis()->SetTitle("True x");h7a_3->GetXaxis()->CenterTitle();
+  h7a_3->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h7a_3->GetYaxis()->CenterTitle();
+
+  TH2 *h7b_1 = new TH2D("h7b_1","y Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h7b_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h7b_1->GetXaxis()->CenterTitle();
+  h7b_1->GetYaxis()->SetTitle("Difference from true y [%]");h7b_1->GetYaxis()->CenterTitle();
+  TH2 *h7b_2 = new TH2D("h7b_2","y Resolution vs. y",200,0,1,200,-10,10);
+  h7b_2->GetXaxis()->SetTitle("True y");h7b_2->GetXaxis()->CenterTitle();
+  h7b_2->GetYaxis()->SetTitle("Difference from true y [%]");h7b_2->GetYaxis()->CenterTitle();
+  TH2 *h7b_3 = new TH2D("h7b_3","y Resolution vs. x",100,x_bins,200,-10,10);
+  h7b_3->GetXaxis()->SetTitle("True x");h7b_3->GetXaxis()->CenterTitle();
+  h7b_3->GetYaxis()->SetTitle("Difference from true y [%]");h7b_3->GetYaxis()->CenterTitle();
+
+  TH2 *h7c_1 = new TH2D("h7c_1","x Resolution vs. Q^{2}",200,0,200,200,-10,10);
+  h7c_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h7c_1->GetXaxis()->CenterTitle();
+  h7c_1->GetYaxis()->SetTitle("Difference from true x [%]");h7c_1->GetYaxis()->CenterTitle();
+  TH2 *h7c_2 = new TH2D("h7c_2","x Resolution vs. y",200,0,1,200,-10,10);
+  h7c_2->GetXaxis()->SetTitle("True y");h7c_2->GetXaxis()->CenterTitle();
+  h7c_2->GetYaxis()->SetTitle("Difference from true x [%]");h7c_2->GetYaxis()->CenterTitle();
+  TH2 *h7c_3 = new TH2D("h7c_3","x Resolution vs. x",100,x_bins,200,-10,10);
+  h7c_3->GetXaxis()->SetTitle("True x");h7c_3->GetXaxis()->CenterTitle();
+  h7c_3->GetYaxis()->SetTitle("Difference from true x [%]");h7c_3->GetYaxis()->CenterTitle();
+
+  //Line for reconstructed vs. true plots
+  TF1 *func_1 = new TF1("func_1","x",0,200);
+  func_1->SetLineColor(kRed);func_1->SetLineWidth(2);func_1->SetLineStyle(2);
 
   //--------------------------------//
   //   Analyse PYTHIA Simulation    //
@@ -372,6 +546,10 @@ void kinematic_resolution(){
       h1c_2->Fill(y_e, 100.*(x_e-x_e_nm_s)/x_e );
       h1c_3->Fill(x_e, 100.*(x_e-x_e_nm_s)/x_e );
 
+      h1d_1->Fill(Q2_e_nm_s,Q2_e);
+      h1d_2->Fill(y_e_nm_s,y_e);
+      h1d_3->Fill(x_e_nm_s,x_e);
+
       //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.  
       Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3) ); 
       Q2_e_nm_p_s = 4.*Ei_e*Ef_e_p_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
@@ -389,6 +567,10 @@ void kinematic_resolution(){
       h2c_1->Fill(Q2_e, 100.*(x_e-x_e_nm_p_s)/x_e );
       h2c_2->Fill(y_e, 100.*(x_e-x_e_nm_p_s)/x_e );
       h2c_3->Fill(x_e, 100.*(x_e-x_e_nm_p_s)/x_e );
+
+      h2d_1->Fill(Q2_e_nm_p_s,Q2_e);
+      h2d_2->Fill(y_e_nm_p_s,y_e);
+      h2d_3->Fill(x_e_nm_p_s,x_e);
 
     } //detected electron
 
@@ -408,6 +590,22 @@ void kinematic_resolution(){
         y_jb_jet_s = (Etot_jet_s - pztot_jet_s)/(2*Ei_e);
         Q2_jb_jet_s = (pttot_jet_s*pttot_jet_s)/(1. - y_jb_jet_s);
         x_jb_jet_s = Q2_jb_jet_s/(s_nm*y_jb_jet_s);
+
+        h3a_1->Fill(Q2_e, 100.*(Q2_e-Q2_jb_jet_s)/Q2_e );
+        h3a_2->Fill(y_e, 100.*(Q2_e-Q2_jb_jet_s)/Q2_e );
+        h3a_3->Fill(x_e, 100.*(Q2_e-Q2_jb_jet_s)/Q2_e );
+
+        h3b_1->Fill(Q2_e, 100.*(y_e-y_jb_jet_s)/y_e );
+        h3b_2->Fill(y_e, 100.*(y_e-y_jb_jet_s)/y_e );
+        h3b_3->Fill(x_e, 100.*(y_e-y_jb_jet_s)/y_e );
+
+        h3c_1->Fill(Q2_e, 100.*(x_e-x_jb_jet_s)/x_e );
+        h3c_2->Fill(y_e, 100.*(x_e-x_jb_jet_s)/x_e );
+        h3c_3->Fill(x_e, 100.*(x_e-x_jb_jet_s)/x_e );
+
+        h3d_1->Fill(Q2_jb_jet_s,Q2_e);
+        h3d_2->Fill(y_jb_jet_s,y_e);
+        h3d_3->Fill(x_jb_jet_s,x_e);
         
         //3.1) Using Smeared DA Method
         if(detected_elec){
@@ -416,6 +614,18 @@ void kinematic_resolution(){
                    ( 1./(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.)) );
           y_da_s = TMath::Tan(Theta_h_nm_s/2.)/(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.));
           x_da_s = Q2_da_s/(s_nm*y_da_s);  
+
+          h6a_1->Fill(Q2_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+          h6a_2->Fill(y_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+          h6a_3->Fill(x_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+
+          h6b_1->Fill(Q2_e, 100.*(y_e-y_da_s)/y_e );
+          h6b_2->Fill(y_e, 100.*(y_e-y_da_s)/y_e );
+          h6b_3->Fill(x_e, 100.*(y_e-y_da_s)/y_e );
+
+          h6c_1->Fill(Q2_e, 100.*(x_e-x_da_s)/x_e );
+          h6c_2->Fill(y_e, 100.*(x_e-x_da_s)/x_e );
+          h6c_3->Fill(x_e, 100.*(x_e-x_da_s)/x_e );
         }
 
       }//jets.empty()
@@ -424,6 +634,22 @@ void kinematic_resolution(){
       y_jb_sumh_s = (Etot_sumh_s - pztot_sumh_s)/(2*Ei_e);
       Q2_jb_sumh_s = (pttot_sumh_s*pttot_sumh_s)/(1. - y_jb_sumh_s);
       x_jb_sumh_s = Q2_jb_sumh_s/(s_nm*y_jb_sumh_s);
+
+      h4a_1->Fill(Q2_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
+      h4a_2->Fill(y_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
+      h4a_3->Fill(x_e, 100.*(Q2_e-Q2_jb_sumh_s)/Q2_e );
+
+      h4b_1->Fill(Q2_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+      h4b_2->Fill(y_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+      h4b_3->Fill(x_e, 100.*(y_e-y_jb_sumh_s)/y_e );
+
+      h4c_1->Fill(Q2_e, 100.*(x_e-x_jb_sumh_s)/x_e );
+      h4c_2->Fill(y_e, 100.*(x_e-x_jb_sumh_s)/x_e );
+      h4c_3->Fill(x_e, 100.*(x_e-x_jb_sumh_s)/x_e );
+
+      h4d_1->Fill(Q2_jb_sumh_s,Q2_e);
+      h4d_2->Fill(y_jb_sumh_s,y_e);
+      h4d_3->Fill(x_jb_sumh_s,x_e);
 
       //2.3) Using 4-Vector of outgoing X
       eh_s_tot.SetPxPyPzE(pxtot_sumh_s,pytot_sumh_s,pztot_sumh_s,Etot_sumh_s);
@@ -453,6 +679,19 @@ void kinematic_resolution(){
           ( 1./(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.)) );
         y_da_s = TMath::Tan(Theta_h_nm_s/2.)/(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.));
         x_da_s = Q2_da_s/(s_nm*y_da_s);
+
+        h7a_1->Fill(Q2_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+        h7a_2->Fill(y_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+        h7a_3->Fill(x_e, 100.*(Q2_e-Q2_da_s)/Q2_e );
+
+        h7b_1->Fill(Q2_e, 100.*(y_e-y_da_s)/y_e );
+        h7b_2->Fill(y_e, 100.*(y_e-y_da_s)/y_e );
+        h7b_3->Fill(x_e, 100.*(y_e-y_da_s)/y_e );
+
+        h7c_1->Fill(Q2_e, 100.*(x_e-x_da_s)/x_e );
+        h7c_2->Fill(y_e, 100.*(x_e-x_da_s)/x_e );
+        h7c_3->Fill(x_e, 100.*(x_e-x_da_s)/x_e );
+
       }
 
     }//holdParticles.empty()
@@ -463,125 +702,301 @@ void kinematic_resolution(){
   }//Finished Event Loop
 
   //Make Latex
-  TLatex *tex_energy = new TLatex();
+  TPaveText* tex_energy = new TPaveText(0.1,0.7,0.9,0.9,"NDCNB");
+
   if(energy_set == 1){
-    tex_energy->SetText(0.1,6,"5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
-    tex_energy->SetTextColor(kBlack);
+    tex_energy->AddText("5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
+	  tex_energy->SetFillStyle(4000);tex_energy->SetTextFont(63);tex_energy->SetTextSize(15);
   }
 
-  TLatex *tex1_1 = new TLatex(20,5,"#frac{True - Electron Method (using ECal Energy)}{True} vs. True");
-  tex1_1->SetTextColor(kBlack);tex1_1->SetTextSize(0.04);
+  TPaveText *tex1_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex1_1->AddText("#frac{True - Electron Method (using ECal Energy)}{True} vs. True");
+  tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(10);
 
-  TLatex *tex2_1 = new TLatex(20,5,"#frac{True - Electron Method (using track momentum)}{True} vs. True");
-  tex2_1->SetTextColor(kBlack);tex2_1->SetTextSize(0.04);
+  TPaveText *tex2_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex2_1->AddText("#frac{True - Electron Method (using track momentum)}{True} vs. True");
+  tex2_1->SetFillStyle(4000);tex2_1->SetTextFont(63);tex2_1->SetTextSize(10);
 
-  TLatex *tex5_1 = new TLatex(20,5,"#frac{True - J.B. 4-Vector Method}{True} vs. True");
-  tex5_1->SetTextColor(kBlack);tex5_1->SetTextSize(0.04);
+  TPaveText *tex3_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex3_1->AddText("#frac{True - J.B. Method (using jet)}{True} vs. True");
+  tex3_1->SetFillStyle(4000);tex3_1->SetTextFont(63);tex3_1->SetTextSize(10);
+
+  TPaveText *tex4_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex4_1->AddText("#frac{True - J.B. Method (summing all particles)}{True} vs. True");
+  tex4_1->SetFillStyle(4000);tex4_1->SetTextFont(63);tex4_1->SetTextSize(10);
+
+  TPaveText *tex5_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex5_1->AddText("#frac{True - J.B. 4-Vector Method}{True} vs. True");
+  tex5_1->SetFillStyle(4000);tex5_1->SetTextFont(63);tex5_1->SetTextSize(10);
+
+  TPaveText *tex6_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex6_1->AddText("#frac{True - D.A. Method (using jet)}{True} vs. True");
+  tex6_1->SetFillStyle(4000);tex6_1->SetTextFont(63);tex6_1->SetTextSize(10);
+
+  TPaveText *tex7_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
+  tex7_1->AddText("#frac{True - D.A. Method (summing all particles)}{True} vs. True");
+  tex7_1->SetFillStyle(4000);tex7_1->SetTextFont(63);tex7_1->SetTextSize(10);
 
   //Make Plots
-  gStyle->SetOptStat(0);
 
+  //----------------------------------
   //Electron Method using ecal energy
+  //----------------------------------
   TCanvas *c1a = new TCanvas("c1a");
   c1a->Divide(2,2);
   c1a->cd(1);
   h1a_1->Draw("colz");
-  tex1_1->Draw();
   c1a->cd(2);
   h1a_2->Draw("colz");
-  tex_energy->Draw();
   c1a->cd(3);
   gPad->SetLogx();h1a_3->Draw("colz");
+  c1a->cd(4);tex_energy->Draw();tex1_1->Draw();
 
   TCanvas *c1b = new TCanvas("c1b");
   c1b->Divide(2,2);
   c1b->cd(1);
   h1b_1->Draw("colz");
-  tex1_1->Draw();
   c1b->cd(2);
   h1b_2->Draw("colz");
-  tex_energy->Draw();
   c1b->cd(3);
   gPad->SetLogx();h1b_3->Draw("colz");
+  c1b->cd(4);tex_energy->Draw();tex1_1->Draw();
 
   TCanvas *c1c = new TCanvas("c1c");
   c1c->Divide(2,2);
   c1c->cd(1);
   h1c_1->Draw("colz");
-  tex1_1->Draw();
   c1c->cd(2);
   h1c_2->Draw("colz");
-  tex_energy->Draw();
   c1c->cd(3);
   gPad->SetLogx();h1c_3->Draw("colz");
+  c1c->cd(4);tex_energy->Draw();tex1_1->Draw();
 
+  TCanvas *c1d = new TCanvas("c1d");
+  c1d->Divide(2,2);
+  c1d->cd(1);h1d_1->Draw("colz");//func_1->Draw("same");
+  c1d->cd(2);h1d_2->Draw("colz");//func_1->Draw("same");
+  c1d->cd(3);gPad->SetLogx();gPad->SetLogy();h1d_3->Draw("colz");//func_1->Draw("same");
+  c1d->cd(4);tex_energy->Draw();tex1_1->Draw();
+
+  //----------------------------------
   //Electron Method using momentum as energy
+  //----------------------------------
   TCanvas *c2a = new TCanvas("c2a");
   c2a->Divide(2,2);
   c2a->cd(1);
   h2a_1->Draw("colz");
-  tex2_1->Draw();
   c2a->cd(2);
   h2a_2->Draw("colz");
-  tex_energy->Draw();
   c2a->cd(3);
   gPad->SetLogx();h2a_3->Draw("colz");
+  c2a->cd(4);tex_energy->Draw();tex2_1->Draw();
 
   TCanvas *c2b = new TCanvas("c2b");
   c2b->Divide(2,2);
   c2b->cd(1);
   h2b_1->Draw("colz");
-  tex2_1->Draw();
   c2b->cd(2);
   h2b_2->Draw("colz");
-  tex_energy->Draw();
   c2b->cd(3);
   gPad->SetLogx();h2b_3->Draw("colz");
+  c2b->cd(4);tex_energy->Draw();tex2_1->Draw();
 
   TCanvas *c2c = new TCanvas("c2c");
   c2c->Divide(2,2);
   c2c->cd(1);
   h2c_1->Draw("colz");
-  tex2_1->Draw();
   c2c->cd(2);
   h2c_2->Draw("colz");
-  tex_energy->Draw();
   c2c->cd(3);
   gPad->SetLogx();h2c_3->Draw("colz");
+  c2c->cd(4);tex_energy->Draw();tex2_1->Draw();
 
+  TCanvas *c2d = new TCanvas("c2d");
+  c2d->Divide(2,2);
+  c2d->cd(1);h2d_1->Draw("colz");//func_1->Draw("same");
+  c2d->cd(2);h2d_2->Draw("colz");//func_1->Draw("same");
+  c2d->cd(3);gPad->SetLogx();gPad->SetLogy();h2d_3->Draw("colz");//func_1->Draw("same");
+  c2d->cd(4);tex_energy->Draw();tex2_1->Draw();
+
+  //----------------------------------
+  //JB Method -- using jet
+  //----------------------------------
+  TCanvas *c3a = new TCanvas("c3a");
+  c3a->Divide(2,2);
+  c3a->cd(1);
+  h3a_1->Draw("colz");
+  c3a->cd(2);
+  h3a_2->Draw("colz");
+  c3a->cd(3);
+  gPad->SetLogx();h3a_3->Draw("colz");
+  c3a->cd(4);tex_energy->Draw();tex3_1->Draw();
+
+  TCanvas *c3b = new TCanvas("c3b");
+  c3b->Divide(2,2);
+  c3b->cd(1);
+  h3b_1->Draw("colz");
+  c3b->cd(2);
+  h3b_2->Draw("colz");
+  c3b->cd(3);
+  gPad->SetLogx();h3b_3->Draw("colz");
+  c3b->cd(4);tex_energy->Draw();tex3_1->Draw();
+
+  TCanvas *c3c = new TCanvas("c3c");
+  c3c->Divide(2,2);
+  c3c->cd(1);
+  h3c_1->Draw("colz");
+  c3c->cd(2);
+  h3c_2->Draw("colz");
+  c3c->cd(3);
+  gPad->SetLogx();h3c_3->Draw("colz");
+  c3c->cd(4);tex_energy->Draw();tex3_1->Draw();
+
+  TCanvas *c3d = new TCanvas("c3d");
+  c3d->Divide(2,2);
+  c3d->cd(1);h3d_1->Draw("colz");func_1->Draw("same");
+  c3d->cd(2);h3d_2->Draw("colz");func_1->Draw("same");
+  c3d->cd(3);gPad->SetLogx();gPad->SetLogy();h3d_3->Draw("colz");func_1->Draw("same");
+  c3d->cd(4);tex_energy->Draw();tex3_1->Draw();
+
+  //----------------------------------
+  //JB Method -- summing all particles
+  //----------------------------------
+  TCanvas *c4a = new TCanvas("c4a");
+  c4a->Divide(2,2);
+  c4a->cd(1);
+  h4a_1->Draw("colz");
+  c4a->cd(2);
+  h4a_2->Draw("colz");
+  c4a->cd(3);
+  gPad->SetLogx();h4a_3->Draw("colz");
+  c4a->cd(4);tex_energy->Draw();tex4_1->Draw();
+
+  TCanvas *c4b = new TCanvas("c4b");
+  c4b->Divide(2,2);
+  c4b->cd(1);
+  h4b_1->Draw("colz");
+  c4b->cd(2);
+  h4b_2->Draw("colz");
+  c4b->cd(3);
+  gPad->SetLogx();h4b_3->Draw("colz");
+  c4b->cd(4);tex_energy->Draw();tex4_1->Draw();
+
+  TCanvas *c4c = new TCanvas("c4c");
+  c4c->Divide(2,2);
+  c4c->cd(1);
+  h4c_1->Draw("colz");
+  c4c->cd(2);
+  h4c_2->Draw("colz");
+  c4c->cd(3);
+  gPad->SetLogx();h4c_3->Draw("colz");
+  c4c->cd(4);tex_energy->Draw();tex4_1->Draw();
+
+  TCanvas *c4d = new TCanvas("c4d");
+  c4d->Divide(2,2);
+  c4d->cd(1);h4d_1->Draw("colz");func_1->Draw("same");
+  c4d->cd(2);h4d_2->Draw("colz");func_1->Draw("same");
+  c4d->cd(3);gPad->SetLogx();gPad->SetLogy();h4d_3->Draw("colz");func_1->Draw("same");
+  c4d->cd(4);tex_energy->Draw();tex3_1->Draw();
+
+  //----------------------------------
   //JB 4-Vector Method
+  //----------------------------------
   TCanvas *c5a = new TCanvas("c5a");
   c5a->Divide(2,2);
   c5a->cd(1);
   h5a_1->Draw("colz");
-  tex5_1->Draw();
   c5a->cd(2);
   h5a_2->Draw("colz");
-  tex_energy->Draw();
   c5a->cd(3);
   gPad->SetLogx();h5a_3->Draw("colz");
+  c5a->cd(4);tex_energy->Draw();tex5_1->Draw();
 
   TCanvas *c5b = new TCanvas("c5b");
   c5b->Divide(2,2);
   c5b->cd(1);
   h5b_1->Draw("colz");
-  tex5_1->Draw();
   c5b->cd(2);
   h5b_2->Draw("colz");
-  tex_energy->Draw();
   c5b->cd(3);
   gPad->SetLogx();h5b_3->Draw("colz");
+  c5b->cd(4);tex_energy->Draw();tex5_1->Draw();
 
   TCanvas *c5c = new TCanvas("c5c");
   c5c->Divide(2,2);
   c5c->cd(1);
   h5c_1->Draw("colz");
-  tex5_1->Draw();
   c5c->cd(2);
   h5c_2->Draw("colz");
-  tex_energy->Draw();
   c5c->cd(3);
   gPad->SetLogx();h5c_3->Draw("colz");
+  c5c->cd(4);tex_energy->Draw();tex5_1->Draw();
+
+  //----------------------------------
+  //DA Method -- using jet
+  //----------------------------------
+  TCanvas *c6a = new TCanvas("c6a");
+  c6a->Divide(2,2);
+  c6a->cd(1);
+  h6a_1->Draw("colz");
+  c6a->cd(2);
+  h6a_2->Draw("colz");
+  c6a->cd(3);
+  gPad->SetLogx();h6a_3->Draw("colz");
+  c6a->cd(4);tex_energy->Draw();tex6_1->Draw();
+
+  TCanvas *c6b = new TCanvas("c6b");
+  c6b->Divide(2,2);
+  c6b->cd(1);
+  h6b_1->Draw("colz");
+  c6b->cd(2);
+  h6b_2->Draw("colz");
+  c6b->cd(3);
+  gPad->SetLogx();h6b_3->Draw("colz");
+  c6b->cd(4);tex_energy->Draw();tex6_1->Draw();
+
+  TCanvas *c6c = new TCanvas("c6c");
+  c6c->Divide(2,2);
+  c6c->cd(1);
+  h6c_1->Draw("colz");
+  c6c->cd(2);
+  h6c_2->Draw("colz");
+  c6c->cd(3);
+  gPad->SetLogx();h6c_3->Draw("colz");
+  c6c->cd(4);tex_energy->Draw();tex6_1->Draw();
+
+  //----------------------------------
+  //DA Method -- summing all particles
+  //----------------------------------
+  TCanvas *c7a = new TCanvas("c7a");
+  c7a->Divide(2,2);
+  c7a->cd(1);
+  h7a_1->Draw("colz");
+  c7a->cd(2);
+  h7a_2->Draw("colz");
+  c7a->cd(3);
+  gPad->SetLogx();h7a_3->Draw("colz");
+  c7a->cd(4);tex_energy->Draw();tex7_1->Draw();
+
+  TCanvas *c7b = new TCanvas("c7b");
+  c7b->Divide(2,2);
+  c7b->cd(1);
+  h7b_1->Draw("colz");
+  c7b->cd(2);
+  h7b_2->Draw("colz");
+  c7b->cd(3);
+  gPad->SetLogx();h7b_3->Draw("colz");
+  c7b->cd(4);tex_energy->Draw();tex7_1->Draw();
+
+  TCanvas *c7c = new TCanvas("c7c");
+  c7c->Divide(2,2);
+  c7c->cd(1);
+  h7c_1->Draw("colz");
+  c7c->cd(2);
+  h7c_2->Draw("colz");
+  c7c->cd(3);
+  gPad->SetLogx();h7c_3->Draw("colz");
+  c7c->cd(4);tex_energy->Draw();tex7_1->Draw();
 
   //Print to File
   if(energy_set == 1){
@@ -589,12 +1004,28 @@ void kinematic_resolution(){
     c1a->Print("./plots/kinematic_resolution_5_41.pdf");
     c1b->Print("./plots/kinematic_resolution_5_41.pdf");
     c1c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c1d->Print("./plots/kinematic_resolution_5_41.pdf");
     c2a->Print("./plots/kinematic_resolution_5_41.pdf");
     c2b->Print("./plots/kinematic_resolution_5_41.pdf");
     c2c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c2d->Print("./plots/kinematic_resolution_5_41.pdf");
+    c3a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c3b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c3c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c3d->Print("./plots/kinematic_resolution_5_41.pdf");
+    c4a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c4b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c4c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c4d->Print("./plots/kinematic_resolution_5_41.pdf");
     c5a->Print("./plots/kinematic_resolution_5_41.pdf");
     c5b->Print("./plots/kinematic_resolution_5_41.pdf");
     c5c->Print("./plots/kinematic_resolution_5_41.pdf");
-    c5c->Print("./plots/kinematic_resolution_5_41.pdf]");
+    c6a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c6b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c6c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c7a->Print("./plots/kinematic_resolution_5_41.pdf");
+    c7b->Print("./plots/kinematic_resolution_5_41.pdf");
+    c7c->Print("./plots/kinematic_resolution_5_41.pdf");
+    c7c->Print("./plots/kinematic_resolution_5_41.pdf]");
   }
 }
