@@ -96,8 +96,8 @@ Smear::Detector BuildMatrixDetector_0_1() {
   SmearPhiMuon.Accept.AddParticle(-13);
   det.AddDevice(SmearPhiMuon);
 
-  // emcal stretches to -4.5 < eta < 4.5
-  Smear::Acceptance::Zone AngleZoneEmcal(ThetaFromEta ( 4.5 ),ThetaFromEta ( -4.5 ));
+  // emcal stretches to -3.5 < eta < 3.5
+  Smear::Acceptance::Zone AngleZoneEmcal(ThetaFromEta ( 3.5 ),ThetaFromEta ( -3.5 ));
   Smear::Device SmearThetaEmcal(Smear::kTheta, "0.0");
   SmearThetaEmcal.Accept.AddZone(AngleZoneEmcal);
   SmearThetaEmcal.Accept.SetGenre(Smear::kElectromagnetic);
@@ -159,9 +159,9 @@ Smear::Detector BuildMatrixDetector_0_1() {
   // EIC Smear needs absolute sigma: sigma_E = Sqrt{const*const*E*E + stoc*stoc*E}
 
   // Back
-  // eta = -4.5 -- -2
+  // eta = -3.5 -- -2
   // stoch. = 2%
-  Smear::Acceptance::Zone EmcalBackZone(ThetaFromEta ( -2 ),ThetaFromEta ( -4.5 ));
+  Smear::Acceptance::Zone EmcalBackZone(ThetaFromEta ( -2 ),ThetaFromEta ( -3.5 ));
   Smear::Device EmcalBack(Smear::kE, "sqrt( pow ( 0.0*E,2 ) + pow( 0.02,2)*E)");
   EmcalBack.Accept.AddZone(EmcalBackZone);
   EmcalBack.Accept.SetGenre(Smear::kElectromagnetic);
@@ -177,9 +177,9 @@ Smear::Detector BuildMatrixDetector_0_1() {
   det.AddDevice(EmcalMidBack);
 
   // Forward
-  // eta = -1 -- 4.5
+  // eta = -1 -- 3.5
   // stoch. = 10-12%, use 12%
-  Smear::Acceptance::Zone EmcalFwdZone(ThetaFromEta ( 4.5 ),ThetaFromEta ( -1 ));
+  Smear::Acceptance::Zone EmcalFwdZone(ThetaFromEta ( 3.5 ),ThetaFromEta ( -1 ));
   Smear::Device EmcalFwd(Smear::kE, "sqrt( pow ( 0.0*E,2 ) + pow( 0.12,2)*E)");
   EmcalFwd.Accept.AddZone(EmcalFwdZone);
   EmcalFwd.Accept.SetGenre(Smear::kElectromagnetic);
@@ -211,14 +211,14 @@ Smear::Detector BuildMatrixDetector_0_1() {
   // eta = -1 -- 1
   // The matrix has nothing. As examples, one could turn to
   // ~CMS
-  // Smear::Device HcalBarrel(Smear::kE, "sqrt( pow( 0.07*E, 2) + pow( 0.85, 2)*E)");
+  Smear::Device HcalBarrel(Smear::kE, "sqrt( pow( 0.07*E, 2) + pow( 0.85, 2)*E)");
   // ~Zeus
   // Smear::Device HcalBarrel(Smear::kE, "sqrt( pow( 0.02*E, 2) + pow( 0.35,2) *E)");
 
-  // Smear::Acceptance::Zone HcalBarrelZone(ThetaFromEta ( 1 ),ThetaFromEta ( -1 ));
-  // HcalBarrel.Accept.AddZone(HcalBarrelZone);
-  // HcalBarrel.Accept.SetGenre(Smear::kHadronic);
-  // det.AddDevice(HcalBarrel);
+  Smear::Acceptance::Zone HcalBarrelZone(ThetaFromEta ( 1 ),ThetaFromEta ( -1 ));
+  HcalBarrel.Accept.AddZone(HcalBarrelZone);
+  HcalBarrel.Accept.SetGenre(Smear::kHadronic);
+  det.AddDevice(HcalBarrel);
 
   // Forward
   // eta = 1 -- 3.5
