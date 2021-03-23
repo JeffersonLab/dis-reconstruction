@@ -9,6 +9,7 @@ void kinematic_resolution(){
 
   cout << "Choose Which Beam Energies for ep" << endl;
   cout << "1) e = 5 GeV, p = 41 GeV" << endl;
+  cout << "2) e = 18 GeV, p = 275 GeV"<< endl;
   cin >> energy_set;
 
   //Constants                                                                                                        
@@ -18,6 +19,7 @@ void kinematic_resolution(){
   const double Mp(0.9383);
 
   if(energy_set == 1) s_cm = 4.*5*41;
+  if(energy_set == 2) s_cm = 4.*18*275;
 
   //We won't use these cuts when calculating the resolutions right now.
   //But keep them in case we want to make use of them in the future.
@@ -363,6 +365,13 @@ void kinematic_resolution(){
     for(int i=0;i<15;i++){
         tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d.root",i));
         tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d_perfect_smeared.root",i));
+    }
+  }
+
+  if(energy_set == 2){
+    for(int i=0;i<15;i++){
+        tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d_perfect_smeared.root",i));
     }
   }
 
@@ -751,6 +760,11 @@ void kinematic_resolution(){
 	  tex_energy->SetFillStyle(4000);tex_energy->SetTextFont(63);tex_energy->SetTextSize(15);
   }
 
+  if(energy_set == 2){
+    tex_energy->AddText("18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+	  tex_energy->SetFillStyle(4000);tex_energy->SetTextFont(63);tex_energy->SetTextSize(15);
+  }
+
   TPaveText *tex1_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
   tex1_1->AddText("#frac{True - Electron Method (using ECal Energy)}{True} vs. True");
   tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(10);
@@ -1121,5 +1135,38 @@ void kinematic_resolution(){
     c7c->Print("./plots/kinematic_resolution_5_41.pdf");
     c7d->Print("./plots/kinematic_resolution_5_41.pdf");
     c7d->Print("./plots/kinematic_resolution_5_41.pdf]");
+  }
+
+   if(energy_set == 2){
+    c1a->Print("./plots/kinematic_resolution_18_275.pdf[");
+    c1a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c1b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c1c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c1d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c2a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c2b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c2c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c2d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c3a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c3b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c3c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c3d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c4a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c4b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c4c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c4d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c5a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c5b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c5c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c5d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c6a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c6b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c6c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c6d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c7a->Print("./plots/kinematic_resolution_18_275.pdf");
+    c7b->Print("./plots/kinematic_resolution_18_275.pdf");
+    c7c->Print("./plots/kinematic_resolution_18_275.pdf");
+    c7d->Print("./plots/kinematic_resolution_18_275.pdf");
+    c7d->Print("./plots/kinematic_resolution_18_275.pdf]");
   }
 }

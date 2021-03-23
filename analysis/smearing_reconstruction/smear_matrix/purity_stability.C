@@ -44,7 +44,11 @@ void purity_stability(){
     x_bins[i] = pow(10,log_x_div);
   }
 
+  //Index holding variables
+  int gen1(0), gen2(0);
+
   //Bin Yields/Kinematics/Factors                                   
+  /*
   double y[nbins_x][nbins_Q2];
   double Q2_center[nbins_Q2];
   double x_center[nbins_x];
@@ -61,8 +65,6 @@ void purity_stability(){
   double y_max = 0.98;double y_min = 0.001;double W2_min = 10;
   double y_temp, W2_temp;
 
-  //Index holding variables
-  int gen1(0), gen2(0);
   for(int i=0;i<nbins_x;i++){ //x loop                                                                                             
     for(int j=0;j<nbins_Q2;j++){ //Q2 loop
 
@@ -89,8 +91,20 @@ void purity_stability(){
         cut_lr[i][j] = 1;
     }
   }
+  */
 
   //Histograms
+
+  //Set Style
+  gStyle->SetOptStat(0);
+  gStyle->SetPadBorderMode(0);
+  gStyle->SetFrameBorderMode(0);
+  gStyle->SetFrameLineWidth(2);
+  gStyle->SetTitleXSize(0.05);
+  gStyle->SetTitleXOffset(1.0);
+  gStyle->SetTitleYSize(0.05);
+  gStyle->SetTitleYOffset(1.0);
+
   TH2D *h0 = new TH2D("h0","Generated",25,x_bins,25,Q2_bins);
   h0->GetXaxis()->SetTitle("x");h0->GetXaxis()->CenterTitle();
   h0->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h0->GetYaxis()->CenterTitle();
@@ -168,6 +182,17 @@ void purity_stability(){
   TH2D *h4_6 = new TH2D("h4_6","DA Method Reconstructed (Summing over all particles)",25,x_bins,25,Q2_bins);
   h4_6->GetXaxis()->SetTitle("x");h4_6->GetXaxis()->CenterTitle();
   h4_6->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h4_6->GetYaxis()->CenterTitle();
+
+  //Define y=constant functions
+  double y_max = 0.95;double y_min = 1e-2;
+
+  TF1 *f_ymin = new TF1("f_ymin","x*[0]*[1]",1e-4,1);
+  f_ymin->SetLineColor(kRed);f_ymin->SetLineStyle(2);f_ymin->SetLineWidth(2);
+  f_ymin->SetParameters(s_cm,y_min);
+
+  TF1 *f_ymax = new TF1("f_ymax","x*[0]*[1]",1e-4,1);
+  f_ymax->SetLineColor(kRed);f_ymax->SetLineStyle(2);f_ymax->SetLineWidth(2);
+  f_ymax->SetParameters(s_cm,y_max);
 
   //--------------------------------//
   //   Analyse PYTHIA Simulation    //
@@ -557,55 +582,92 @@ void purity_stability(){
 
   //Make Latex
   TLatex *tex_energy = new TLatex();
+  TLatex *tex_ymin = new TLatex();
+  TLatex *tex_ymax = new TLatex();
   if(energy_set == 1){
     tex_energy->SetText(1e-4,1e3,"5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
     tex_energy->SetTextColor(kBlack);
     tex_energy->SetTextSize(0.035);
-  }  
+
+    tex_ymin->SetText(1.25e-2,0.15,Form("y = %.2f",y_min));
+    tex_ymin->SetTextColor(kRed);
+    tex_ymin->SetTextSize(0.035);tex_ymin->SetTextAngle(50);
+
+    tex_ymax->SetText(1.25e-4,0.15,Form("y = %.2f",y_max));
+    tex_ymax->SetTextColor(kRed);
+    tex_ymax->SetTextSize(0.035);tex_ymax->SetTextAngle(50);
+  }
+
 
   //Make Plots
-  gStyle->SetOptStat(0);
-
   TCanvas *c1 = new TCanvas("c1");
   c1->Divide(2,1);
-  c1->cd(1);gPad->SetLogx();gPad->SetLogy();h1_1->Draw("colz");
-  c1->cd(2);gPad->SetLogx();gPad->SetLogy();h1_2->Draw("colz");
+  c1->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h1_1->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c1->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h1_2->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c2 = new TCanvas("c2");
   c2->Divide(2,1);
-  c2->cd(1);gPad->SetLogx();gPad->SetLogy();h2_1->Draw("colz");
-  c2->cd(2);gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
+  c2->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h2_1->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c2->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c3 = new TCanvas("c3");
   c3->Divide(2,1);
-  c3->cd(1);gPad->SetLogx();gPad->SetLogy();h3_1->Draw("colz");
-  c3->cd(2);gPad->SetLogx();gPad->SetLogy();h3_2->Draw("colz");
+  c3->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_1->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c3->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_2->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c4 = new TCanvas("c4");
   c4->Divide(2,1);
-  c4->cd(1);gPad->SetLogx();gPad->SetLogy();h3_4->Draw("colz");
-  c4->cd(2);gPad->SetLogx();gPad->SetLogy();h3_5->Draw("colz");
+  c4->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_4->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c4->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_5->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c5 = new TCanvas("c5");
   c5->Divide(2,1);
-  c5->cd(1);gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
-  c5->cd(2);gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
+  c5->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c5->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c6 = new TCanvas("c6");
   c6->Divide(2,1);
-  c6->cd(1);gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
-  c6->cd(2);gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+  c6->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c6->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   TCanvas *c7 = new TCanvas("c7");
   c7->Divide(2,1);
-  c7->cd(1);gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
-  c7->cd(2);gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
+  c7->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
+  c7->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
+  f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
   //Print to File

@@ -9,6 +9,7 @@ void purity_stability(){
 
   cout << "Choose Which Beam Energies for ep" << endl;
   cout << "1) e = 5 GeV, p = 41 GeV" << endl;
+  cout << "2) e = 18 GeV, p = 275 GeV"<< endl;
   cin >> energy_set;
 
   //Constants                                                                                                        
@@ -18,6 +19,7 @@ void purity_stability(){
   const double Mp(0.9383);
 
   if(energy_set == 1) s_cm = 4.*5*41;
+  if(energy_set == 2) s_cm = 4.*18*275;
 
   //Cross Section Bins  
   //Q2 Binning                                                                        
@@ -91,6 +93,17 @@ void purity_stability(){
   }
 
   //Histograms
+  
+  //Set Style
+  gStyle->SetOptStat(0);
+  gStyle->SetPadBorderMode(0);
+  gStyle->SetFrameBorderMode(0);
+  gStyle->SetFrameLineWidth(2);
+  gStyle->SetTitleXSize(0.05);
+  gStyle->SetTitleXOffset(1.0);
+  gStyle->SetTitleYSize(0.05);
+  gStyle->SetTitleYOffset(1.0);
+
   TH2D *h0 = new TH2D("h0","Generated",25,x_bins,25,Q2_bins);
   h0->GetXaxis()->SetTitle("x");h0->GetXaxis()->CenterTitle();
   h0->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h0->GetYaxis()->CenterTitle();
@@ -190,6 +203,13 @@ void purity_stability(){
     }
   }
 
+  if(energy_set == 2){
+    for(int i=0;i<15;i++){
+        tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d_perfect_smeared.root",i));
+    }
+  }
+
   tree->AddFriend(tree_s,"Smeared"); //Smeared Tree
   tree->SetBranchAddress("event",&event);
   tree->SetBranchAddress("eventS",&event_s);
@@ -244,7 +264,7 @@ void purity_stability(){
   //Not going to apply pt cuts to jet. Don't see a reason to yet
   //auto selectJetEta = fastjet::SelectorEtaRange(etaMin+R,etaMax+R);
 
-  Int_t nevents = 100000;//tree->GetEntries();
+  Int_t nevents = 1e6;//tree->GetEntries();
   
   // Loop over all events
   for(int i=0;i<nevents;i++){
@@ -540,51 +560,71 @@ void purity_stability(){
     tex_energy->SetText(1e-4,1e3,"5 GeV e^{-} on 41 GeV p, #sqrt{s}=28.6 GeV");
     tex_energy->SetTextColor(kBlack);
     tex_energy->SetTextSize(0.035);
-  }  
+  }
+
+  if(energy_set == 2){
+    tex_energy->SetText(3e-5,3e3,"18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+    tex_energy->SetTextColor(kBlack);
+    tex_energy->SetTextSize(0.035);
+  }
 
   //Make Plots
   gStyle->SetOptStat(0);
 
   TCanvas *c1 = new TCanvas("c1");
   c1->Divide(2,1);
-  c1->cd(1);gPad->SetLogx();gPad->SetLogy();h1_1->Draw("colz");
-  c1->cd(2);gPad->SetLogx();gPad->SetLogy();h1_2->Draw("colz");
+  c1->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h1_1->Draw("colz");
+  c1->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h1_2->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c2 = new TCanvas("c2");
   c2->Divide(2,1);
-  c2->cd(1);gPad->SetLogx();gPad->SetLogy();h2_1->Draw("colz");
-  c2->cd(2);gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
+  c2->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h2_1->Draw("colz");
+  c2->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c3 = new TCanvas("c3");
   c3->Divide(2,1);
-  c3->cd(1);gPad->SetLogx();gPad->SetLogy();h3_1->Draw("colz");
-  c3->cd(2);gPad->SetLogx();gPad->SetLogy();h3_2->Draw("colz");
+  c3->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_1->Draw("colz");
+  c3->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_2->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c4 = new TCanvas("c4");
   c4->Divide(2,1);
-  c4->cd(1);gPad->SetLogx();gPad->SetLogy();h3_4->Draw("colz");
-  c4->cd(2);gPad->SetLogx();gPad->SetLogy();h3_5->Draw("colz");
+  c4->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_4->Draw("colz");
+  c4->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_5->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c5 = new TCanvas("c5");
   c5->Divide(2,1);
-  c5->cd(1);gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
-  c5->cd(2);gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
+  c5->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_7->Draw("colz");
+  c5->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h3_8->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c6 = new TCanvas("c6");
   c6->Divide(2,1);
-  c6->cd(1);gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
-  c6->cd(2);gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
+  c6->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_1->Draw("colz");
+  c6->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_2->Draw("colz");
   tex_energy->Draw();
 
   TCanvas *c7 = new TCanvas("c7");
   c7->Divide(2,1);
-  c7->cd(1);gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
-  c7->cd(2);gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
+  c7->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_4->Draw("colz");
+  c7->cd(2);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
+  gPad->SetLogx();gPad->SetLogy();h4_5->Draw("colz");
   tex_energy->Draw();
 
   //Print to File
@@ -598,5 +638,16 @@ void purity_stability(){
     c6->Print("./plots/purity_stability_5_41.pdf");
     c7->Print("./plots/purity_stability_5_41.pdf");
     c7->Print("./plots/purity_stability_5_41.pdf]");
+  }
+  if(energy_set == 2){
+    c1->Print("./plots/purity_stability_18_275.pdf[");
+    c1->Print("./plots/purity_stability_18_275.pdf");    
+    c2->Print("./plots/purity_stability_18_275.pdf");
+    c3->Print("./plots/purity_stability_18_275.pdf");
+    c4->Print("./plots/purity_stability_18_275.pdf");
+    c5->Print("./plots/purity_stability_18_275.pdf");
+    c6->Print("./plots/purity_stability_18_275.pdf");
+    c7->Print("./plots/purity_stability_18_275.pdf");
+    c7->Print("./plots/purity_stability_18_275.pdf]");
   }
 }
