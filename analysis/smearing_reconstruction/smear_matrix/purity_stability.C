@@ -9,6 +9,7 @@ void purity_stability(){
 
   cout << "Choose Which Beam Energies for ep" << endl;
   cout << "1) e = 5 GeV, p = 41 GeV" << endl;
+  cout << "2) e = 18 GeV, p = 275 GeV"<< endl;
   cin >> energy_set;
 
   //Constants                                                                                                        
@@ -18,6 +19,7 @@ void purity_stability(){
   const double Mp(0.9383);
 
   if(energy_set == 1) s_cm = 4.*5*41;
+  if(energy_set == 2) s_cm = 4.*18*275;
 
   //Cross Section Bins  
   //Q2 Binning                                                                        
@@ -186,11 +188,11 @@ void purity_stability(){
   //Define y=constant functions
   double y_max = 0.95;double y_min = 1e-2;
 
-  TF1 *f_ymin = new TF1("f_ymin","x*[0]*[1]",1e-4,1);
+  TF1 *f_ymin = new TF1("f_ymin","x*[0]*[1]",1e-5,1);
   f_ymin->SetLineColor(kRed);f_ymin->SetLineStyle(2);f_ymin->SetLineWidth(2);
   f_ymin->SetParameters(s_cm,y_min);
 
-  TF1 *f_ymax = new TF1("f_ymax","x*[0]*[1]",1e-4,1);
+  TF1 *f_ymax = new TF1("f_ymax","x*[0]*[1]",1e-5,1);
   f_ymax->SetLineColor(kRed);f_ymax->SetLineStyle(2);f_ymax->SetLineWidth(2);
   f_ymax->SetParameters(s_cm,y_max);
 
@@ -212,6 +214,13 @@ void purity_stability(){
     for(int i=0;i<15;i++){
         tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d.root",i));
         tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d_matrixsmear.root",i));
+    }
+  }
+
+  if(energy_set == 2){
+    for(int i=0;i<15;i++){
+        tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d_matrixsmear.root",i));
     }
   }
 
@@ -598,6 +607,20 @@ void purity_stability(){
     tex_ymax->SetTextSize(0.035);tex_ymax->SetTextAngle(50);
   }
 
+  if(energy_set == 2){
+    tex_energy->SetText(3e-5,1e3,"18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+    tex_energy->SetTextColor(kBlack);
+    tex_energy->SetTextSize(0.035);
+
+    tex_ymin->SetText(1.5e-3,0.15,Form("y = %.2f",y_min));
+    tex_ymin->SetTextColor(kRed);
+    tex_ymin->SetTextSize(0.035);tex_ymin->SetTextAngle(50);
+
+    tex_ymax->SetText(1.5e-5,0.15,Form("y = %.2f",y_max));
+    tex_ymax->SetTextColor(kRed);
+    tex_ymax->SetTextSize(0.035);tex_ymax->SetTextAngle(50);
+  }
+
 
   //Make Plots
   TCanvas *c1 = new TCanvas("c1");
@@ -681,5 +704,16 @@ void purity_stability(){
     c6->Print("./plots/purity_stability_5_41.pdf");
     c7->Print("./plots/purity_stability_5_41.pdf");
     c7->Print("./plots/purity_stability_5_41.pdf]");
+  }
+  if(energy_set == 2){
+    c1->Print("./plots/purity_stability_18_275.pdf[");
+    c1->Print("./plots/purity_stability_18_275.pdf");    
+    c2->Print("./plots/purity_stability_18_275.pdf");
+    c3->Print("./plots/purity_stability_18_275.pdf");
+    c4->Print("./plots/purity_stability_18_275.pdf");
+    c5->Print("./plots/purity_stability_18_275.pdf");
+    c6->Print("./plots/purity_stability_18_275.pdf");
+    c7->Print("./plots/purity_stability_18_275.pdf");
+    c7->Print("./plots/purity_stability_18_275.pdf]");
   }
 }

@@ -9,6 +9,7 @@ void kinematic_resolution_ycut(){
 
   cout << "Choose Which Beam Energies for ep" << endl;
   cout << "1) e = 5 GeV, p = 41 GeV" << endl;
+  cout << "2) e = 18 GeV, p = 275 GeV"<< endl;
   cin >> energy_set;
 
   //Constants                                                                                                        
@@ -18,6 +19,7 @@ void kinematic_resolution_ycut(){
   const double Mp(0.9383);
 
   if(energy_set == 1) s_cm = 4.*5*41;
+  if(energy_set == 2) s_cm = 4.*18*275;
 
   //We will apply cuts on the true y in this version
   double y_max = 0.95;double y_min = 1e-2;
@@ -359,6 +361,13 @@ void kinematic_resolution_ycut(){
     for(int i=0;i<15;i++){
         tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d.root",i));
         tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/5_41/ep_5_41_newtune_%d_matrixsmear.root",i));
+    }
+  }
+
+  if(energy_set == 2){
+    for(int i=0;i<15;i++){
+        tree->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d.root",i));
+        tree_s->Add(Form("/eic/data/baraks/pythiaeRHIC/outfiles/yellow_report/18_275/ep_18_275_newtune_%d_matrixsmear.root",i));
     }
   }
 
@@ -769,6 +778,11 @@ void kinematic_resolution_ycut(){
 	  tex_energy->SetFillStyle(4000);tex_energy->SetTextFont(63);tex_energy->SetTextSize(15);
   }
 
+  if(energy_set == 2){
+    tex_energy->AddText("18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+	  tex_energy->SetFillStyle(4000);tex_energy->SetTextFont(63);tex_energy->SetTextSize(15);
+  }
+
   TPaveText *texy = new TPaveText(0.1,0.3,0.9,0.5,"NDCNB");
   texy->AddText(Form("%.2f < y_{true} < %.2f",y_min,y_max));
   texy->SetFillStyle(4000);texy->SetTextFont(63);texy->SetTextSize(10);
@@ -1143,5 +1157,37 @@ void kinematic_resolution_ycut(){
     c7c->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     c7d->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     c7d->Print("./plots/kinematic_resolution_ycut_5_41.pdf]");
+  }
+  if(energy_set == 2){
+    c1a->Print("./plots/kinematic_resolution_ycut_18_275.pdf[");
+    c1a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c1b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c1c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c1d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c2a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c2b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c2c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c2d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c3a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c3b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c3c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c3d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c4a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c4b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c4c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c4d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c5a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c5b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c5c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c5d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c6a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c6b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c6c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c6d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c7a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c7b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c7c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c7d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    c7d->Print("./plots/kinematic_resolution_ycut_18_275.pdf]");
   }
 }
