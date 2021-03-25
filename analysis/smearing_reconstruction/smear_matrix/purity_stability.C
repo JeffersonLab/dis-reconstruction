@@ -374,14 +374,24 @@ void purity_stability(){
           if(id[j]==22 || id[j]==130 || id[j]==2112){
 
             double neutral_mom = 0;
+            int neutral_id = id[j];
 
-            switch(id[j]){
+            switch(neutral_id){
               case 22:
                 neutral_mom = holdE_h;
+                break;
               case 130:
-                neutral_mom = sqrt(holdE_h*holdE_h - 0.4976*0.4976);
+                if(holdE_h>0.4976)
+                  neutral_mom = sqrt(holdE_h*holdE_h - 0.4976*0.4976);
+                else
+                  neutral_mom = 0;
+                break;
               case 2112:
-                neutral_mom = sqrt(holdE_h*holdE_h - 0.9396*0.9396);
+                if(holdE_h>0.9396)
+                  neutral_mom = sqrt(holdE_h*holdE_h - 0.9396*0.9396);
+                else
+                  neutral_mom = 0;
+                break;
             }
 
             holdpx_h = neutral_mom * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
@@ -400,10 +410,10 @@ void purity_stability(){
           Etot_sumh_s =  Etot_sumh_s + holdE_h;
 
           //Fast Jet
-	        fourvec[0] = particle_s->GetPx();
-	        fourvec[1] = particle_s->GetPy();
-	        fourvec[2] = particle_s->GetPz();
-	        fourvec[3] = particle_s->GetE();
+	        fourvec[0] = (double) holdpx_h;
+	        fourvec[1] = (double) holdpy_h;
+	        fourvec[2] = (double) holdpz_h;
+	        fourvec[3] = (double) holdE_h;
 
 	        fastjet::PseudoJet finalStateParticle(fourvec);
 	        finalStateParticle.set_user_index(j);
