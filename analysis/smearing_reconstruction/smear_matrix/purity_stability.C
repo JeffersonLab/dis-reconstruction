@@ -278,7 +278,7 @@ void purity_stability(){
   //Not going to apply pt cuts to jet. Don't see a reason to yet
   //auto selectJetEta = fastjet::SelectorEtaRange(etaMin+R,etaMax+R);
 
-  Int_t nevents = 1e6;//tree->GetEntries();
+  Int_t nevents = 3e6;//tree->GetEntries();
   
   // Loop over all events
   for(int i=0;i<nevents;i++){
@@ -618,7 +618,7 @@ void purity_stability(){
   }
 
   if(energy_set == 2){
-    tex_energy->SetText(3e-5,1e3,"18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
+    tex_energy->SetText(3e-5,3e3,"18 GeV e^{-} on 275 GeV p, #sqrt{s}=141 GeV");
     tex_energy->SetTextColor(kBlack);
     tex_energy->SetTextSize(0.035);
 
@@ -703,8 +703,19 @@ void purity_stability(){
   f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
-  //Print to File
+  //Print to ROOT and pdf Files
   if(energy_set == 1){
+
+    TFile *fout = new TFile("root_out/purity_stability_out_5_41.root","RECREATE");
+    h1_1->Write();h1_2->Write();
+    h2_1->Write();h2_2->Write();
+    h3_1->Write();h3_2->Write();
+    h3_4->Write();h3_5->Write();
+    h3_7->Write();h3_8->Write();
+    h4_1->Write();h4_2->Write();
+    h4_4->Write();h4_5->Write();
+    fout->Write();fout->Close();
+
     c1->Print("./plots/purity_stability_5_41.pdf[");
     c1->Print("./plots/purity_stability_5_41.pdf");    
     c2->Print("./plots/purity_stability_5_41.pdf");
@@ -716,6 +727,17 @@ void purity_stability(){
     c7->Print("./plots/purity_stability_5_41.pdf]");
   }
   if(energy_set == 2){
+
+    TFile *fout = new TFile("root_out/purity_stability_out_18_275.root","RECREATE");
+    h1_1->Write();h1_2->Write();
+    h2_1->Write();h2_2->Write();
+    h3_1->Write();h3_2->Write();
+    h3_4->Write();h3_5->Write();
+    h3_7->Write();h3_8->Write();
+    h4_1->Write();h4_2->Write();
+    h4_4->Write();h4_5->Write();
+    fout->Write();fout->Close();
+
     c1->Print("./plots/purity_stability_18_275.pdf[");
     c1->Print("./plots/purity_stability_18_275.pdf");    
     c2->Print("./plots/purity_stability_18_275.pdf");
