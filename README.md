@@ -5,9 +5,9 @@
 eic-smear package
 -----------------
 
-Documentation for the eic-smear package can be found [here](https://wiki.bnl.gov/eic/index.php/Monte_Carlo_and_Smearing) and [here](https://wiki.bnl.gov/eic/index.php/Smearing). The most up-to-date version of the eic-smear code is [here](https://gitlab.com/eic/eic-smear).
+Documentation for the eic-smear package can be found [here](https://eic.github.io/software/eicsmear.html) and [here](https://wiki.bnl.gov/eic/index.php/Smearing). The most up-to-date version of the eic-smear code is [here](https://gitlab.com/eic/eic-smear).
 
-The EIC versions of various event generators provide output that can be directly fed into the eic-smear software. See [here](https://wiki.bnl.gov/eic/index.php/Simulations#Event_Generators). In particular, look at the information for [PYTHIA](https://wiki.bnl.gov/eic/index.php/PYTHIA) and [DJANGOH](https://wiki.bnl.gov/eic/index.php/DJANGOH).
+The EIC versions of various event generators provide output that can be directly fed into the eic-smear software. See [here](https://wiki.bnl.gov/eic/index.php/Simulations#Event_Generators). In particular, look at the information for [PYTHIA](https://eic.github.io/software/pythia6.html) and [DJANGOH](https://eic.github.io/software/djangoh.html).
 
 <br/>
 
@@ -58,9 +58,9 @@ Working with the Singularity container or Docker image
 ------------------------------------------------------
 You can also use a Singularity container to access the EIC software. General instructions can be found [here](https://eic.github.io/software/eicsmear_generators_singularity.html).
 
-A ready-made image is provided by the sPHENIX collaboration (https://github.com/EIC-Detector/Singularity) to run the software -- this works best on linux. I was able to get "Option-2" to work on an Ubuntu box. If you have MacOS or Windows, it may be better to use the virtual box as they suggest (https://github.com/EIC-Detector/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
+A ready-made image is provided by the sPHENIX collaboration (https://github.com/eic/Singularity) to run the software -- this works best on linux. I was able to get "Option-2" to work on an Ubuntu box. If you have MacOS or Windows, it may be better to use the virtual box as they suggest (https://github.com/eic/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
 
-Information on accessing the EIC software through the ESCalate package can be found [here](https://eic.gitlab.io/documents/quickstart/#ESCalate).
+Information on accessing the EIC software through the ESCalate package can be found [here](https://eic.github.io/software/escalate.html).
 
 <br/>
 
