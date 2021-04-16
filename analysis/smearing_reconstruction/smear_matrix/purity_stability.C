@@ -278,7 +278,7 @@ void purity_stability(){
   //Not going to apply pt cuts to jet. Don't see a reason to yet
   //auto selectJetEta = fastjet::SelectorEtaRange(etaMin+R,etaMax+R);
 
-  Int_t nevents = 3e6;//tree->GetEntries();
+  Int_t nevents = tree->GetEntries();
   
   // Loop over all events
   for(int i=0;i<nevents;i++){
