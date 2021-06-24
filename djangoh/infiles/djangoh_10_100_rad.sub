@@ -1,0 +1,10 @@
+Universe       = vanilla
+Notification   = Never
+Executable     = run_yellow_10_100_rad.sh
+GetEnv         = True
+Input	       = /dev/null
+Arguments      = "$(Process)"
+Output         = jobout/10_100_rad.out.$(Process)
+Error          = jobout/10_100_rad.err.$(Process)
+Log            = jobout/10_100.log.$(Process)
+Queue 15
