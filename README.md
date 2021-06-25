@@ -80,8 +80,8 @@ The "analysis" folder gives several examples of analyzing the smeared (and gener
 
 Minimum bias simulation data located on the RACF
 ------------------------------------------------
-|Data Set| Generator | Beam Energies        | Kinematics                                                                      | Number of Events | Int. Luminosity       |
-|:-------|:---------:|:--------------------:|:-------------------------------------------------------------------------------:|:----------------:|:----------------------| 
+|Data Set| Generator | Beam Energies        | Run Information                                                                 | Number of Events | Int. Luminosity       |
+|:-------|:---------:|:--------------------:|:-------------------------------------------------------------------------------:|:----------------:|:---------------------:| 
 |1       | Pythia6   | 5x41   GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  100 million     | 0.14 fb<sup>-1</sup>  |
 |2       | Pythia6   | 5x41   GeV e-p       | Q<sup>2</sup> > 3.0 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  100 million     | 0.96 fb<sup>-1</sup>  |
 |3       | Pythia6   | 5x100  GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     |                       |
