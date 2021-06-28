@@ -84,21 +84,21 @@ Minimum bias simulation data located on the RACF
 |:-------|:---------:|:--------------------:|:-------------------------------------------------------------------------------:|:----------------:|:---------------------:| 
 |1       | Pythia6   | 5x41   GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  100 million     | 0.14 fb<sup>-1</sup>  |
 |2       | Pythia6   | 5x41   GeV e-p       | Q<sup>2</sup> > 3.0 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  100 million     | 0.96 fb<sup>-1</sup>  |
-|3       | Pythia6   | 5x100  GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     |                       |
-|4       | Pythia6   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  11  million     |                       |
-|5       | Pythia6   | 10x110 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     |                       |
-|6       | Pythia6   | 18x110 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     |                       |
-|7       | Pythia6   | 18x275 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     |                       |
-|8       | Pythia6   | 27.5x920 GeV e+p     | Q<sup>2</sup> > 1.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  10  million     |                       |
+|3       | Pythia6   | 5x100  GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     | 0.016 fb<sup>-1</sup> |
+|4       | Pythia6   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  11  million     | 9.9e-3 fb<sup>-1</sup>|
+|5       | Pythia6   | 10x110 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     | 0.013 fb<sup>-1</sup> |
+|6       | Pythia6   | 18x110 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     | 0.011 fb<sup>-1</sup> |
+|7       | Pythia6   | 18x275 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  15  million     | 9.0e-3 fb<sup>-1</sup>|
+|8       | Pythia6   | 27.5x920 GeV e+p     | Q<sup>2</sup> > 1.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  10  million     | 0.011 fb<sup>-1</sup> |
 |9       | Djangoh   | 5x41   GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     | 0.014 fb<sup>-1</sup> |
-|10      | Djangoh   | 5x100  GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     |                       |
-|11      | Djangoh   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     |                       |
-|12      | Djangoh   | 18x275 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     |                       |
-|13      | Djangoh   | 27.6x920 GeV e+p     | Q<sup>2</sup> > 1.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~2.5 million    |                       |
+|10      | Djangoh   | 5x100  GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     | 0.011 fb<sup>-1</sup> |
+|11      | Djangoh   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     | 9.1e-3 fb<sup>-1</sup>|
+|12      | Djangoh   | 18x275 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~10 million     | 6.6e-3 fb<sup>-1</sup>|
+|13      | Djangoh   | 27.6x920 GeV e+p     | Q<sup>2</sup> > 1.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation OFF          |  ~2.5 million    | 3.5e-3 fb<sup>-1</sup>|
 |14      | Pythia6   | 5x41   GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  500 million     | 6.3e-3 fb<sup>-1</sup>|
-|15      | Pythia6   | 10x100 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     |                       |
-|16      | Pythia6   | 18x275 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     |                       |
-|17      | Djangoh   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation ON           |  ~15 million     |                       |
+|15      | Pythia6   | 10x100 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     | 2.3e-3 fb<sup>-1</sup>|
+|16      | Pythia6   | 18x275 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     | 1.7e-3 fb<sup>-1</sup>|
+|17      | Djangoh   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation ON           |  ~15 million     | 0.013 fb<sup>-1</sup> |
   
   
 Some comments on the generator kinematic limits. Pythia6 always applies a hard cut of W > 2 GeV. Djangoh requires Q<sup>2</sup> > 0.2 GeV<sup>2</sup>, and it always applies a hard cut of W > ~3.38 GeV.
