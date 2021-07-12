@@ -99,9 +99,10 @@ Minimum bias simulation data located on the RACF
 |15      | Pythia6   | 10x100 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     | 2.3e-3 fb<sup>-1</sup>|
 |16      | Pythia6   | 18x275 GeV e-p       | Q<sup>2</sup> down to photo-production limit; NC unpolarized; QED Radiation OFF |  300 million     | 1.7e-3 fb<sup>-1</sup>|
 |17      | Djangoh   | 10x100 GeV e-p       | Q<sup>2</sup> > 0.5 GeV<sup>2</sup>; NC unpolarized; QED Radiation ON           |  ~15 million     | 0.013 fb<sup>-1</sup> |
+|18      | Pythia8   | 18x275 GeV e-p       | Q<sup>2</sup> > 1.0 GeV<sup>2</sup>; NC unpolarized                             |  ~15 million     | 0.022 fb<sup>-1</sup> |
   
   
-Some comments on the generator kinematic limits. Pythia6 always applies a hard cut of W > 2 GeV. Djangoh requires Q<sup>2</sup> > 0.2 GeV<sup>2</sup>, and it always applies a hard cut of W > ~3.38 GeV.
+Some comments on the generator kinematic limits when QED radiation is OFF. Pythia6 always applies a hard cut of W > 2 GeV. Djangoh requires Q<sup>2</sup> > 0.2 GeV<sup>2</sup>, and it always applies a hard cut of W > ~3.38 GeV. Pythia8 seems to require Q<sup>2</sup> > 1.0 GeV<sup>2</sup>.
 
 <br/>
 
@@ -126,6 +127,7 @@ The paths on the RACF machines to the above data-sets are as follows:
 |15      |/gpfs02/eic/baraks/pythia/outfiles/other_studies/10_100/local_build|
 |16      |/gpfs02/eic/baraks/pythia/outfiles/other_studies/18_275/fullQ2     |
 |17      |/gpfs02/eic/baraks/djangoh/outfiles/yellow/10_100/Rad              |
+|18      |/gpfs02/eic/baraks/pythia8/basic_DIS/output                        |
 
 <br/>
 
