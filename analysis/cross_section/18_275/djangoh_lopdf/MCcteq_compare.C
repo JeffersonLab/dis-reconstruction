@@ -454,6 +454,121 @@ void MCcteq_compare(){
         counter=0;
     }
 
+    //---------------------------------
+    //Analyse Pythia8 simulation
+    //---------------------------------
+    //Load ROOT Files
+    erhic::EventHepMC *event_p8(NULL); //Event Class
+    erhic::ParticleMC *particle_p8(NULL); //Particle Class
+
+    TChain *t_p8 = new TChain("EICTree");
+    for(int i=0;i<15;i++){
+        t_p8->Add(Form("/gpfs02/eic/baraks/pythia8/basic_DIS/output/hepmc_out_%d.root",i));
+    }
+
+    t_p8->SetBranchAddress("event",&event_p8);
+
+    //Calculate Generated Luminosity
+    int nevents_p8 = t_p8->GetEntries();
+    double cross_tot_p8 = 6.54E8; //Total Cross Section in fb
+    double lum_p8 = ( (double) nevents_p8)/cross_tot_p8; //Luminosity in fb^-1
+
+    cout<<"-------------------------------"<<endl;
+    cout<<"PYTHIA8 Simulation:"<<endl;
+    cout<<"Total Number of Events = "<<nevents_p8<<endl;
+    cout<<"Integrated Luminosity = "<<lum_p8<<" fb^-1"<<endl<<endl;
+
+    //Reset Variables
+    for(int i=0;i<nbins;i++){ //x loop
+        for(int j=0;j<nbins_Q2;j++){ //Q2 loop
+            yield[i][j]=0;  
+            error[i][j]=0;
+            rcs[i][j]=0;
+        }
+    }
+
+    //Loop over events
+    for(int k=0;k<nevents_p8;k++){
+        if(k%10000==0) cout<<"Events Analysed = "<<k<<"!"<<endl;
+        t_p8->GetEntry(k);
+
+        Q2_event = event_p8->GetQ2();
+        x_event = event_p8->GetX();
+        y_event = event_p8->GetY();
+        W2_event = event_p8->GetW2();
+
+        for(int i=0;i<nbins;i++){
+            for(int j=0;j<nbins_Q2;j++){
+                if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j] &&
+                    y_event>ymin && W2_event>W2min && y_event<ymax) //PYTHIA8 seems to have hard cut Q2>1GeV2; no hard W cut
+                    yield[i][j]+=1.;
+            }
+        }
+    }
+
+    //Convert Yields to reduced cross sections
+    for(int i=0;i<nbins;i++){
+        for(int j=0;j<nbins_Q2;j++){
+            rcs[i][j] = rcs_factor[i][j] * (yield[i][j]) / (lum_p8*x_width[i]*Q2_width[j]);
+            if(yield[i][j]>0) error[i][j] = (rcs[i][j]) / (sqrt(yield[i][j]));
+        }
+    }
+
+    //Create and fill TGraphs
+    TGraphErrors *gr1_p8[nbins_Q2]; //Without Bin-Centering Correction
+    TGraphErrors *gr1_p8a[nbins_Q2]; //Trick to thicken marker
+    TGraphErrors *gr1_p8b[nbins_Q2]; //''
+
+    TGraphErrors *gr2_p8[nbins_Q2]; //With Bin-Centering Correction
+    TGraphErrors *gr2_p8a[nbins_Q2]; //Trick to thicken marker
+    TGraphErrors *gr2_p8b[nbins_Q2]; //''
+
+    for(int j=0;j<nbins_Q2;j++){
+        gr1_p8[j] = new TGraphErrors();
+        gr1_p8[j]->SetLineWidth(2);
+        gr1_p8[j]->SetLineColor(kGreen);
+        gr1_p8[j]->SetMarkerStyle(25);
+        gr1_p8[j]->SetMarkerColor(kGreen);
+
+        gr2_p8[j] = new TGraphErrors();
+        gr2_p8[j]->SetLineWidth(2);
+        gr2_p8[j]->SetLineColor(kGreen);
+        gr2_p8[j]->SetMarkerStyle(25);
+        gr2_p8[j]->SetMarkerColor(kGreen);
+    }
+
+    for(int j=0;j<nbins_Q2;j++){
+        for(int i=0;i<nbins;i++){
+            if(yield[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
+                gr1_p8[j]->SetPoint(counter,x_center[i],rcs[i][j]);
+                gr1_p8[j]->SetPointError(counter,0,error[i][j]);
+                
+                gr2_p8[j]->SetPoint(counter,x_center[i],rcs[i][j]*bc_fac_a[i][j]);
+                gr2_p8[j]->SetPointError(counter,0,error[i][j]*bc_fac_a[i][j]);
+
+                counter++;
+            }
+        }
+        counter=0;
+    }
+
+    //Trick to thicken marker
+    for(int j=0;j<nbins_Q2;j++){
+        gr1_p8a[j] = (TGraphErrors*) gr1_p8[j]->Clone();
+        gr1_p8a[j]->SetMarkerSize(0.9);
+        gr1_p8b[j] = (TGraphErrors*) gr1_p8[j]->Clone();
+        gr1_p8b[j]->SetMarkerSize(1.1);
+
+        gr2_p8a[j] = (TGraphErrors*) gr2_p8[j]->Clone();
+        gr2_p8a[j]->SetMarkerSize(0.9);
+        gr2_p8b[j] = (TGraphErrors*) gr2_p8[j]->Clone();
+        gr2_p8b[j]->SetMarkerSize(1.1);
+    }
+
+    //---------------------------------
+    //Finished simulation analysis...
+    //...begin plotting work
+    //---------------------------------
     //Latex Labels
     TLatex *tex1[num_plot], *tex1a[num_plot];
     TLatex *tex1b[num_plot], *tex1c[num_plot]; //Error plots
@@ -504,8 +619,11 @@ void MCcteq_compare(){
     TLatex *tex3 = new TLatex(3E-4,1.45,Form("Pythia6 e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
     tex3->SetTextColor(kRed);tex3->SetTextFont(62);
 
-    TLatex *tex4 = new TLatex(3E-4,1.3,Form("Djangoh e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
+    TLatex *tex4 = new TLatex(3E-4,1.32,Form("Djangoh e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
     tex4->SetTextColor(kMagenta);tex4->SetTextFont(62);
+
+    TLatex *tex5 = new TLatex(3E-4,1.19,Form("Pythia8 e^{-}p, %.0e<y<%.2f and W^{2}>%.0fGeV^{2}",ymin,ymax,W2min));
+    tex5->SetTextColor(kGreen);tex5->SetTextFont(62);
 
     TLatex *tex6 = new TLatex(1E-3,1.6,"cteq6l1 (10042)");
     tex6->SetTextColor(kBlue);tex6->SetTextFont(62);
@@ -559,8 +677,10 @@ void MCcteq_compare(){
     counter = 0;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c1->cd(2); 
     gPad->SetLogx();
@@ -574,6 +694,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
 
@@ -589,6 +711,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c1->cd(4);
@@ -603,6 +727,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     TCanvas *c2 = new TCanvas("c2");
@@ -620,8 +746,10 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c2->cd(2);
     gPad->SetLogx();
@@ -635,6 +763,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
     
@@ -650,6 +780,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2->cd(4);
@@ -664,6 +796,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     //Bin-centered MC vs. cteq diff. cs
@@ -683,8 +817,10 @@ void MCcteq_compare(){
     counter = 0;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c1a->cd(2); 
     gPad->SetLogx();
@@ -698,6 +834,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
 
@@ -713,6 +851,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c1a->cd(4);
@@ -727,6 +867,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     TCanvas *c2a = new TCanvas("c2a");
@@ -744,8 +886,10 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c2a->cd(2);
     gPad->SetLogx();
@@ -759,6 +903,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
     
@@ -774,6 +920,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2a->cd(4);
@@ -788,6 +936,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1[counter]->Draw("C Same");
     gr2[Q2_bin_plot[counter]]->Draw("P Same");gr2_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr2_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr2_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     //Average MC diff. cs in bin vs. average cteq diff. cs in bin
@@ -807,8 +957,10 @@ void MCcteq_compare(){
     counter = 0;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c1b->cd(2); 
     gPad->SetLogx();
@@ -822,6 +974,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
 
@@ -837,6 +991,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c1b->cd(4);
@@ -851,6 +1007,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     TCanvas *c2b = new TCanvas("c2b");
@@ -868,8 +1026,10 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();tex4->Draw();tex5->Draw();
 
     c2b->cd(2);
     gPad->SetLogx();
@@ -883,6 +1043,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex6->Draw();
     
@@ -898,6 +1060,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2b->cd(4);
@@ -912,6 +1076,8 @@ void MCcteq_compare(){
     counter++;
     cteq6l1_a[Q2_bin_plot[counter]]->Draw("L Same");
     gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_p8a[Q2_bin_plot[counter]]->Draw("P Same");gr1_p8b[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     //Print to File

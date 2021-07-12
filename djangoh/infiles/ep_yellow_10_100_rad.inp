@@ -1,7 +1,7 @@
 OUTFILENAM
 outfiles/djangoh.NC.Rad.10x100
 TITLE
-DJANGOH 4.6.10 for eRHIC for PR, LO at 10x100, Wmin=2.0
+DJANGOH 4.6.10 for eRHIC for PR, LO at 10x100
 EL-BEAM
             10D0    0.0D0    -1
 PR-BEAM
@@ -9,11 +9,11 @@ PR-BEAM
 GSW-PARAM
             2 1 3 1 1 1 2 1 1 1 1
 KINEM-CUTS
-            3   1D-9  1.00D0  1D-9  1.00D0  0.5D0  2.0D4  2.0D00
+            3   1D-9  1.00D0  1D-9  1.00D0  0.5D0  2.0D4  0.5D0
 EGAM-MIN
             0D0
 INT-OPT-NC
-            1 18 18 18 18   0 0 0 0 
+            1 18 18 18 18   0 0 0 0
 INT-OPT-CC
             0 0 0 0
 INT-ONLY
