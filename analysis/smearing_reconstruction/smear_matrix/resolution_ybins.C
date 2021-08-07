@@ -271,13 +271,13 @@ void resolution_ybins(){
 	      }
 
 	      //Put hadrons into PseudoJet object
+        //Use simple 'energy-flow' algorithm
 	      if(j!=electronIndex && Status_s[j]==1){
-          
-          //Summing over all particles
-          holdE_h = particle_s->GetE();
 
-          //handle neutral particles
+          //handle neutral particles (use ecal for photons or hcal for kaons/nuetrons and assume perfect pid)
           if(id[j]==22 || id[j]==130 || id[j]==2112){
+
+            holdE_h = particle_s->GetE();
 
             double neutral_mom = 0;
             int neutral_id = id[j];
@@ -305,9 +305,12 @@ void resolution_ybins(){
             holdpz_h = neutral_mom * cos( particle_s->GetTheta() );
 
           }else{
+
+            //Use tracker and assume perfect pid
             holdpx_h = particle_s->GetPx();
             holdpy_h = particle_s->GetPy();
             holdpz_h = particle_s->GetPz();
+            holdE_h = sqrt(particle_s->GetP()*particle_s->GetP() + particle->GetM()*particle->GetM());
           }
 
           pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
@@ -575,43 +578,52 @@ void resolution_ybins(){
   //---
   cout<<endl<<"For Electron method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h1a[ibin]->GetMean()),fabs(h1a[ibin]->GetRMS()));
+    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h1a[ibin]->GetMean()),h1a[ibin]->GetMeanError(),fabs(h1a[ibin]->GetRMS()),h1a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h1b[ibin]->GetMean()),fabs(h1b[ibin]->GetRMS()));
+    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h1b[ibin]->GetMean()),h1b[ibin]->GetMeanError(),fabs(h1b[ibin]->GetRMS()),h1b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h1c[ibin]->GetMean()),fabs(h1c[ibin]->GetRMS()));
+    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h1c[ibin]->GetMean()),h1c[ibin]->GetMeanError(),fabs(h1c[ibin]->GetRMS()),h1c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
   //---
   cout<<endl<<"For JB method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h2a[ibin]->GetMean()),fabs(h2a[ibin]->GetRMS()));
+    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h2a[ibin]->GetMean()),h2a[ibin]->GetMeanError(),fabs(h2a[ibin]->GetRMS()),h2a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h2b[ibin]->GetMean()),fabs(h2b[ibin]->GetRMS()));
+    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h2b[ibin]->GetMean()),h2b[ibin]->GetMeanError(),fabs(h2b[ibin]->GetRMS()),h2b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h2c[ibin]->GetMean()),fabs(h2c[ibin]->GetRMS()));
+    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h2c[ibin]->GetMean()),h2c[ibin]->GetMeanError(),fabs(h2c[ibin]->GetRMS()),h2c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
   //---
   cout<<endl<<"For DA method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h3a[ibin]->GetMean()),fabs(h3a[ibin]->GetRMS()));
+    printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h3a[ibin]->GetMean()),h3a[ibin]->GetMeanError(),fabs(h3a[ibin]->GetRMS()),h3a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h3b[ibin]->GetMean()),fabs(h3b[ibin]->GetRMS()));
+    printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h3b[ibin]->GetMean()),h3b[ibin]->GetMeanError(),fabs(h3b[ibin]->GetRMS()),h3b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
-    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f %%, Resolution = %.3f %% \n",y_low[ibin],y_hi[ibin],fabs(h3c[ibin]->GetMean()),fabs(h3c[ibin]->GetRMS()));
+    printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
+            y_low[ibin],y_hi[ibin],fabs(h3c[ibin]->GetMean()),h3c[ibin]->GetMeanError(),fabs(h3c[ibin]->GetRMS()),h3c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
 
