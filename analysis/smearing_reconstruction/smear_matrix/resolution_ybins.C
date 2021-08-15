@@ -2,6 +2,7 @@ R__LOAD_LIBRARY(libeicsmear);
 R__LOAD_LIBRARY(libfastjet);
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
+#include "includes/energy_resolution_optimization.h"
 
 void resolution_ybins(){
 
@@ -42,12 +43,11 @@ void resolution_ybins(){
   gStyle->SetTitleYSize(0.04);
   gStyle->SetTitleYOffset(0.9);
 
-  //Electron Method using ecal energy (NOT USING HERE)
   //JB Method -- using jet (NOT USING HERE)
   //JB 4-Vector Method (NOT USING HERE)
   //DA Method -- using jet (NOT USING HERE)
 
-  //Electron Method using momentum as energy
+  //Electron Method using optimized calculation
   TH1 *h1a[nybins]; //Q2 Resolution
   TH1 *h1b[nybins]; //y Resolution
   TH1 *h1c[nybins]; //x Resolution
@@ -156,14 +156,12 @@ void resolution_ybins(){
   Int_t Status_s[500];
   Int_t id_s[500];
   Double_t Ef_e_s(0), pxf_e_s(0), pyf_e_s(0), pzf_e_s(0),theta_e_s(0); //Scattered Electron
-  Double_t Ef_e_p_s(0); //Scattered electron, using total momentum as final energy
   Double_t pztot_jet_s(0),pttot_jet_s(0),Etot_jet_s(0); // Total added hadronic variables via. FastJet
   Double_t pxtot_sumh_s(0),pytot_sumh_s(0),pztot_sumh_s(0),pttot_sumh_s(0),Etot_sumh_s(0); // Total added hadronic variables by summing over hadrons
   Double_t holdpx_h(0),holdpy_h(0),holdpz_h(0),holdE_h(0); //Hold variables for summing over hadrons
   TLorentzVector ef_s;
   TLorentzVector q_e_s; //q 4-vector using scattered electron
   Double_t Q2_e_nm_s(0),y_e_nm_s(0),x_e_nm_s(0); //Scattered electron (massless e,e',p)
-  Double_t Q2_e_nm_p_s(0),y_e_nm_p_s(0),x_e_nm_p_s(0); //Scattered electron using total momentum as final energy(massless e,e',p)
   Double_t Theta_jb_jet_s(0),Q2_jb_jet_s(0),y_jb_jet_s(0),x_jb_jet_s(0); // JB Method (Using Jets)
   Double_t Theta_jb_sumh_s(0),Q2_jb_sumh_s(0),y_jb_sumh_s(0),x_jb_sumh_s(0); // JB Method (Summing Over Hadrons)
   Double_t Theta_h_nm_s(0), Q2_da_s(0), y_da_s(0), x_da_s(0); //DA Method
@@ -258,59 +256,73 @@ void resolution_ybins(){
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
 	      id_s[j] = (Int_t) particle_s->Id();
+
+        int sigma_best;
  
 	      //Get Smeared-Scattered Electron
 	      if(Status_s[j]==1 && Status[j]==1 && id[j]==11 && orig[j]==3){
-	        Ef_e_s = particle_s->GetE();
-	        pxf_e_s = particle_s->GetPx();
-	        pyf_e_s = particle_s->GetPy();
-	        pzf_e_s = particle_s->GetPz();
-          theta_e_s = particle_s->GetTheta();
-	        ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
-          detected_elec = true;
+
+          //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
+
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              pyf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              pzf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = 0;
+              pyf_e_s = 0;
+              pzf_e_s = 0;
+            }
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          } else if(sigma_best == 1){
+            pxf_e_s = particle_s->GetPx();
+            pyf_e_s = particle_s->GetPy();
+            pzf_e_s = particle_s->GetPz();
+            Ef_e_s = sqrt( pxf_e_s*pxf_e_s + pyf_e_s* pyf_e_s + pzf_e_s*pzf_e_s + mass[j]*mass[j] );
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          }else{
+            detected_elec = false;
+          }
 	      }
 
 	      //Put hadrons into PseudoJet object
         //Use simple 'energy-flow' algorithm
 	      if(j!=electronIndex && Status_s[j]==1){
 
-          //handle neutral particles (use ecal for photons or hcal for kaons/nuetrons and assume perfect pid)
-          if(id[j]==22 || id[j]==130 || id[j]==2112){
+          //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
 
-            holdE_h = particle_s->GetE();
-
-            double neutral_mom = 0;
-            int neutral_id = id[j];
-
-            switch(neutral_id){
-              case 22:
-                neutral_mom = holdE_h;
-                break;
-              case 130:
-                if(holdE_h>0.4976)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.4976*0.4976);
-                else
-                  neutral_mom = 0;
-                break;
-              case 2112:
-                if(holdE_h>0.9396)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.9396*0.9396);
-                else
-                  neutral_mom = 0;
-                break;
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              holdE_h = particle_s->GetE();
+              holdpx_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              holdpy_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              holdpz_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              holdE_h = particle_s->GetE();
+              holdpx_h = 0;
+              holdpy_h = 0;
+              holdpz_h = 0;
             }
-
-            holdpx_h = neutral_mom * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
-            holdpy_h = neutral_mom * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
-            holdpz_h = neutral_mom * cos( particle_s->GetTheta() );
-
-          }else{
-
-            //Use tracker and assume perfect pid
+          } else if(sigma_best == 1){
             holdpx_h = particle_s->GetPx();
             holdpy_h = particle_s->GetPy();
             holdpz_h = particle_s->GetPz();
-            holdE_h = sqrt(particle_s->GetP()*particle_s->GetP() + particle->GetM()*particle->GetM());
+            holdE_h = sqrt( holdpx_h*holdpx_h + holdpy_h* holdpy_h + holdpz_h*holdpz_h + mass[j]*mass[j] );
+          } else{
+            continue;
           }
 
           pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
@@ -359,22 +371,16 @@ void resolution_ybins(){
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
   
     if(detected_elec){
-      //1.1) Smeared scattered election using Ecal energy the final energy
+      //Use optimized energy extraction
       Q2_e_nm_s = 4.*Ei_e*Ef_e_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
       y_e_nm_s = 1. - ( (Ef_e_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
       x_e_nm_s = Q2_e_nm_s/(s_nm*y_e_nm_s);
 
-      //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.  
-      Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3) ); 
-      Q2_e_nm_p_s = 4.*Ei_e*Ef_e_p_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
-      y_e_nm_p_s = 1. - ( (Ef_e_p_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
-      x_e_nm_p_s = Q2_e_nm_p_s/(s_nm*y_e_nm_p_s);
-
       for(int ibin=0;ibin<nybins;ibin++){
         if( y_e>y_low[ibin] && y_e<y_hi[ibin] ){
-          h1a[ibin]->Fill(100.*(Q2_e-Q2_e_nm_p_s)/Q2_e );
-          h1b[ibin]->Fill(100.*(y_e-y_e_nm_p_s)/y_e );
-          h1c[ibin]->Fill(100.*(x_e-x_e_nm_p_s)/x_e );
+          h1a[ibin]->Fill(100.*(Q2_e-Q2_e_nm_s)/Q2_e );
+          h1b[ibin]->Fill(100.*(y_e-y_e_nm_s)/y_e );
+          h1c[ibin]->Fill(100.*(x_e-x_e_nm_s)/x_e );
         }
       }
 
@@ -471,7 +477,7 @@ void resolution_ybins(){
   }
 
   TPaveText *tex1_1 = new TPaveText(0.1,0.55,0.9,0.75,"NDCNB");
-  tex1_1->AddText("Electron Method (using track momentum)");
+  tex1_1->AddText("Electron Method (using optimized extraction)");
   tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(12);
 
   TPaveText *tex2_1 = new TPaveText(0.1,0.55,0.9,0.75,"NDCNB");
@@ -574,7 +580,10 @@ void resolution_ybins(){
   c3c->cd(6);
   tex_energy->Draw();tex3_1->Draw();
 
-  //Print offsets and resolutions (both in %) to screen
+  //Print offsets and resolutions (both in %) to text file
+  //---
+  if(energy_set == 1) freopen ("./txt_out/ep_resolution_ybins_5_41.txt","w",stdout);
+  if(energy_set == 2) freopen ("./txt_out/ep_resolution_ybins_18_275.txt","w",stdout);
   //---
   cout<<endl<<"For Electron method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
@@ -626,6 +635,9 @@ void resolution_ybins(){
             y_low[ibin],y_hi[ibin],fabs(h3c[ibin]->GetMean()),h3c[ibin]->GetMeanError(),fabs(h3c[ibin]->GetRMS()),h3c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
+
+  fclose (stdout);
+  //---
 
   //Print to File
   if(energy_set == 1){

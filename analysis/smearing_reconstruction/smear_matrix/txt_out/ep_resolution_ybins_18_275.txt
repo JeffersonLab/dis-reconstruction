@@ -1,0 +1,63 @@
+
+For Electron method:
+Q2 Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 0.000 +- 0.0008 %, Resolution = 0.799 +- 0.0006 % 
+Q2 Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 0.000 +- 0.0010 %, Resolution = 1.243 +- 0.0007 % 
+Q2 Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 0.001 +- 0.0016 %, Resolution = 1.542 +- 0.0011 % 
+Q2 Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 0.001 +- 0.0019 %, Resolution = 1.662 +- 0.0013 % 
+Q2 Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 0.002 +- 0.0014 %, Resolution = 1.745 +- 0.0010 % 
+
+y Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 0.000 +- 0.0006 %, Resolution = 0.550 +- 0.0004 % 
+y Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 0.001 +- 0.0026 %, Resolution = 3.147 +- 0.0018 % 
+y Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 0.006 +- 0.0103 %, Resolution = 9.872 +- 0.0073 % 
+y Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 0.009 +- 0.0255 %, Resolution = 22.695 +- 0.0180 % 
+y Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 0.006 +- 0.0430 %, Resolution = 46.767 +- 0.0304 % 
+
+x Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 0.007 +- 0.0013 %, Resolution = 1.334 +- 0.0010 % 
+x Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 0.138 +- 0.0036 %, Resolution = 4.370 +- 0.0025 % 
+x Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 1.153 +- 0.0125 %, Resolution = 12.014 +- 0.0089 % 
+x Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 3.587 +- 0.0281 %, Resolution = 24.796 +- 0.0199 % 
+x Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 9.560 +- 0.0367 %, Resolution = 39.301 +- 0.0260 % 
+
+----------------------
+
+For JB method:
+Q2 Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 12.859 +- 0.0653 %, Resolution = 53.745 +- 0.0462 % 
+Q2 Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 4.474 +- 0.0396 %, Resolution = 50.530 +- 0.0280 % 
+Q2 Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 3.314 +- 0.0431 %, Resolution = 49.226 +- 0.0305 % 
+Q2 Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 3.610 +- 0.0433 %, Resolution = 48.663 +- 0.0306 % 
+Q2 Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 6.199 +- 0.0296 %, Resolution = 48.058 +- 0.0209 % 
+
+y Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 11.921 +- 0.0218 %, Resolution = 21.854 +- 0.0154 % 
+y Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 3.165 +- 0.0088 %, Resolution = 13.053 +- 0.0062 % 
+y Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 1.129 +- 0.0085 %, Resolution = 11.126 +- 0.0060 % 
+y Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 1.520 +- 0.0088 %, Resolution = 11.174 +- 0.0062 % 
+y Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 4.813 +- 0.0057 %, Resolution = 10.070 +- 0.0040 % 
+
+x Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 5.790 +- 0.0664 %, Resolution = 52.682 +- 0.0470 % 
+x Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 2.271 +- 0.0397 %, Resolution = 50.158 +- 0.0281 % 
+x Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 1.902 +- 0.0429 %, Resolution = 48.963 +- 0.0304 % 
+x Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 2.146 +- 0.0432 %, Resolution = 48.413 +- 0.0305 % 
+x Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 3.706 +- 0.0299 %, Resolution = 48.038 +- 0.0211 % 
+
+----------------------
+
+For DA method:
+Q2 Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 18.425 +- 0.0364 %, Resolution = 34.846 +- 0.0257 % 
+Q2 Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 2.174 +- 0.0129 %, Resolution = 15.823 +- 0.0091 % 
+Q2 Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 0.325 +- 0.0068 %, Resolution = 6.565 +- 0.0048 % 
+Q2 Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 0.312 +- 0.0040 %, Resolution = 3.586 +- 0.0028 % 
+Q2 Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 0.158 +- 0.0013 %, Resolution = 1.593 +- 0.0009 % 
+
+y Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 12.673 +- 0.0225 %, Resolution = 22.211 +- 0.0159 % 
+y Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 4.473 +- 0.0212 %, Resolution = 25.841 +- 0.0150 % 
+y Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 1.880 +- 0.0276 %, Resolution = 26.157 +- 0.0195 % 
+y Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 1.110 +- 0.0298 %, Resolution = 26.191 +- 0.0211 % 
+y Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 0.258 +- 0.0220 %, Resolution = 26.484 +- 0.0156 % 
+
+x Offset and Resolution (0.50 < y_{true} < 0.80): Offset = 15.750 +- 0.0500 %, Resolution = 42.526 +- 0.0353 % 
+x Offset and Resolution (0.20 < y_{true} < 0.50): Offset = 8.945 +- 0.0306 %, Resolution = 36.237 +- 0.0216 % 
+x Offset and Resolution (0.10 < y_{true} < 0.20): Offset = 5.931 +- 0.0335 %, Resolution = 31.728 +- 0.0237 % 
+x Offset and Resolution (0.05 < y_{true} < 0.10): Offset = 4.887 +- 0.0339 %, Resolution = 29.974 +- 0.0240 % 
+x Offset and Resolution (0.01 < y_{true} < 0.05): Offset = 3.837 +- 0.0239 %, Resolution = 29.045 +- 0.0169 % 
+
+----------------------
