@@ -2,6 +2,7 @@ R__LOAD_LIBRARY(libeicsmear);
 R__LOAD_LIBRARY(libfastjet);
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
+#include "includes/energy_resolution_optimization.h"
 
 void kinematic_resolution(){
 
@@ -56,7 +57,7 @@ void kinematic_resolution(){
     x_bins[i] = pow(10,log_x_div);
   }
 
-  //Electron Method using ecal energy
+  //Electron Method using optimization
   TH2 *h1a_1 = new TH2D("h1a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
   h1a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h1a_1->GetXaxis()->CenterTitle();
   h1a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h1a_1->GetYaxis()->CenterTitle();
@@ -98,6 +99,7 @@ void kinematic_resolution(){
   h1d_3->GetYaxis()->SetTitle("Reconstructed x");h1d_3->GetYaxis()->CenterTitle();
 
   //Electron Method using momentum as energy
+  /*
   TH2 *h2a_1 = new TH2D("h2a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-10,10);
   h2a_1->GetXaxis()->SetTitle("True Q^{2} [GeV^{2}]");h2a_1->GetXaxis()->CenterTitle();
   h2a_1->GetYaxis()->SetTitle("Difference from true Q^{2} [%]");h2a_1->GetYaxis()->CenterTitle();
@@ -137,6 +139,7 @@ void kinematic_resolution(){
   TH2 *h2d_3 = new TH2D("h2d_3","Reconstructed vs. True x",100,x_bins,100,x_bins);
   h2d_3->GetXaxis()->SetTitle("True x");h2d_3->GetXaxis()->CenterTitle();
   h2d_3->GetYaxis()->SetTitle("Reconstructed x");h2d_3->GetYaxis()->CenterTitle();
+  */
 
   //JB Method -- using jet
   TH2 *h3a_1 = new TH2D("h3a_1","Q^{2} Resolution vs. Q^{2}",200,0,200,200,-120,120);
@@ -502,56 +505,72 @@ void kinematic_resolution(){
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
 	      id_s[j] = (Int_t) particle_s->Id();
+
+        int sigma_best;
  
 	      //Get Smeared-Scattered Electron
 	      if(Status_s[j]==1 && Status[j]==1 && id[j]==11 && orig[j]==3){
-	        Ef_e_s = particle_s->GetE();
-	        pxf_e_s = particle_s->GetPx();
-	        pyf_e_s = particle_s->GetPy();
-	        pzf_e_s = particle_s->GetPz();
-          theta_e_s = particle_s->GetTheta();
-	        ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
-          detected_elec = true;
+	        
+          //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
+
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              pyf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              pzf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = 0;
+              pyf_e_s = 0;
+              pzf_e_s = 0;
+            }
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          } else if(sigma_best == 1){
+            pxf_e_s = particle_s->GetPx();
+            pyf_e_s = particle_s->GetPy();
+            pzf_e_s = particle_s->GetPz();
+            Ef_e_s = sqrt( pxf_e_s*pxf_e_s + pyf_e_s* pyf_e_s + pzf_e_s*pzf_e_s + mass[j]*mass[j] );
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          }else{
+            detected_elec = false;
+          }
 	      }
 
 	      //Put hadrons into PseudoJet object
 	      if(j!=electronIndex && Status_s[j]==1){
           
-          //Summing over all particles
-          holdE_h = particle_s->GetE();
+          //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
 
-          //handle neutral particles
-          if(id[j]==22 || id[j]==130 || id[j]==2112){
-
-            double neutral_mom = 0;
-            int neutral_id = id[j];
-
-            switch(neutral_id){
-              case 22:
-                neutral_mom = holdE_h;
-                break;
-              case 130:
-                if(holdE_h>0.4976)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.4976*0.4976);
-                else
-                  neutral_mom = 0;
-                break;
-              case 2112:
-                if(holdE_h>0.9396)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.9396*0.9396);
-                else
-                  neutral_mom = 0;
-                break;
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              holdE_h = particle_s->GetE();
+              holdpx_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              holdpy_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              holdpz_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              holdE_h = particle_s->GetE();
+              holdpx_h = 0;
+              holdpy_h = 0;
+              holdpz_h = 0;
             }
-
-            holdpx_h = neutral_mom * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
-            holdpy_h = neutral_mom * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
-            holdpz_h = neutral_mom * cos( particle_s->GetTheta() );
-
-          }else{
+          } else if(sigma_best == 1){
             holdpx_h = particle_s->GetPx();
             holdpy_h = particle_s->GetPy();
             holdpz_h = particle_s->GetPz();
+            holdE_h = sqrt( holdpx_h*holdpx_h + holdpy_h* holdpy_h + holdpz_h*holdpz_h + mass[j]*mass[j] );
+          } else{
+            continue;
           }
 
           pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
@@ -600,7 +619,7 @@ void kinematic_resolution(){
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
   
     if(detected_elec){
-      //1.1) Smeared scattered election using Ecal energy the final energy
+      //1.1) Smeared scattered election using energy optimization
       Q2_e_nm_s = 4.*Ei_e*Ef_e_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
       y_e_nm_s = 1. - ( (Ef_e_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
       x_e_nm_s = Q2_e_nm_s/(s_nm*y_e_nm_s);
@@ -621,7 +640,8 @@ void kinematic_resolution(){
       h1d_2->Fill(y_e,y_e_nm_s);
       h1d_3->Fill(x_e,x_e_nm_s);
 
-      //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.  
+      //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.
+      /*  
       Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3) ); 
       Q2_e_nm_p_s = 4.*Ei_e*Ef_e_p_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
       y_e_nm_p_s = 1. - ( (Ef_e_p_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
@@ -642,6 +662,7 @@ void kinematic_resolution(){
       h2d_1->Fill(Q2_e,Q2_e_nm_p_s);
       h2d_2->Fill(y_e,y_e_nm_p_s);
       h2d_3->Fill(x_e,x_e_nm_p_s);
+      */
 
     } //detected electron
 
@@ -798,13 +819,14 @@ void kinematic_resolution(){
   }
 
   TPaveText *tex1_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
-  tex1_1->AddText("#frac{True - Electron Method (using ECal Energy)}{True} vs. True");
+  tex1_1->AddText("#frac{True - Electron Method (using optimization)}{True} vs. True");
   tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(10);
 
   TPaveText *tex1_2 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
-  tex1_2->AddText("Electron Method (using ECal Energy) vs. True");
+  tex1_2->AddText("Electron Method (using optimization) vs. True");
   tex1_2->SetFillStyle(4000);tex1_2->SetTextFont(63);tex1_2->SetTextSize(10);
 
+  /*
   TPaveText *tex2_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
   tex2_1->AddText("#frac{True - Electron Method (using track momentum)}{True} vs. True");
   tex2_1->SetFillStyle(4000);tex2_1->SetTextFont(63);tex2_1->SetTextSize(10);
@@ -812,6 +834,7 @@ void kinematic_resolution(){
   TPaveText *tex2_2 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
   tex2_2->AddText("Electron Method (using track momentum) vs. True");
   tex2_2->SetFillStyle(4000);tex2_2->SetTextFont(63);tex2_2->SetTextSize(10);
+  */
 
   TPaveText *tex3_1 = new TPaveText(0.1,0.5,0.9,0.7,"NDCNB");
   tex3_1->AddText("#frac{True - J.B. Method (using jet)}{True} vs. True");
@@ -856,7 +879,7 @@ void kinematic_resolution(){
   //Make Plots
 
   //----------------------------------
-  //Electron Method using ecal energy
+  //Electron Method using optimization
   //----------------------------------
   TCanvas *c1a = new TCanvas("c1a");
   c1a->Divide(2,2);
@@ -898,6 +921,7 @@ void kinematic_resolution(){
   //----------------------------------
   //Electron Method using momentum as energy
   //----------------------------------
+  /*
   TCanvas *c2a = new TCanvas("c2a");
   c2a->Divide(2,2);
   c2a->cd(1);
@@ -934,6 +958,7 @@ void kinematic_resolution(){
   c2d->cd(2);h2d_2->Draw("colz");func_1->Draw("same");
   c2d->cd(3);gPad->SetLogx();gPad->SetLogy();h2d_3->Draw("colz");func_1->Draw("same");
   c2d->cd(4);tex_energy->Draw();tex2_2->Draw();
+  */
 
   //----------------------------------
   //JB Method -- using jet
@@ -1142,10 +1167,10 @@ void kinematic_resolution(){
     c1b->Print("./plots/kinematic_resolution_5_41.pdf");
     c1c->Print("./plots/kinematic_resolution_5_41.pdf");
     c1d->Print("./plots/kinematic_resolution_5_41.pdf");
-    c2a->Print("./plots/kinematic_resolution_5_41.pdf");
-    c2b->Print("./plots/kinematic_resolution_5_41.pdf");
-    c2c->Print("./plots/kinematic_resolution_5_41.pdf");
-    c2d->Print("./plots/kinematic_resolution_5_41.pdf");
+    //c2a->Print("./plots/kinematic_resolution_5_41.pdf");
+    //c2b->Print("./plots/kinematic_resolution_5_41.pdf");
+    //c2c->Print("./plots/kinematic_resolution_5_41.pdf");
+    //c2d->Print("./plots/kinematic_resolution_5_41.pdf");
     c3a->Print("./plots/kinematic_resolution_5_41.pdf");
     c3b->Print("./plots/kinematic_resolution_5_41.pdf");
     c3c->Print("./plots/kinematic_resolution_5_41.pdf");
@@ -1174,10 +1199,10 @@ void kinematic_resolution(){
     c1b->Print("./plots/kinematic_resolution_18_275.pdf");
     c1c->Print("./plots/kinematic_resolution_18_275.pdf");
     c1d->Print("./plots/kinematic_resolution_18_275.pdf");
-    c2a->Print("./plots/kinematic_resolution_18_275.pdf");
-    c2b->Print("./plots/kinematic_resolution_18_275.pdf");
-    c2c->Print("./plots/kinematic_resolution_18_275.pdf");
-    c2d->Print("./plots/kinematic_resolution_18_275.pdf");
+    //c2a->Print("./plots/kinematic_resolution_18_275.pdf");
+    //c2b->Print("./plots/kinematic_resolution_18_275.pdf");
+    //c2c->Print("./plots/kinematic_resolution_18_275.pdf");
+    //c2d->Print("./plots/kinematic_resolution_18_275.pdf");
     c3a->Print("./plots/kinematic_resolution_18_275.pdf");
     c3b->Print("./plots/kinematic_resolution_18_275.pdf");
     c3c->Print("./plots/kinematic_resolution_18_275.pdf");

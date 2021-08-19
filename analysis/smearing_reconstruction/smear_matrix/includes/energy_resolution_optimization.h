@@ -34,7 +34,7 @@ int energy_resolution_optimization(double E, double P, double eta, int PID, bool
   }
 
   //Check HCal Resolution (1)
-  if( (PID != 11 || PID != 22 || PID != -11) && IsESmeared){
+  if( !(PID == 11 || PID == 22 || PID == -11) && IsESmeared){
     if( -3.5 <= eta && eta < -1.0 ){
       sigma_E = sqrt(pow( 0.0*E, 2) + pow ( 0.5,2) *E);
     } else if( -1.0 <= eta && eta < 1.0){
