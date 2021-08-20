@@ -2,6 +2,7 @@ R__LOAD_LIBRARY(libeicsmear);
 R__LOAD_LIBRARY(libfastjet);
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
+#include "includes/energy_resolution_optimization.h"
 
 void purity_stability_uncertainty(){
 
@@ -79,7 +80,7 @@ void purity_stability_uncertainty(){
     First Index is Method, Second Index is Type
     
     First Index:
-    0 -> Electron Method (Using Calorimeter Energy)
+    0 -> Electron Method (Using optimized calculation)
     1 -> Electron Method (Using Track Momentum)
     2 -> JB Method (Using Jets Scattering off Nucleon)
     3 -> JB Method (Using Jets Scattering off Nucleus with New Term)
@@ -259,57 +260,73 @@ void purity_stability_uncertainty(){
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
 	      id_s[j] = (Int_t) particle_s->Id();
+
+        int sigma_best;
 	
 	      // Get Smeared-Scattered Electron
 	      if(Status_s[j]==1 && Status[j]==1 && id[j]==11 && orig[j]==3){
-	        Ef_e_s = particle_s->GetE();
-	        pxf_e_s = particle_s->GetPx();
-	        pyf_e_s = particle_s->GetPy();
-	        pzf_e_s = particle_s->GetPz();
-	        ptf_e_s = particle_s->GetPt();
-	        Theta_e_nm_s = particle_s->GetTheta();
-	        ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
-	        detected_elec=true;
+	        //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
+
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              pyf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              pzf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = 0;
+              pyf_e_s = 0;
+              pzf_e_s = 0;
+            }
+
+            Theta_e_nm_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          } else if(sigma_best == 1){
+            pxf_e_s = particle_s->GetPx();
+            pyf_e_s = particle_s->GetPy();
+            pzf_e_s = particle_s->GetPz();
+            Ef_e_s = sqrt( pxf_e_s*pxf_e_s + pyf_e_s* pyf_e_s + pzf_e_s*pzf_e_s + mass[j]*mass[j] );
+
+            Theta_e_nm_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          }else{
+            detected_elec = false;
+          }
 	      }
 
 	// Put hadrons into PseudoJet object
-	if(j != electronIndex && Status_s[j]==1){
-	  
-	  //Summing over all hadrons
-	  holdpx_h = particle_s->GetPx();
-	  holdpy_h = particle_s->GetPy();
-	  holdpz_h = particle_s->GetPz();
-	  holdE_h = particle_s->GetE();
+	if(j != electronIndex && Status_s[j]==1){     
+    //If return 0, we use calorimeter. If return 1, we use tracker.
+    sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
 
-	  if(id[j] == 22 || id[j] == 2112 || id[j] == 130){
-            holdP_h = 0;
-            int neutral_id = id[j];
+    if(sigma_best == 0){
+      if(particle_s->GetE() > mass[j]){
+          holdE_h = particle_s->GetE();
+          holdpx_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+          holdpy_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+          holdpz_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+      } else{
+          holdE_h = particle_s->GetE();
+          holdpx_h = 0;
+          holdpy_h = 0;
+          holdpz_h = 0;
+      }
+    } else if(sigma_best == 1){
+        holdpx_h = particle_s->GetPx();
+        holdpy_h = particle_s->GetPy();
+        holdpz_h = particle_s->GetPz();
+        holdE_h = sqrt( holdpx_h*holdpx_h + holdpy_h* holdpy_h + holdpz_h*holdpz_h + mass[j]*mass[j] );
+    } else{
+        continue;
+    }
 
-            switch(neutral_id){
-            case 22:
-              holdP_h = holdE_h;
-              break;
-            case 130:
-              if(holdE_h>particle->GetM())
-                holdP_h = TMath::Sqrt( pow(particle_s->GetE(),2.0) - pow(particle->GetM(),2.0) );
-              else
-                holdP_h = 0;
-              break;
-            case 2112:
-              if(holdE_h>particle->GetM())
-                holdP_h = TMath::Sqrt( pow(particle_s->GetE(),2.0) - pow(particle->GetM(),2.0) );
-              else
-                holdP_h = 0;
-              break;
-            }
-
-            holdpx_h = holdP_h*TMath::Sin(particle_s->GetTheta())*TMath::Cos(particle_s->GetPhi());
-            holdpy_h = holdP_h*TMath::Sin(particle_s->GetTheta())*TMath::Sin(particle_s->GetPhi());
-            holdpz_h = holdP_h*TMath::Cos(particle_s->GetTheta());
-
-          }
-
-       	  pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
+    pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
 	  pytot_sumh_s = pytot_sumh_s + holdpy_h;
 	  pztot_sumh_s = pztot_sumh_s + holdpz_h;
 	  Etot_sumh_s =  Etot_sumh_s + holdE_h;
@@ -342,19 +359,19 @@ void purity_stability_uncertainty(){
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
     
     if(detected_elec){
-      //1.1) Using Smeared scattered election (w/ assumptions) using Ecal.  
+      //1.1) Using Smeared scattered election with optimized calculation  
       Q2_e_nm_s = 4.*Ei_e*Ef_e_s*TMath::Cos(Theta_e_nm_s/2.)*TMath::Cos(Theta_e_nm_s/2.);
       y_e_nm_s = 1. - ( (Ef_e_s/(2.*Ei_e))*(1. - TMath::Cos(Theta_e_nm_s)) );
       x_e_nm_s = Q2_e_nm_s/(s_nm*y_e_nm_s);
  
       gen2 = h[0][2]->Fill(x_e_nm_s,Q2_e_nm_s);
       if(gen1 == gen2){
-	h[0][0]->Fill(x_e_nm_s,Q2_e_nm_s);
-	h[0][1]->Fill(x_e_nm_s,Q2_e_nm_s);
+	      h[0][0]->Fill(x_e_nm_s,Q2_e_nm_s);
+	      h[0][1]->Fill(x_e_nm_s,Q2_e_nm_s);
       }
       
       //Using smeared theta value obtained from track, NOT DERIVED
-      //1.2) Using Smeared scattered election (w/ assumptions) using the track momentum as final energy.  
+      //1.2) Using Smeared scattered election (w/ assumptions) using the track momentum as final energy. 
       Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3)); 
       Q2_e_nm_p_s = 4.*Ei_e*Ef_e_p_s*TMath::Cos(Theta_e_nm_s/2.)*TMath::Cos(Theta_e_nm_s/2.);
       y_e_nm_p_s = 1. - ( (Ef_e_p_s/(2.*Ei_e))*(1. - TMath::Cos(Theta_e_nm_s)) );
@@ -362,8 +379,8 @@ void purity_stability_uncertainty(){
       
       gen2 = h[1][2]->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
       if(gen1 == gen2){
-	h[1][0]->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-	h[1][1]->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
+	      h[1][0]->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
+	      h[1][1]->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
       }
     } //detected_elec
     
@@ -599,7 +616,7 @@ void purity_stability_uncertainty(){
   }
 
   TLatex *tex2[10];
-  tex2[0] = new TLatex(0.15,0.95,"Electron Method (Using Calorimeter Energy)");tex2[0]->SetNDC();tex2[0]->SetTextSize(0.05);
+  tex2[0] = new TLatex(0.15,0.95,"Electron Method (Using Optimized Calc.)");tex2[0]->SetNDC();tex2[0]->SetTextSize(0.05);
   tex2[1] = new TLatex(0.15,0.95,"Electron Method (Using Track Momentum)");tex2[1]->SetNDC();tex2[1]->SetTextSize(0.05);
   tex2[2] = new TLatex(0.15,0.95,"JB Method (Using Jets Scattering off Nucleon)");tex2[2]->SetNDC();tex2[2]->SetTextSize(0.05);
   tex2[3] = new TLatex(0.05,0.95,"JB Method (Using Jets Scattering off Nucleus with New Term)");tex2[3]->SetNDC();tex2[3]->SetTextSize(0.05);

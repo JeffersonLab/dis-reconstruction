@@ -2,6 +2,7 @@ R__LOAD_LIBRARY(libeicsmear);
 R__LOAD_LIBRARY(libfastjet);
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
+#include "includes/energy_resolution_optimization.h"
 
 void purity_stability(){
 
@@ -111,18 +112,19 @@ void purity_stability(){
   h0->GetXaxis()->SetTitle("x");h0->GetXaxis()->CenterTitle();
   h0->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h0->GetYaxis()->CenterTitle();
 
-  //Electron Method using full energy
-  TH2D *h1_1 = new TH2D("h1_1","Electron Method (using ECal energy) Purity",25,x_bins,25,Q2_bins);
+  //Electron Method using optimized calculation
+  TH2D *h1_1 = new TH2D("h1_1","Electron Method (optimized calculation) Purity",25,x_bins,25,Q2_bins);
   h1_1->GetXaxis()->SetTitle("x");h1_1->GetXaxis()->CenterTitle();
   h1_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_1->GetYaxis()->CenterTitle();
-  TH2D *h1_2 = new TH2D("h1_2","Electron Method (using ECal energy) Stability",25,x_bins,25,Q2_bins);
+  TH2D *h1_2 = new TH2D("h1_2","Electron Method (optimized calculation) Stability",25,x_bins,25,Q2_bins);
   h1_2->GetXaxis()->SetTitle("x");h1_2->GetXaxis()->CenterTitle();
   h1_2->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_2->GetYaxis()->CenterTitle();
-  TH2D *h1_3 = new TH2D("h1_3","Electron Method (using ECal energy) Reconstructed",25,x_bins,25,Q2_bins);
+  TH2D *h1_3 = new TH2D("h1_3","Electron Method (optimized calculation) Reconstructed",25,x_bins,25,Q2_bins);
   h1_3->GetXaxis()->SetTitle("x");h1_3->GetXaxis()->CenterTitle();
   h1_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h1_3->GetYaxis()->CenterTitle();
 
   //Electron Method using momentum as energy
+  /*
   TH2D *h2_1 = new TH2D("h2_1","Electron Method (using track momentum) Purity",25,x_bins,25,Q2_bins);
   h2_1->GetXaxis()->SetTitle("x");h2_1->GetXaxis()->CenterTitle();
   h2_1->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h2_1->GetYaxis()->CenterTitle();
@@ -132,6 +134,7 @@ void purity_stability(){
   TH2D *h2_3 = new TH2D("h2_3","Electron Method (using track momentum) Reconstructed",25,x_bins,25,Q2_bins);
   h2_3->GetXaxis()->SetTitle("x");h2_3->GetXaxis()->CenterTitle();
   h2_3->GetYaxis()->SetTitle("Q^{2} [GeV^{2}]");h2_3->GetYaxis()->CenterTitle();
+  */
 
   //JB Method
   TH2D *h3_1 = new TH2D("h3_1","JB Method Purity",25,x_bins,25,Q2_bins);
@@ -353,55 +356,71 @@ void purity_stability(){
       if(particle_s){ //make sure not null pointer
         Status_s[j] = (Int_t) particle_s->GetStatus();
 	      id_s[j] = (Int_t) particle_s->Id();
+
+        int sigma_best;
  
 	      //Get Smeared-Scattered Electron
 	      if(Status_s[j]==1 && Status[j]==1 && id[j]==11 && orig[j]==3){
-	        Ef_e_s = particle_s->GetE();
-	        pxf_e_s = particle_s->GetPx();
-	        pyf_e_s = particle_s->GetPy();
-	        pzf_e_s = particle_s->GetPz();
-          theta_e_s = particle_s->GetTheta();
-	        ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
-          detected_elec = true;
+	       //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
+
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              pyf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              pzf_e_s = sqrt(Ef_e_s*Ef_e_s - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              Ef_e_s = particle_s->GetE();
+              pxf_e_s = 0;
+              pyf_e_s = 0;
+              pzf_e_s = 0;
+            }
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          } else if(sigma_best == 1){
+            pxf_e_s = particle_s->GetPx();
+            pyf_e_s = particle_s->GetPy();
+            pzf_e_s = particle_s->GetPz();
+            Ef_e_s = sqrt( pxf_e_s*pxf_e_s + pyf_e_s* pyf_e_s + pzf_e_s*pzf_e_s + mass[j]*mass[j] );
+
+            theta_e_s = particle_s->GetTheta();
+	          ef_s.SetPxPyPzE(pxf_e_s,pyf_e_s,pzf_e_s,Ef_e_s);
+            detected_elec = true;
+
+          }else{
+            detected_elec = false;
+          }
 	      }
 
 	      //Put hadrons into PseudoJet object
 	      if(j!=electronIndex && Status_s[j]==1){
-          //Summing over all particles
-          holdE_h = particle_s->GetE();
+          
+          //If return 0, we use calorimeter. If return 1, we use tracker.
+          sigma_best = energy_resolution_optimization(particle->GetE(), particle->GetP(), particle->GetEta(), id[j], particle_s->IsESmeared(), particle_s->IsPSmeared());
 
-          //handle neutral particles
-          if(id[j]==22 || id[j]==130 || id[j]==2112){
-
-            double neutral_mom = 0;
-            int neutral_id = id[j];
-
-            switch(neutral_id){
-              case 22:
-                neutral_mom = holdE_h;
-                break;
-              case 130:
-                if(holdE_h>0.4976)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.4976*0.4976);
-                else
-                  neutral_mom = 0;
-                break;
-              case 2112:
-                if(holdE_h>0.9396)
-                  neutral_mom = sqrt(holdE_h*holdE_h - 0.9396*0.9396);
-                else
-                  neutral_mom = 0;
-                break;
+          if(sigma_best == 0){
+            if(particle_s->GetE() > mass[j]){
+              holdE_h = particle_s->GetE();
+              holdpx_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
+              holdpy_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
+              holdpz_h = sqrt(holdE_h*holdE_h - mass[j]*mass[j]) * cos( particle_s->GetTheta() );
+            } else{
+              holdE_h = particle_s->GetE();
+              holdpx_h = 0;
+              holdpy_h = 0;
+              holdpz_h = 0;
             }
-
-            holdpx_h = neutral_mom * sin( particle_s->GetTheta() ) * cos( particle_s->GetPhi() );
-            holdpy_h = neutral_mom * sin( particle_s->GetTheta() ) * sin( particle_s->GetPhi() );
-            holdpz_h = neutral_mom * cos( particle_s->GetTheta() );
-
-          }else{
+          } else if(sigma_best == 1){
             holdpx_h = particle_s->GetPx();
             holdpy_h = particle_s->GetPy();
             holdpz_h = particle_s->GetPz();
+            holdE_h = sqrt( holdpx_h*holdpx_h + holdpy_h* holdpy_h + holdpz_h*holdpz_h + mass[j]*mass[j] );
+          } else{
+            continue;
           }
 
           pxtot_sumh_s = pxtot_sumh_s + holdpx_h;
@@ -452,7 +471,7 @@ void purity_stability(){
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
   
     if(detected_elec){
-      //1.1) Smeared scattered election using Ecal energy the final energy
+      //1.1) Use optimized energy calculation
       Q2_e_nm_s = 4.*Ei_e*Ef_e_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
       y_e_nm_s = 1. - ( (Ef_e_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
       x_e_nm_s = Q2_e_nm_s/(s_nm*y_e_nm_s);
@@ -466,18 +485,6 @@ void purity_stability(){
         cout<<"Event = "<<i<<" x_gen = "<<x_e<<" Q2_gen = "<<Q2_e<<" xe_rec = "<<x_e_nm_s<<" Q2e_rec = "
             <<Q2_e_nm_s<<" gen bin = "<<gen1<<" rec bin = "<<gen2<<endl;
       }*/
-
-      //1.2) Using Smeared scattered election using track momentum as the total momentum as final energy.  
-      Ef_e_p_s = TMath::Sqrt( TMath::Power(pxf_e_s,2)+TMath::Power(pyf_e_s,2)+TMath::Power(pzf_e_s,2) + (0.511e-3)*(0.511e-3) ); 
-      Q2_e_nm_p_s = 4.*Ei_e*Ef_e_p_s*TMath::Cos(theta_e_s/2.)*TMath::Cos(theta_e_s/2.);
-      y_e_nm_p_s = 1. - ( (Ef_e_p_s/(2.*Ei_e))*(1. - TMath::Cos(theta_e_s)) );
-      x_e_nm_p_s = Q2_e_nm_p_s/(s_nm*y_e_nm_p_s);
-
-      gen2 = h2_3->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-      if(gen1 == gen2){
-        h2_1->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-        h2_2->Fill(x_e_nm_p_s,Q2_e_nm_p_s);
-      }
     } //detected electron
 
     if(!(holdParticles.empty())){
@@ -581,8 +588,8 @@ void purity_stability(){
   h1_1->Divide(h1_3);
   h1_2->Divide(h0);
 
-  h2_1->Divide(h2_3);
-  h2_2->Divide(h0);
+  //h2_1->Divide(h2_3);
+  //h2_2->Divide(h0);
 
   h3_1->Divide(h3_3);
   h3_2->Divide(h0);
@@ -643,6 +650,7 @@ void purity_stability(){
   f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
 
+  /*
   TCanvas *c2 = new TCanvas("c2");
   c2->Divide(2,1);
   c2->cd(1);gPad->SetTopMargin(0.12);gPad->SetBottomMargin(0.12);gPad->SetRightMargin(0.12);gPad->SetLeftMargin(0.12);
@@ -652,6 +660,7 @@ void purity_stability(){
   gPad->SetLogx();gPad->SetLogy();h2_2->Draw("colz");
   f_ymin->Draw("same");f_ymax->Draw("same");tex_ymin->Draw();tex_ymax->Draw();
   tex_energy->Draw();
+  */
 
   TCanvas *c3 = new TCanvas("c3");
   c3->Divide(2,1);
@@ -708,7 +717,7 @@ void purity_stability(){
 
     TFile *fout = new TFile("root_out/purity_stability_out_5_41.root","RECREATE");
     h1_1->Write();h1_2->Write();
-    h2_1->Write();h2_2->Write();
+    //h2_1->Write();h2_2->Write();
     h3_1->Write();h3_2->Write();
     h3_4->Write();h3_5->Write();
     h3_7->Write();h3_8->Write();
@@ -718,7 +727,7 @@ void purity_stability(){
 
     c1->Print("./plots/purity_stability_5_41.pdf[");
     c1->Print("./plots/purity_stability_5_41.pdf");    
-    c2->Print("./plots/purity_stability_5_41.pdf");
+    //c2->Print("./plots/purity_stability_5_41.pdf");
     c3->Print("./plots/purity_stability_5_41.pdf");
     c4->Print("./plots/purity_stability_5_41.pdf");
     c5->Print("./plots/purity_stability_5_41.pdf");
@@ -730,7 +739,7 @@ void purity_stability(){
 
     TFile *fout = new TFile("root_out/purity_stability_out_18_275.root","RECREATE");
     h1_1->Write();h1_2->Write();
-    h2_1->Write();h2_2->Write();
+    //h2_1->Write();h2_2->Write();
     h3_1->Write();h3_2->Write();
     h3_4->Write();h3_5->Write();
     h3_7->Write();h3_8->Write();
@@ -740,7 +749,7 @@ void purity_stability(){
 
     c1->Print("./plots/purity_stability_18_275.pdf[");
     c1->Print("./plots/purity_stability_18_275.pdf");    
-    c2->Print("./plots/purity_stability_18_275.pdf");
+    //c2->Print("./plots/purity_stability_18_275.pdf");
     c3->Print("./plots/purity_stability_18_275.pdf");
     c4->Print("./plots/purity_stability_18_275.pdf");
     c5->Print("./plots/purity_stability_18_275.pdf");

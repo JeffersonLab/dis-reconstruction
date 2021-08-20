@@ -478,7 +478,7 @@ void resolution_ybins(){
 
   TPaveText *tex1_1 = new TPaveText(0.1,0.55,0.9,0.75,"NDCNB");
   tex1_1->AddText("Electron Method (using optimized extraction)");
-  tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(12);
+  tex1_1->SetFillStyle(4000);tex1_1->SetTextFont(63);tex1_1->SetTextSize(10);
 
   TPaveText *tex2_1 = new TPaveText(0.1,0.55,0.9,0.75,"NDCNB");
   tex2_1->AddText("J.B. Method (summing all particles)");
@@ -588,51 +588,69 @@ void resolution_ybins(){
   cout<<endl<<"For Electron method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h1a[ibin]->GetMean()),h1a[ibin]->GetMeanError(),fabs(h1a[ibin]->GetRMS()),h1a[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h1a[ibin]->GetMean()),h1a[ibin]->GetMeanError(),fabs(h1a[ibin]->GetRMS()),h1a[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h1a[ibin]->GetBinCenter(h1a[ibin]->GetMaximumBin()) ) ,h1a[ibin]->GetBinWidth(h1a[ibin]->GetMaximumBin())/2.,
+            fabs(h1a[ibin]->GetRMS()),h1a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h1b[ibin]->GetMean()),h1b[ibin]->GetMeanError(),fabs(h1b[ibin]->GetRMS()),h1b[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h1b[ibin]->GetMean()),h1b[ibin]->GetMeanError(),fabs(h1b[ibin]->GetRMS()),h1b[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h1b[ibin]->GetBinCenter(h1b[ibin]->GetMaximumBin()) ) ,h1b[ibin]->GetBinWidth(h1b[ibin]->GetMaximumBin())/2.,
+            fabs(h1b[ibin]->GetRMS()),h1b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h1c[ibin]->GetMean()),h1c[ibin]->GetMeanError(),fabs(h1c[ibin]->GetRMS()),h1c[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h1c[ibin]->GetMean()),h1c[ibin]->GetMeanError(),fabs(h1c[ibin]->GetRMS()),h1c[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h1c[ibin]->GetBinCenter(h1c[ibin]->GetMaximumBin()) ) ,h1c[ibin]->GetBinWidth(h1c[ibin]->GetMaximumBin())/2.,
+            fabs(h1c[ibin]->GetRMS()),h1c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
   //---
   cout<<endl<<"For JB method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h2a[ibin]->GetMean()),h2a[ibin]->GetMeanError(),fabs(h2a[ibin]->GetRMS()),h2a[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h2a[ibin]->GetMean()),h2a[ibin]->GetMeanError(),fabs(h2a[ibin]->GetRMS()),h2a[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h2a[ibin]->GetBinCenter(h2a[ibin]->GetMaximumBin()) ) ,h2a[ibin]->GetBinWidth(h2a[ibin]->GetMaximumBin())/2.,
+            fabs(h2a[ibin]->GetRMS()),h2a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h2b[ibin]->GetMean()),h2b[ibin]->GetMeanError(),fabs(h2b[ibin]->GetRMS()),h2b[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h2b[ibin]->GetMean()),h2b[ibin]->GetMeanError(),fabs(h2b[ibin]->GetRMS()),h2b[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h2b[ibin]->GetBinCenter(h2b[ibin]->GetMaximumBin()) ) ,h2b[ibin]->GetBinWidth(h2b[ibin]->GetMaximumBin())/2.,
+            fabs(h2b[ibin]->GetRMS()),h2b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h2c[ibin]->GetMean()),h2c[ibin]->GetMeanError(),fabs(h2c[ibin]->GetRMS()),h2c[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h2c[ibin]->GetMean()),h2c[ibin]->GetMeanError(),fabs(h2c[ibin]->GetRMS()),h2c[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h2c[ibin]->GetBinCenter(h2c[ibin]->GetMaximumBin()) ) ,h2c[ibin]->GetBinWidth(h2c[ibin]->GetMaximumBin())/2.,
+            fabs(h2c[ibin]->GetRMS()),h2c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
   //---
   cout<<endl<<"For DA method:"<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("Q2 Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h3a[ibin]->GetMean()),h3a[ibin]->GetMeanError(),fabs(h3a[ibin]->GetRMS()),h3a[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h3a[ibin]->GetMean()),h3a[ibin]->GetMeanError(),fabs(h3a[ibin]->GetRMS()),h3a[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h3a[ibin]->GetBinCenter(h3a[ibin]->GetMaximumBin()) ) ,h3a[ibin]->GetBinWidth(h3a[ibin]->GetMaximumBin())/2.,
+            fabs(h3a[ibin]->GetRMS()),h3a[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("y Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h3b[ibin]->GetMean()),h3b[ibin]->GetMeanError(),fabs(h3b[ibin]->GetRMS()),h3b[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h3b[ibin]->GetMean()),h3b[ibin]->GetMeanError(),fabs(h3b[ibin]->GetRMS()),h3b[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h3b[ibin]->GetBinCenter(h3b[ibin]->GetMaximumBin()) ) ,h3b[ibin]->GetBinWidth(h3b[ibin]->GetMaximumBin())/2.,
+            fabs(h3b[ibin]->GetRMS()),h3b[ibin]->GetRMSError());
   }
   cout<<endl;
   for(int ibin=0;ibin<nybins;ibin++){
     printf("x Offset and Resolution (%.2f < y_{true} < %.2f): Offset = %.3f +- %.4f %%, Resolution = %.3f +- %.4f %% \n",
-            y_low[ibin],y_hi[ibin],fabs(h3c[ibin]->GetMean()),h3c[ibin]->GetMeanError(),fabs(h3c[ibin]->GetRMS()),h3c[ibin]->GetRMSError());
+            //y_low[ibin],y_hi[ibin],fabs(h3c[ibin]->GetMean()),h3c[ibin]->GetMeanError(),fabs(h3c[ibin]->GetRMS()),h3c[ibin]->GetRMSError());
+            y_low[ibin],y_hi[ibin],fabs( h3c[ibin]->GetBinCenter(h3c[ibin]->GetMaximumBin()) ) ,h3c[ibin]->GetBinWidth(h3c[ibin]->GetMaximumBin())/2.,
+            fabs(h3c[ibin]->GetRMS()),h3c[ibin]->GetRMSError());
   }
   cout<<endl<<"----------------------"<<endl;
 
