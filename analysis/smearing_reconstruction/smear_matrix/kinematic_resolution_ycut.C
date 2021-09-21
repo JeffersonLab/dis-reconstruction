@@ -342,6 +342,19 @@ void kinematic_resolution_ycut(){
   h7d_3->GetXaxis()->SetTitle("True x");h7d_3->GetXaxis()->CenterTitle();
   h7d_3->GetYaxis()->SetTitle("Reconstructed x");h7d_3->GetYaxis()->CenterTitle();
 
+  //Extra Histograms
+  TH2 *hextra_1 = new TH2D("hextra_1","Including Barrel HCal",200,0,1,200,0,50);
+  hextra_1->GetXaxis()->SetTitle("True y");hextra_1->GetXaxis()->CenterTitle();
+  hextra_1->GetYaxis()->SetTitle("Reconstructed #Sigma (E-P_{z})_{h} [GeV]");hextra_1->GetYaxis()->CenterTitle();
+
+  TH2 *hextra_1a = new TH2D("hextra_1a","Without Barrel HCal",200,0,1,200,0,50); //Without Barrel HCal
+  hextra_1a->GetXaxis()->SetTitle("True y");hextra_1a->GetXaxis()->CenterTitle();
+  hextra_1a->GetYaxis()->SetTitle("Reconstructed #Sigma (E-P_{z})_{h} [GeV]");hextra_1a->GetYaxis()->CenterTitle();
+
+  TH2 *hextra_2 = new TH2D("hextra_2","",200,0,180,200,0,180);
+  hextra_2->GetXaxis()->SetTitle("Calculated #theta_{h} [Deg]");hextra_2->GetXaxis()->CenterTitle();
+  hextra_2->GetYaxis()->SetTitle("Reconstructed #theta_{h} [Deg]");hextra_2->GetYaxis()->CenterTitle();
+
   //Line for reconstructed vs. true plots
   TF1 *func_1 = new TF1("func_1","x",0,200);
   func_1->SetLineColor(kRed);func_1->SetLineWidth(2);func_1->SetLineStyle(2);
@@ -409,8 +422,10 @@ void kinematic_resolution_ycut(){
   Double_t Q2_e_nm_p_s(0),y_e_nm_p_s(0),x_e_nm_p_s(0); //Scattered electron using total momentum as final energy(massless e,e',p)
   Double_t Theta_jb_jet_s(0),Q2_jb_jet_s(0),y_jb_jet_s(0),x_jb_jet_s(0); // JB Method (Using Jets)
   Double_t Theta_jb_sumh_s(0),Q2_jb_sumh_s(0),y_jb_sumh_s(0),x_jb_sumh_s(0); // JB Method (Summing Over Hadrons)
+  Double_t Theta_h_calc(0);
   Double_t Theta_h_nm_s(0), Q2_da_s(0), y_da_s(0), x_da_s(0); //DA Method
   Double_t mass[500];
+  Double_t px_sum_noh(0),py_sum_noh(0),pz_sum_noh(0),pt_sum_noh(0),E_sum_noh(0); //Sum without barrel HCAL
   bool detected_elec(false);
   TLorentzVector eh_s_tot;
   TLorentzVector q_h_s;
@@ -438,11 +453,8 @@ void kinematic_resolution_ycut(){
     holdParticles.clear();
 
     //Reset Summing Over Hadrons Variables
-    Etot_sumh_s = 0;
-    pxtot_sumh_s = 0;
-    pytot_sumh_s = 0;
-    pztot_sumh_s = 0;
-    pttot_sumh_s = 0;
+    Etot_sumh_s = 0; pxtot_sumh_s = 0; pytot_sumh_s = 0; pztot_sumh_s = 0; pttot_sumh_s = 0;
+    E_sum_noh = 0; px_sum_noh = 0; py_sum_noh = 0; pz_sum_noh = 0; pt_sum_noh = 0;
 
     tree->GetEntry(i);
     
@@ -583,6 +595,16 @@ void kinematic_resolution_ycut(){
 	        fastjet::PseudoJet finalStateParticle(fourvec);
 	        finalStateParticle.set_user_index(j);
 	        holdParticles.push_back(finalStateParticle);
+
+          //Calculation if barrel HCAL (eta=[-1,1]) is removed
+          //Do not include neutrons (id=2112) or K0_L (id=130)
+          if( !(id[j]==2112 || id[j]==130) || !(particle->GetEta()>-1.0 && particle->GetEta()<1.0 ) ){
+            px_sum_noh = px_sum_noh + holdpx_h;
+            py_sum_noh = py_sum_noh + holdpy_h;
+            pz_sum_noh = pz_sum_noh + holdpz_h;
+            E_sum_noh =  E_sum_noh + holdE_h;
+          }
+
 	      }
       }  
     }//Finished Loop Over Particles
@@ -743,6 +765,9 @@ void kinematic_resolution_ycut(){
       h4d_2->Fill(y_e,y_jb_sumh_s);
       h4d_3->Fill(x_e,x_jb_sumh_s);
 
+      hextra_1->Fill(y_e,Etot_sumh_s - pztot_sumh_s);
+      hextra_1a->Fill(y_e, E_sum_noh - pz_sum_noh);
+
       //2.3) Using 4-Vector of outgoing X
       eh_s_tot.SetPxPyPzE(pxtot_sumh_s,pytot_sumh_s,pztot_sumh_s,Etot_sumh_s);
 
@@ -770,6 +795,9 @@ void kinematic_resolution_ycut(){
 
       //3.2) Using Smeared DA Method (Summing Over Hadrons)
       if(detected_elec){
+
+        Theta_h_calc = TMath::RadToDeg()*TMath::ACos( ( -y_e*Ei_e +(1.-y_e)*x_e*E_pn ) / (y_e*Ei_e + (1.-y_e)*x_e*E_pn) );
+
         Theta_h_nm_s = 2.* TMath::ATan( (Etot_sumh_s - pztot_sumh_s)/pttot_sumh_s);
         Q2_da_s = 4.*Ei_e*Ei_e*( 1./TMath::Tan(theta_e_s/2.) )*
           ( 1./(TMath::Tan(theta_e_s/2.)+TMath::Tan(Theta_h_nm_s/2.)) );
@@ -791,6 +819,8 @@ void kinematic_resolution_ycut(){
         h7d_1->Fill(Q2_e,Q2_da_s);
         h7d_2->Fill(y_e,y_da_s);
         h7d_3->Fill(x_e,x_da_s);
+
+        hextra_2->Fill(Theta_h_calc,Theta_h_nm_s*TMath::RadToDeg());
 
       }
 
@@ -1160,6 +1190,18 @@ void kinematic_resolution_ycut(){
   c7d->cd(3);gPad->SetLogx();gPad->SetLogy();h7d_3->Draw("colz");func_1->Draw("same");
   c7d->cd(4);tex_energy->Draw();tex7_2->Draw();texy->Draw();
 
+  TCanvas *cextra_1 = new TCanvas("cextra_1");
+  cextra_1->SetLogz();
+  hextra_1->Draw("colz");
+
+  TCanvas *cextra_1a = new TCanvas("cextra_1a");
+  cextra_1a->SetLogz();
+  hextra_1a->Draw("colz");
+
+  TCanvas *cextra_2 = new TCanvas("cextra_2");
+  cextra_2->SetLogz();
+  hextra_2->Draw("colz");
+
   //Print to File
   if(energy_set == 1){
     c1a->Print("./plots/kinematic_resolution_ycut_5_41.pdf[");
@@ -1191,7 +1233,10 @@ void kinematic_resolution_ycut(){
     c7b->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     c7c->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     c7d->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
-    c7d->Print("./plots/kinematic_resolution_ycut_5_41.pdf]");
+    cextra_1->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
+    cextra_1a->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
+    cextra_2->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
+    cextra_2->Print("./plots/kinematic_resolution_ycut_5_41.pdf]");
   }
   if(energy_set == 2){
     c1a->Print("./plots/kinematic_resolution_ycut_18_275.pdf[");
@@ -1223,6 +1268,9 @@ void kinematic_resolution_ycut(){
     c7b->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
     c7c->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
     c7d->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
-    c7d->Print("./plots/kinematic_resolution_ycut_18_275.pdf]");
+    cextra_1->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    cextra_1a->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    cextra_2->Print("./plots/kinematic_resolution_ycut_18_275.pdf");
+    cextra_2->Print("./plots/kinematic_resolution_ycut_18_275.pdf]");
   }
 }
