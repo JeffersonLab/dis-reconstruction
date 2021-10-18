@@ -406,6 +406,8 @@ void kinematic_resolution_ycut(){
   Double_t Q2_e(0),y_e(0),x_e(0),W_e(0); //Scattered electron (no assumptions)
   Double_t s_nm(0); //CM Energy Squared (massless e,p)
   Int_t electronIndex(0);
+  Double_t Theta_h_calc(0);
+  Double_t Theta_e_true(0);
 
   //Smeared Variables
   Int_t nParticles_s(0);
@@ -422,7 +424,6 @@ void kinematic_resolution_ycut(){
   Double_t Q2_e_nm_p_s(0),y_e_nm_p_s(0),x_e_nm_p_s(0); //Scattered electron using total momentum as final energy(massless e,e',p)
   Double_t Theta_jb_jet_s(0),Q2_jb_jet_s(0),y_jb_jet_s(0),x_jb_jet_s(0); // JB Method (Using Jets)
   Double_t Theta_jb_sumh_s(0),Q2_jb_sumh_s(0),y_jb_sumh_s(0),x_jb_sumh_s(0); // JB Method (Summing Over Hadrons)
-  Double_t Theta_h_calc(0);
   Double_t Theta_h_nm_s(0), Q2_da_s(0), y_da_s(0), x_da_s(0); //DA Method
   Double_t mass[500];
   Double_t px_sum_noh(0),py_sum_noh(0),pz_sum_noh(0),pt_sum_noh(0),E_sum_noh(0); //Sum without barrel HCAL
@@ -443,7 +444,7 @@ void kinematic_resolution_ycut(){
   //Not going to apply pt cuts to jet. Don't see a reason to yet
   //auto selectJetEta = fastjet::SelectorEtaRange(etaMin+R,etaMax+R);
 
-  Int_t nevents = 1e6;//tree->GetEntries();
+  Int_t nevents = 1e6;
   
   // Loop over all events
   for(int i=0;i<nevents;i++){
@@ -475,6 +476,7 @@ void kinematic_resolution_ycut(){
 	        pxf_e = particle->GetPx();
 	        pyf_e = particle->GetPy();
 	        pzf_e = particle->GetPz();
+          Theta_e_true = particle->GetTheta()*TMath::RadToDeg();
 	        ef.SetPxPyPzE(pxf_e,pyf_e,pzf_e,Ef_e);
 	        electronIndex = j;
       }
@@ -633,6 +635,8 @@ void kinematic_resolution_ycut(){
     y_e = (pni*q_e)/(pni*ei);
     x_e = Q2_e/(2*pni*q_e); 
     s_nm = 4*Ei_e*E_pn;
+
+    Theta_h_calc = TMath::RadToDeg()*TMath::ACos( ( -y_e*Ei_e +(1.-y_e)*x_e*E_pn ) / (y_e*Ei_e + (1.-y_e)*x_e*E_pn) );
 
     //-------------Calculate *Smeared* invariants using 4-vectors------------------//
   
@@ -795,8 +799,6 @@ void kinematic_resolution_ycut(){
 
       //3.2) Using Smeared DA Method (Summing Over Hadrons)
       if(detected_elec){
-
-        Theta_h_calc = TMath::RadToDeg()*TMath::ACos( ( -y_e*Ei_e +(1.-y_e)*x_e*E_pn ) / (y_e*Ei_e + (1.-y_e)*x_e*E_pn) );
 
         Theta_h_nm_s = 2.* TMath::ATan( (Etot_sumh_s - pztot_sumh_s)/pttot_sumh_s);
         Q2_da_s = 4.*Ei_e*Ei_e*( 1./TMath::Tan(theta_e_s/2.) )*
@@ -1236,7 +1238,6 @@ void kinematic_resolution_ycut(){
     cextra_1->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     cextra_1a->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
     cextra_2->Print("./plots/kinematic_resolution_ycut_5_41.pdf");
-    cextra_2->Print("./plots/kinematic_resolution_ycut_5_41.pdf]");
   }
   if(energy_set == 2){
     c1a->Print("./plots/kinematic_resolution_ycut_18_275.pdf[");

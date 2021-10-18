@@ -42,6 +42,14 @@ void rad_djangoh(){
     h1->GetXaxis()->SetTitle("W_{True} [GeV]");h1->GetXaxis()->CenterTitle();
     h1->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h1->GetYaxis()->CenterTitle();
 
+    TH2 *h1a = new TH2D("h1a","Q^{2}_{True} < 50 GeV^{2}",140,0,70,140,0,70);
+    h1a->GetXaxis()->SetTitle("W_{True} [GeV]");h1a->GetXaxis()->CenterTitle();
+    h1a->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h1a->GetYaxis()->CenterTitle();
+
+    TH2 *h1b = new TH2D("h1b","Q^{2}_{True} > 50 GeV^{2}",140,0,70,140,0,70);
+    h1b->GetXaxis()->SetTitle("W_{True} [GeV]");h1b->GetXaxis()->CenterTitle();
+    h1b->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h1b->GetYaxis()->CenterTitle();
+
     TH1 *h2 = new TH1D("h2","",100,0,10);
     h2->GetXaxis()->SetTitle("W_{True} [GeV]");h2->GetXaxis()->CenterTitle();
     h2->SetLineColor(kBlue);h2->SetLineWidth(2);
@@ -68,6 +76,14 @@ void rad_djangoh(){
     TH2 *h5 = new TH2D("h5","",nbins_hist,hist_bin,nbins_hist,hist_bin);
     h5->GetXaxis()->SetTitle("x_{True}");h5->GetXaxis()->CenterTitle();
     h5->GetYaxis()->SetTitle("x_{Elec.}");h5->GetYaxis()->CenterTitle();
+
+    TH2 *h5a = new TH2D("h5a","Q^{2}_{True} < 50 GeV^{2}",nbins_hist,hist_bin,nbins_hist,hist_bin);
+    h5a->GetXaxis()->SetTitle("x_{True}");h5a->GetXaxis()->CenterTitle();
+    h5a->GetYaxis()->SetTitle("x_{Elec.}");h5a->GetYaxis()->CenterTitle();
+
+    TH2 *h5b = new TH2D("h5b","Q^{2}_{True} > 50 GeV^{2}",nbins_hist,hist_bin,nbins_hist,hist_bin);
+    h5b->GetXaxis()->SetTitle("x_{True}");h5b->GetXaxis()->CenterTitle();
+    h5b->GetYaxis()->SetTitle("x_{Elec.}");h5b->GetYaxis()->CenterTitle();
 
     TH1 *h6 = new TH1D("h6","",10,0,10);
     h6->GetXaxis()->SetTitle("IChannel");h6->GetXaxis()->CenterTitle();
@@ -191,10 +207,15 @@ void rad_djangoh(){
 
         //Fill Histograms
         h1->Fill( sqrt(W2_true), sqrt(W2_event) );
+        if(Q2_true<50) h1a->Fill( sqrt(W2_true), sqrt(W2_event) );
+        if(Q2_true>50) h1b->Fill( sqrt(W2_true), sqrt(W2_event) );
+
         h2->Fill( sqrt(W2_true) );
         h3->Fill(Q2_true,Q2_event);
         h4->Fill(y_true,y_event);
         h5->Fill(x_true,x_event);
+        if(Q2_true<50)h5a->Fill(x_true,x_event);
+        if(Q2_true>50)h5b->Fill(x_true,x_event);
         h6->Fill(event->IChannel);
     }
 
@@ -465,6 +486,14 @@ void rad_djangoh(){
     cc1->SetLogz();
     h1->Draw("colz");
 
+    TCanvas *cc1a = new TCanvas("cc1a");
+    cc1a->SetLogz();
+    h1a->Draw("colz");
+
+    TCanvas *cc1b = new TCanvas("cc1b");
+    cc1b->SetLogz();
+    h1b->Draw("colz");
+
     TCanvas *cc2 = new TCanvas("cc2");
     h2->Draw();
 
@@ -480,6 +509,14 @@ void rad_djangoh(){
     cc5->SetLogx();cc5->SetLogy();cc5->SetLogz();
     h5->Draw("colz");
 
+    TCanvas *cc5a = new TCanvas("cc5a");
+    cc5a->SetLogx();cc5a->SetLogy();cc5a->SetLogz();
+    h5a->Draw("colz");
+
+    TCanvas *cc5b = new TCanvas("cc5b");
+    cc5b->SetLogx();cc5b->SetLogy();cc5b->SetLogz();
+    h5b->Draw("colz");
+
     TCanvas *cc6 = new TCanvas("cc6");
     h6->Draw();
 
@@ -488,10 +525,14 @@ void rad_djangoh(){
     c1->Print("plots/rad_djangoh.pdf");
     c2->Print("plots/rad_djangoh.pdf");
     cc1->Print("plots/rad_djangoh.pdf");
+    cc1a->Print("plots/rad_djangoh.pdf");
+    cc1b->Print("plots/rad_djangoh.pdf");
     cc2->Print("plots/rad_djangoh.pdf");
     cc3->Print("plots/rad_djangoh.pdf");
     cc4->Print("plots/rad_djangoh.pdf");
     cc5->Print("plots/rad_djangoh.pdf");
+    cc5a->Print("plots/rad_djangoh.pdf");
+    cc5b->Print("plots/rad_djangoh.pdf");
     cc6->Print("plots/rad_djangoh.pdf");
     cc6->Print("plots/rad_djangoh.pdf]");
 
