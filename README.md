@@ -47,9 +47,9 @@ If you have some difficulty setting up either enviroment using the above instruc
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
-If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run the EIC versions of the Pythia6 and the DJANGOH event generators on the ifarm; it will also provide access to the eic-smear library installed on the ifarm.
+Some information can be found [here](https://eic.github.io/software/escalate_singularity_1.html).
 
-It is also possible to instead access the EIC software on the Jefferson Lab farm using a singularity continer as discussed [here](https://eic.github.io/software/escalate_singularity_1.html).
+~~If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run the EIC versions of the Pythia6 and the DJANGOH event generators on the ifarm; it will also provide access to the eic-smear library installed on the ifarm.~~
 
 <br/>
 
