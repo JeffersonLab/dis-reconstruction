@@ -47,7 +47,17 @@ If you have some difficulty setting up either enviroment using the above instruc
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
-Some information can be found [here](https://eic.github.io/software/escalate_singularity_1.html).
+Do the following to run on the singularity container:
+
+module load /apps/modulefiles/singularity/3.4.0
+
+singularity shell -B /cvmfs:/cvmfs /cvmfs/eic.opensciencegrid.org/singularity/rhic_sl7_ext
+
+export EIC_LEVEL="dev"
+
+source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_bash.sh
+
+Some additional information can be found [here](https://eic.github.io/software/escalate_singularity_1.html).
 
 ~~If you have access to the Jefferson Lab farm (ifarm), you should source the 'setup_jlab.csh' script provided in this repository. This will allow you to run the EIC versions of the Pythia6 and the DJANGOH event generators on the ifarm; it will also provide access to the eic-smear library installed on the ifarm.~~
 
