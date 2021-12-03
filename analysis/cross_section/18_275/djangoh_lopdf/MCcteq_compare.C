@@ -463,14 +463,14 @@ void MCcteq_compare(){
 
     TChain *t_p8 = new TChain("EICTree");
     for(int i=0;i<15;i++){
-        t_p8->Add(Form("/gpfs02/eic/baraks/pythia8/basic_DIS/output/hepmc_out_%d.root",i));
+        t_p8->Add(Form("/gpfs02/eic/baraks/pythia8/athena_v2/output/hepmc_out_%d.root",i));
     }
 
     t_p8->SetBranchAddress("event",&event_p8);
 
     //Calculate Generated Luminosity
     int nevents_p8 = t_p8->GetEntries();
-    double cross_tot_p8 = 6.54E8; //Total Cross Section in fb
+    double cross_tot_p8 = 8.75E8; //Total Cross Section in fb
     double lum_p8 = ( (double) nevents_p8)/cross_tot_p8; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;

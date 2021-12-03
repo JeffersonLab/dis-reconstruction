@@ -68,8 +68,8 @@ int main(int argc, char* argv[])
   
   // Phase-space cut: minimal Q2 of process.
   pythia.settings.parm("PhaseSpace:Q2Min", Q2min);
-  pythia.settings.parm("PhaseSpace:mHatMin = force 0.1");
-  pythia.settings.parm("PhaseSpace:pTHatMindiverge = force 0.1");
+  pythia.readString("PhaseSpace:mHatMin = force 0.1");
+  pythia.readString("PhaseSpace:pTHatMindiverge = force 0.1");
 
   // Set dipole recoil on. Necessary for DIS + shower.
   pythia.readString("SpaceShower:dipoleRecoil = on");
