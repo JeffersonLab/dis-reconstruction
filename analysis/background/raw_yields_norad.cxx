@@ -215,6 +215,74 @@ int main(int argc, char **argv){
         h_npi_finer[ihist]->SetLineColor(kBlue);h_npi_finer[ihist]->SetLineWidth(2);
     }
 
+    //for ratio plots, use constant log binning
+    double p_min = 1E-1;
+    double p_max = 50;
+	const int nbins = 30;
+	double log_bw = (log10(p_max) - log10(p_min))/((double)nbins);
+    double log_div;
+    double p_bins[nbins+1];
+    for(int i=0;i<nbins+1;i++){
+		log_div = log10(p_min) + (i*log_bw);
+		p_bins[i] = pow(10,log_div);
+	}
+
+    //Pion rejection factors
+    //Two for electron endcap
+    //One for barrel
+    double npi_rej_ec1[nbins] = {80, 80,  80,  80,  80,  80,  80,  80,  80,  250,
+                                450, 1000,2100,3775,7800,8900,9000,7100,5700,4376,
+                                3466,2631,2130,2000,1500,1500,1500,1500,1500,1500};
+    double npi_rej_ec2[nbins] = {100,  100, 100, 100, 100, 100, 100, 100, 120, 300,
+                                550, 1000,2100,3775,7800,8900,9000,5000,3000,2500,
+                                1900,1800,2000,2000,2000,2000,2000,2000,2000,2000};
+    double npi_rej_barrel[nbins] = {450, 450, 450, 530, 610, 700,  1325, 1950,2575,3200,
+                                    3825,4450,5075,5700,5700,5700, 5700, 5700,5700,5700,
+                                    5700,5700,5700,5700,5700,5700, 5700, 5700,5700,5700};    
+
+    TH1* h_se_ratio[nEta]; //Raw
+    TH1* h_npi_ratio[nEta];
+    TH1* h_se_ratio1[nEta]; //Calorimeter
+    TH1* h_npi_ratio1[nEta];
+    TH1* h_se_ratio2[nEta]; //Calorimeter + (E-pz)
+    TH1* h_npi_ratio2[nEta];
+    TH1* h_se_ratio3[nEta]; //Calorimeter + (E-pz) + Isolation
+    TH1* h_npi_ratio3[nEta];
+    TH1* h_se_ratio4[nEta]; //Calorimeter + (E-pz) + Isolation + 'Best Choice'
+    TH1* h_npi_ratio4[nEta];
+
+    for(int ihist=0;ihist<nEta;ihist++){
+        h_se_ratio[ihist] = new TH1D(Form("h_se_ratio[%d]",ihist),"",nbins,p_bins);
+        h_se_ratio[ihist]->SetLineColor(kGreen);h_se_ratio[ihist]->SetLineWidth(2);
+
+        h_npi_ratio[ihist] = new TH1D(Form("h_npi_ratio[%d]",ihist),"",nbins,p_bins);
+        h_npi_ratio[ihist]->SetLineColor(kBlue);h_npi_ratio[ihist]->SetLineWidth(2);
+
+        h_se_ratio1[ihist] = new TH1D(Form("h_se_ratio1[%d]",ihist),"",nbins,p_bins);
+        h_se_ratio1[ihist]->SetLineColor(kGreen);h_se_ratio1[ihist]->SetLineWidth(2);
+
+        h_npi_ratio1[ihist] = new TH1D(Form("h_npi_ratio1[%d]",ihist),"",nbins,p_bins);
+        h_npi_ratio1[ihist]->SetLineColor(kBlue);h_npi_ratio1[ihist]->SetLineWidth(2);
+
+        h_se_ratio2[ihist] = new TH1D(Form("h_se_ratio2[%d]",ihist),"",nbins,p_bins);
+        h_se_ratio2[ihist]->SetLineColor(kGreen);h_se_ratio2[ihist]->SetLineWidth(2);
+
+        h_npi_ratio2[ihist] = new TH1D(Form("h_npi_ratio2[%d]",ihist),"",nbins,p_bins);
+        h_npi_ratio2[ihist]->SetLineColor(kBlue);h_npi_ratio2[ihist]->SetLineWidth(2);
+
+        h_se_ratio3[ihist] = new TH1D(Form("h_se_ratio3[%d]",ihist),"",nbins,p_bins);
+        h_se_ratio3[ihist]->SetLineColor(kGreen);h_se_ratio3[ihist]->SetLineWidth(2);
+
+        h_npi_ratio3[ihist] = new TH1D(Form("h_npi_ratio3[%d]",ihist),"",nbins,p_bins);
+        h_npi_ratio3[ihist]->SetLineColor(kBlue);h_npi_ratio3[ihist]->SetLineWidth(2);
+
+        h_se_ratio4[ihist] = new TH1D(Form("h_se_ratio4[%d]",ihist),"",nbins,p_bins);
+        h_se_ratio4[ihist]->SetLineColor(kGreen);h_se_ratio4[ihist]->SetLineWidth(2);
+
+        h_npi_ratio4[ihist] = new TH1D(Form("h_npi_ratio4[%d]",ihist),"",nbins,p_bins);
+        h_npi_ratio4[ihist]->SetLineColor(kBlue);h_npi_ratio4[ihist]->SetLineWidth(2);
+    }
+
     //Load ROOT Files
     erhic::EventPythia *event(NULL); //Event Class
     erhic::ParticleMC *particle(NULL); //Particle Class
@@ -326,6 +394,8 @@ int main(int argc, char **argv){
                 for(int iEta=0;iEta<nEta;iEta++){
                     if(particle->GetEta()>Eta_low[iEta] && particle->GetEta()<Eta_hi[iEta]){
                         h_se[iEta]->Fill(particle->GetP());
+                        h_se_ratio[iEta]->Fill(particle->GetP());
+                        h_se_ratio1[iEta]->Fill(particle->GetP());
                         index_se = iParticle;
                         bin_se = iEta;
                         part_se = event->GetTrack(iParticle);
@@ -361,6 +431,8 @@ int main(int argc, char **argv){
                 for(int iEta=0;iEta<nEta;iEta++){
                     if(particle->GetEta()>Eta_low[iEta] && particle->GetEta()<Eta_hi[iEta]){
                         h_npi[iEta]->Fill(particle->GetP());
+                        h_npi_ratio[iEta]->Fill(particle->GetP());
+                        h_npi_ratio1[iEta]->Fill(particle->GetP());
 
                         index_npi[num_npi] = iParticle;
                         bin_npi[num_npi] = iEta;
@@ -474,6 +546,15 @@ int main(int argc, char **argv){
                 h_se_6[bin_se]->Fill(part_se->GetP());
             }
 
+            //For ratio plots
+            if( (empztot - (2.*10.))>-5 )
+                h_se_ratio2[bin_se]->Fill(part_se->GetP());
+            if( (empztot - (2.*10.))>-5 && phi_diff>2 )
+                h_se_ratio3[bin_se]->Fill(part_se->GetP());
+            if( (empztot - (2.*10.))>-5 && phi_diff>2 ) //Always have scattered electron here
+                h_se_ratio4[bin_se]->Fill(part_se->GetP());
+
+
             phi_diff = fabs( part_se->GetPhi() - atan2(pysum_se_a,pxsum_se_a) );
             if(phi_diff>TMath::Pi())
                 phi_diff = TMath::TwoPi() - phi_diff;
@@ -500,6 +581,14 @@ int main(int argc, char **argv){
                     h_npi_6[bin_npi[iPion]]->Fill(p_npi[iPion]);
                 }
 
+                //For ratio plots
+                if( (empztot - (2.*10.))>-5 )
+                    h_npi_ratio2[bin_npi[iPion]]->Fill(p_npi[iPion]);
+                if( (empztot - (2.*10.))>-5 && phi_diff>2 )
+                    h_npi_ratio3[bin_npi[iPion]]->Fill(p_npi[iPion]);
+                if( (empztot - (2.*10.))>-5 && phi_diff>2 && (!part_se || (part_se && part_se->GetP()<0.5)) )
+                    h_npi_ratio4[bin_npi[iPion]]->Fill(p_npi[iPion]);
+
                 phi_diff = fabs( phi_npi[iPion] - atan2(pysum_npi_a[iPion],pxsum_npi_a[iPion]) );
                 if(phi_diff>TMath::Pi())
                     phi_diff = TMath::TwoPi() - phi_diff;
@@ -514,6 +603,21 @@ int main(int argc, char **argv){
 
     }
 
+    //Scale down electron histograms for 95% efficiency
+    //Only using this on ratio plots as of now
+    TH1 *h_se_sup[nEta];
+    TH1 *h_se_6_sup[nEta];
+
+    for(int ihist=0;ihist<nEta;ihist++){
+        h_se_sup[ihist] = (TH1*) h_se[ihist]->Clone(Form("h_se_sup[%d]",ihist));
+        h_se_sup[ihist]->SetLineColor(kRed);
+        h_se_sup[ihist]->Scale(0.95);
+
+        h_se_6_sup[ihist] = (TH1*) h_se_6[ihist]->Clone(Form("h_se_6_sup[%d]",ihist));
+        h_se_6_sup[ihist]->SetLineColor(kRed);
+        h_se_6_sup[ihist]->Scale(0.95);
+    }
+
     //Scale down pion momentum histograms by 10^4 suppression
     TH1* h_npi_sup[nEta];
     TH1* h_npi_6_sup[nEta];
@@ -521,13 +625,137 @@ int main(int argc, char **argv){
     for(int ihist=0;ihist<nEta;ihist++){
         h_npi_sup[ihist] = (TH1*) h_npi[ihist]->Clone(Form("h_npi_sup[%d]",ihist));
         h_npi_sup[ihist]->SetLineColor(kMagenta);
-
         h_npi_sup[ihist]->Scale(1E-4);
 
         h_npi_6_sup[ihist] = (TH1*) h_npi_6[ihist]->Clone(Form("h_npi_6_sup[%d]",ihist));
         h_npi_6_sup[ihist]->SetLineColor(kMagenta);
-
         h_npi_6_sup[ihist]->Scale(1E-4);
+    }
+
+    //Get pion to electron ratios arter supression factors applied
+    //Use TGraphs...
+    //...strange plotting behavior when using log x and y scales with
+    //"p" (default) option for histograms
+    TGraph *gr_ratio[nEta];
+    TGraph *gr_ratioCORE[nEta];
+    TGraph *gr_ratio1[nEta];
+    TGraph *gr_ratio2[nEta];
+    TGraph *gr_ratio3[nEta];
+    TGraph *gr_ratio4[nEta];
+    int temp_counter;
+
+    for(int ihist=0;ihist<nEta;ihist++){
+
+        //Ratio
+        temp_counter = 0;
+        gr_ratio[ihist] = new TGraph();
+        gr_ratio[ihist]->SetMarkerStyle(20);gr_ratio[ihist]->SetMarkerColor(kBlack);
+        for(int ibin=1;ibin<=h_npi_ratio[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio[ihist]->GetBinContent(ibin)>0 && h_se_ratio[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio[ihist]->GetBinContent(ibin) ) / h_se_ratio[ihist]->GetBinContent(ibin);
+                gr_ratio[ihist]->SetPoint(temp_counter,h_npi_ratio[ihist]->GetBinCenter(ibin),ratio);
+                temp_counter++;
+            }
+        }
+
+        //Ratio CORE
+        temp_counter = 0;
+        gr_ratioCORE[ihist] = new TGraph();
+        gr_ratioCORE[ihist]->SetMarkerStyle(21);gr_ratioCORE[ihist]->SetMarkerColor(kBlue);
+        for(int ibin=1;ibin<=h_npi_ratio[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio[ihist]->GetBinContent(ibin)>0 && h_se_ratio[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio[ihist]->GetBinContent(ibin) ) / h_se_ratio[ihist]->GetBinContent(ibin);
+                gr_ratioCORE[ihist]->SetPoint(temp_counter,h_npi_ratio[ihist]->GetBinCenter(ibin),ratio);
+                temp_counter++;
+            }
+        }
+
+        //Ratio 1
+        temp_counter = 0;
+        gr_ratio1[ihist] = new TGraph();
+        gr_ratio1[ihist]->SetMarkerStyle(20);gr_ratio1[ihist]->SetMarkerColor(kBlack);
+        for(int ibin=1;ibin<=h_npi_ratio1[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio1[ihist]->GetBinContent(ibin)>0 && h_se_ratio1[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio1[ihist]->GetBinContent(ibin) ) / h_se_ratio1[ihist]->GetBinContent(ibin);
+                double scale_fac;
+                if(ihist==0)
+                    scale_fac = (0.95 / npi_rej_ec1[ibin-1]);
+                else if(ihist==1)
+                    scale_fac = (0.95 / npi_rej_ec2[ibin-1]);
+                else
+                    scale_fac = (0.95 / npi_rej_barrel[ibin-1]);
+                gr_ratio1[ihist]->SetPoint(temp_counter,h_npi_ratio1[ihist]->GetBinCenter(ibin),ratio*scale_fac);
+                temp_counter++;
+            }
+        }
+
+        //Ratio 2
+        temp_counter = 0;
+        gr_ratio2[ihist] = new TGraph();
+        gr_ratio2[ihist]->SetMarkerStyle(20);gr_ratio2[ihist]->SetMarkerColor(kBlack);
+        for(int ibin=1;ibin<=h_npi_ratio2[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio2[ihist]->GetBinContent(ibin)>0 && h_se_ratio2[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio2[ihist]->GetBinContent(ibin) ) / h_se_ratio2[ihist]->GetBinContent(ibin);
+                double scale_fac;
+                if(ihist==0)
+                    scale_fac = (0.95 / npi_rej_ec1[ibin-1]);
+                else if(ihist==1)
+                    scale_fac = (0.95 / npi_rej_ec2[ibin-1]);
+                else
+                    scale_fac = (0.95 / npi_rej_barrel[ibin-1]);
+                gr_ratio2[ihist]->SetPoint(temp_counter,h_npi_ratio2[ihist]->GetBinCenter(ibin),ratio*scale_fac);
+                temp_counter++;
+            }
+        }
+
+        //Ratio 3
+        temp_counter = 0;
+        gr_ratio3[ihist] = new TGraph();
+        gr_ratio3[ihist]->SetMarkerStyle(20);gr_ratio3[ihist]->SetMarkerColor(kBlack);
+        for(int ibin=1;ibin<=h_npi_ratio3[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio3[ihist]->GetBinContent(ibin)>0 && h_se_ratio3[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio3[ihist]->GetBinContent(ibin) ) / h_se_ratio3[ihist]->GetBinContent(ibin);
+                double scale_fac;
+                if(ihist==0)
+                    scale_fac = (0.95 / npi_rej_ec1[ibin-1]);
+                else if(ihist==1)
+                    scale_fac = (0.95 / npi_rej_ec2[ibin-1]);
+                else
+                    scale_fac = (0.95 / npi_rej_barrel[ibin-1]);
+                gr_ratio3[ihist]->SetPoint(temp_counter,h_npi_ratio3[ihist]->GetBinCenter(ibin),ratio*scale_fac);
+                temp_counter++;
+            }
+        }
+
+        //Ratio 4
+        cout<<"Printing data points"<<endl;
+        temp_counter = 0;
+        gr_ratio4[ihist] = new TGraph();
+        gr_ratio4[ihist]->SetMarkerStyle(20);gr_ratio4[ihist]->SetMarkerColor(kBlack);
+        for(int ibin=1;ibin<=h_npi_ratio4[ihist]->GetNbinsX();ibin++){
+
+            if(h_npi_ratio4[ihist]->GetBinContent(ibin)>0 && h_se_ratio4[ihist]->GetBinContent(ibin)>0){
+                double ratio = ( (double) h_npi_ratio4[ihist]->GetBinContent(ibin) ) / h_se_ratio4[ihist]->GetBinContent(ibin);
+                double scale_fac;
+                if(ihist==0)
+                    scale_fac = (0.95 / npi_rej_ec1[ibin-1]);
+                else if(ihist==1)
+                    scale_fac = (0.95 / npi_rej_ec2[ibin-1]);
+                else
+                    scale_fac = (0.95 / npi_rej_barrel[ibin-1]);
+                gr_ratio4[ihist]->SetPoint(temp_counter,h_npi_ratio4[ihist]->GetBinCenter(ibin),ratio*scale_fac);
+                cout<<h_npi_ratio4[ihist]->GetBinCenter(ibin)<<"   "<<ratio*scale_fac<<endl;
+
+                temp_counter++;
+            }
+        }
+        cout<<"Finished printing data points"<<endl;
+
     }
 
     TH1* h_npi_fine_sup[nEta_fine];
@@ -1130,6 +1358,170 @@ int main(int argc, char **argv){
     }
     c10->Print("plots/raw_yields_norad.pdf");
     c10->Print("plots/raw_yields_norad.pdf]");
+
+    //Ratio plots
+    TCanvas *c11a = new TCanvas("c11a");
+    c11a->Divide(2,2);
+    TH1 *hframe4a[nEta];
+
+    TLatex *texraa = new TLatex(0.12,1e6,"10 GeV e^{-} on 100 GeV p");
+    texraa->SetTextColor(kBlack);texraa->SetTextFont(42);
+
+    for(int iCan=0;iCan<4;iCan++){ //Only draw first 4 eta ranges
+        c11a->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe4a[iCan] = gPad->DrawFrame(0.1,1e-4,10,1e7);
+        hframe4a[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe4a[iCan]->GetXaxis()->CenterTitle();
+        hframe4a[iCan]->GetYaxis()->SetTitle("Raw #pi^{-}/e Ratio");hframe4a[iCan]->GetYaxis()->CenterTitle();
+        hframe4a[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
+
+        gr_ratio[iCan]->Draw("p same");
+
+        if(iCan==0){
+            texraa->Draw();
+        }
+    }
+
+    TCanvas *c11 = new TCanvas("c11");
+    c11->Divide(2,2);
+    TH1 *hframe4[nEta];
+
+    TLine *liner[nEta];
+
+    for(int iline=0;iline<nEta;iline++){
+        liner[iline] = new TLine(mom_low[iline],1E-6,mom_low[iline],10);
+        liner[iline]->SetLineColor(kOrange);
+        liner[iline]->SetLineWidth(2);
+        liner[iline]->SetLineStyle(2);
+    }
+
+    TLatex *texra = new TLatex(0.12,20,"10 GeV e^{-} on 100 GeV p");
+    texra->SetTextColor(kBlack);texra->SetTextFont(42);
+
+    TLatex *texrb = new TLatex(0.6,10,"P_{min.} Value");
+    texrb->SetTextColor(kOrange);texrb->SetTextFont(42);
+
+    for(int iCan=0;iCan<4;iCan++){ //Only draw first 4 eta ranges
+        c11->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe4[iCan] = gPad->DrawFrame(0.1,1e-6,10,1e2);
+        hframe4[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframe4[iCan]->GetXaxis()->CenterTitle();
+        hframe4[iCan]->GetYaxis()->SetTitle("Final #pi^{-}/e Ratio");hframe4[iCan]->GetYaxis()->CenterTitle();
+        hframe4[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
+
+        gr_ratio1[iCan]->Draw("p same");
+        
+        liner[iCan]->Draw();
+
+        if(iCan==0){
+            texra->Draw();
+        }
+        if(iCan==2){
+            texrb->Draw();
+        }
+    }
+
+    TCanvas *c12 = new TCanvas("c12");
+    c12->Divide(2,2);
+
+    for(int iCan=0;iCan<4;iCan++){ //Only draw first 4 eta ranges
+        c12->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe4[iCan]->Draw();
+        gr_ratio2[iCan]->Draw("p same");
+
+        liner[iCan]->Draw();
+
+        if(iCan==0){
+            texra->Draw();
+        }
+        if(iCan==2){
+            texrb->Draw();
+        }
+    }
+
+    TCanvas *c13 = new TCanvas("c13");
+    c13->Divide(2,2);
+
+    for(int iCan=0;iCan<4;iCan++){ //Only draw first 4 eta ranges
+        c13->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe4[iCan]->Draw();
+        gr_ratio3[iCan]->Draw("p same");
+
+        liner[iCan]->Draw();
+
+        if(iCan==0){
+            texra->Draw();
+        }
+        if(iCan==2){
+            texrb->Draw();
+        }
+    }
+
+    TCanvas *c14 = new TCanvas("c14");
+    c14->Divide(2,2);
+
+    for(int iCan=0;iCan<4;iCan++){ //Only draw first 4 eta ranges
+        c14->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframe4[iCan]->Draw();
+        gr_ratio4[iCan]->Draw("p same");
+
+        liner[iCan]->Draw();
+
+        if(iCan==0){
+            texra->Draw();
+        }
+        if(iCan==2){
+            texrb->Draw();
+        }
+    }
+
+    c11a->Print("plots/e_purity.pdf[");
+    c11a->Print("plots/e_purity.pdf");
+    c11->Print("plots/e_purity.pdf");
+    c12->Print("plots/e_purity.pdf");
+    c13->Print("plots/e_purity.pdf");
+    c14->Print("plots/e_purity.pdf");
+    c14->Print("plots/e_purity.pdf]");
+
+    //CORE Ratio plots
+    TCanvas *cCORE = new TCanvas("cCORE");
+    cCORE->Divide(3,1);
+    TH1 *hframeCORE[nEta];
+
+    TLatex *texCORE = new TLatex(0.12,1e6,"10 GeV e^{-} on 100 GeV p");
+    texCORE->SetTextColor(kBlack);texCORE->SetTextFont(42);
+
+    for(int iCan=0;iCan<3;iCan++){ //Only draw first 3 eta ranges
+        cCORE->cd(iCan+1);
+        gPad->SetLogx();gPad->SetLogy();
+        gPad->SetTickx();gPad->SetTicky();
+
+        hframeCORE[iCan] = gPad->DrawFrame(0.1,1e-4,10,1e7);
+        hframeCORE[iCan]->GetXaxis()->SetTitle("Momentum [GeV/c]");hframeCORE[iCan]->GetXaxis()->CenterTitle();
+        hframeCORE[iCan]->GetYaxis()->SetTitle("Raw #pi^{-}/e Ratio");hframeCORE[iCan]->GetYaxis()->CenterTitle();
+        hframeCORE[iCan]->SetTitle(Form("%0.1f < #eta < %0.1f",Eta_low[iCan],Eta_hi[iCan]));
+
+        gr_ratioCORE[iCan]->Draw("p same");
+
+        if(iCan==0){
+            texCORE->Draw();
+        }
+    }
+
+    cCORE->Print("plots/epi_CORE.pdf");
 
     myapp->Run();
     return 0;
