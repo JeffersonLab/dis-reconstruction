@@ -93,6 +93,7 @@ void rad_djangoh(){
     //Bin Yields/Kinematics/Factors
     //int nbins_tot = nbins_Q2*nbins;
     double yield[nbins][nbins_Q2];
+    double yield_true[nbins][nbins_Q2];
     double error[nbins][nbins_Q2];
     double rcs[nbins][nbins_Q2];
     double y[nbins][nbins_Q2];
@@ -108,7 +109,8 @@ void rad_djangoh(){
 
     for(int i=0;i<nbins;i++){ //x loop
         for(int j=0;j<nbins_Q2;j++){ //Q2 loop
-            yield[i][j]=0;  
+            yield[i][j]=0;
+            yield_true[i][j]=0;
             error[i][j]=0;
             rcs[i][j]=0;  
 
@@ -197,11 +199,21 @@ void rad_djangoh(){
         y_true = event->dtrueY;
         W2_true = event->dtrueW2;
 
+        //Using scattered electron quantities
         for(int i=0;i<nbins;i++){
             for(int j=0;j<nbins_Q2;j++){
                 if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j] &&
                     y_event>ymin && W2_event>W2min && y_event<ymax)
                     yield[i][j]+=1.;
+            }
+        }
+
+        //Using true quantities
+        for(int i=0;i<nbins;i++){
+            for(int j=0;j<nbins_Q2;j++){
+                if(x_true>x_low[i] && x_true<x_hi[i] && Q2_true>Q2_low[j] && Q2_true<Q2_hi[j] &&
+                    y_true>ymin && W2_true>W2min && y_true<ymax)
+                    yield_true[i][j]+=1.;
             }
         }
 
@@ -219,7 +231,8 @@ void rad_djangoh(){
         h6->Fill(event->IChannel);
     }
 
-    //Convert Yields to reduced cross sections
+    //Convert yields to reduced cross sections
+    //First do for scattered electron kinematics
     for(int i=0;i<nbins;i++){
         for(int j=0;j<nbins_Q2;j++){
             rcs[i][j] = rcs_factor[i][j] * (yield[i][j]) / (lum*x_width[i]*Q2_width[j]);
@@ -243,6 +256,36 @@ void rad_djangoh(){
             if(yield[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
                 gr1[j]->SetPoint(counter,x_center[i],rcs[i][j]);
                 gr1[j]->SetPointError(counter,0,error[i][j]);
+                counter++;
+            }
+        }
+        counter=0;
+    }
+
+    //Next do for true kinematics
+    for(int i=0;i<nbins;i++){
+        for(int j=0;j<nbins_Q2;j++){
+            rcs[i][j] = rcs_factor[i][j] * (yield_true[i][j]) / (lum*x_width[i]*Q2_width[j]);
+            if(yield_true[i][j]>0) error[i][j] = (rcs[i][j]) / (sqrt(yield_true[i][j]));
+        }
+    }
+
+    //Create and fill TGraphs
+    TGraphErrors *gr1t[nbins_Q2];
+    for(int j=0;j<nbins_Q2;j++){
+        gr1t[j] = new TGraphErrors();
+        gr1t[j]->SetLineWidth(2);
+        gr1t[j]->SetLineColor(kGreen);
+        gr1t[j]->SetMarkerStyle(21);
+        gr1t[j]->SetMarkerColor(kGreen);
+    }
+
+    counter = 0;
+    for(int j=0;j<nbins_Q2;j++){
+        for(int i=0;i<nbins;i++){
+            if(yield_true[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
+                gr1t[j]->SetPoint(counter,x_center[i],rcs[i][j]);
+                gr1t[j]->SetPointError(counter,0,error[i][j]);
                 counter++;
             }
         }
@@ -342,11 +385,17 @@ void rad_djangoh(){
     TLatex *tex2 = new TLatex(4E-4,1.6,"10 GeV e^{-} on 100 GeV p, #sqrt{s}=63.2 GeV");
     tex2->SetTextColor(kBlack);tex2->SetTextFont(42);
 
-    TLatex *tex3 = new TLatex(4E-4,1.45,"Djangoh_{Rad.} e^{-}p, y>0.001 and W^{2}>10GeV^{2}");
-    tex3->SetTextColor(kBlue);tex3->SetTextFont(62);
+    TLatex *tex3 = new TLatex(4E-4,1.45,"Djangoh, y>0.001 and W^{2}>10GeV^{2}");
+    tex3->SetTextColor(kBlack);tex3->SetTextFont(42);
 
-    TLatex *tex4 = new TLatex(4E-4,1.3,"Djangoh_{Born.} e^{-}p, y>0.001 and W^{2}>10GeV^{2}");
-    tex4->SetTextColor(kMagenta);tex4->SetTextFont(62);
+    TLatex *tex4 = new TLatex(4E-4,1.45,"#sigma_{Rad.} using electron quantities");
+    tex4->SetTextColor(kBlue);tex4->SetTextFont(62);
+
+    TLatex *tex5 = new TLatex(4E-4,1.30,"#sigma_{Rad.} using true quantities");
+    tex5->SetTextColor(kGreen);tex5->SetTextFont(62);
+
+    TLatex *tex6 = new TLatex(4E-4,1.15,"#sigma_{Born.}");
+    tex6->SetTextColor(kMagenta);tex6->SetTextFont(62);
 
     //Draw plots
     gStyle->SetPadBorderMode(0);
@@ -381,9 +430,11 @@ void rad_djangoh(){
     hframe->GetXaxis()->SetTitle("x");hframe->GetXaxis()->CenterTitle();
     hframe->GetYaxis()->SetTitle("#sigma_{r,NC}^{-}");hframe->GetYaxis()->CenterTitle();
     counter = 0;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");  
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();
 
     c1->cd(2); 
     gPad->SetLogx();
@@ -395,8 +446,11 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
+    tex4->Draw();tex5->Draw();tex6->Draw();
 
     c1->cd(3);
     gPad->SetLogx();
@@ -408,7 +462,9 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c1->cd(4);
@@ -421,7 +477,9 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     TCanvas *c2 = new TCanvas("c2");
@@ -437,9 +495,11 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex2->Draw();tex3->Draw();tex4->Draw();
+    tex2->Draw();tex3->Draw();
 
     c2->cd(2);
     gPad->SetLogx();
@@ -451,8 +511,11 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
+    tex4->Draw();tex5->Draw();tex6->Draw();
     
     c2->cd(3);
     gPad->SetLogx();
@@ -464,7 +527,9 @@ void rad_djangoh(){
     gPad->SetTicky();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2->cd(4);
@@ -478,7 +543,9 @@ void rad_djangoh(){
     hframe->Draw();
     hframe->Draw();
     counter++;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1t[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     //Plot Histograms
