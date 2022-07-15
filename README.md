@@ -21,9 +21,8 @@ Follow these instructions if you have an EIC account: [EIC Environment Setup](ht
 
 The EIC environmental setup described on the EIC wiki page above will link to the 'pro' setup. To link to the 'dev' version of eic-smear along with ROOT6, set your environment as follows:
 
-setenv EIC_LEVEL dev
-
-source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_cshrc.csh
+> setenv EIC_LEVEL dev    
+> source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_cshrc.csh
 
 (N.B. The above commands should also allow you to setup the EIC environment if you are working on a STAR account.)
 
@@ -33,11 +32,11 @@ Follow these steps if you have an sPHENIX account (or a PHENIX account with sPHE
 
 If working on with the Sphenix setup, the default LHAPDF directory is
 
-/cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/lhapdf-5.9.1/share/lhapdf/PDFsets
+> /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/lhapdf-5.9.1/share/lhapdf/PDFsets
 
 This directory only contains a small number of PDF datasets. It is best to set the LHAPATH variable to
 
-/afs/rhic/eic/share/lhapdf/PDFsets
+> /afs/rhic/eic/share/lhapdf/PDFsets
 
 <br/>
 
@@ -47,15 +46,17 @@ If you have some difficulty setting up either enviroment using the above instruc
 
 Working on the JLAB (ifarm) machines
 -----------------------------------
-Do the following to run on the singularity container:
+To run on the JLAB (ifarm) machines, you also simply need to set the environment as above:
 
-module load /apps/modulefiles/singularity/3.4.0
+> setenv EIC_LEVEL dev   
+> source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_cshrc.csh
 
-singularity shell -B /cvmfs:/cvmfs /cvmfs/eic.opensciencegrid.org/singularity/rhic_sl7_ext
+For some versions of the ifarm, you may need to first access the singularity container:
 
-export EIC_LEVEL="dev"
-
-source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_bash.sh
+> module load singularity   
+> singularity shell -B /cvmfs:/cvmfs /cvmfs/eic.opensciencegrid.org/singularity/rhic_sl7_ext   
+> export EIC_LEVEL="dev"   
+> source /cvmfs/eic.opensciencegrid.org/x8664_sl7/MCEG/releases/etc/eic_bash.sh  
 
 Some additional information can be found [here](https://eic.github.io/software/escalate_singularity_1.html).
 
@@ -68,12 +69,17 @@ Working with the Singularity container or Docker image
 ------------------------------------------------------
 You can also use a Singularity container to access the EIC software. General instructions can be found [here](https://eic.github.io/software/eicsmear_generators_singularity.html).
 
-A ready-made image is provided by the sPHENIX collaboration (https://github.com/eic/Singularity) to run the software -- this works best on linux. I was able to get "Option-2" to work on an Ubuntu box. If you have MacOS or Windows, it may be better to use the virtual box as they suggest (https://github.com/eic/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
+A ready-made image is provided by the sPHENIX and ECCE groups [here](https://github.com/ECCE-EIC/Singularity) to run the software. This works best on linux -- and 'option 1' is preferable if you just want to run the EIC generators. If you have MacOS or Windows, it may be better to use the [Virtual Box](https://github.com/eic/Singularity/blob/master/VirtualBox.md). I was able to get that running on a Windows10 machine.
 
 Information on accessing the EIC software through the ESCalate package can be found [here](https://eic.github.io/software/escalate.html).
 
 <br/>
 
+Step-by-Step simulation tutorial
+--------------------------------
+A step-by-step simulation tutorial can be found [here](https://github.com/cipriangal/eicGenTutorials). Follow the [documentation](https://drive.google.com/file/d/1RiiveVGhMEIzmtNQYr4a2U0ghGo0w3Hl/view?usp=sharing) that is linked to in that repository.
+
+<br/>
 
 Files provided in this repository
 ---------------------------------
