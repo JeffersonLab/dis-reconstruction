@@ -50,6 +50,14 @@ void rad_djangoh(){
     h1b->GetXaxis()->SetTitle("W_{True} [GeV]");h1b->GetXaxis()->CenterTitle();
     h1b->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h1b->GetYaxis()->CenterTitle();
 
+    TH2 *h1c = new TH2D("h1c","W^{2}_{Elec.} > 10 GeV^{2}, y_{Elec.}>0.01",200,0,200,140,0,70);
+    h1c->GetXaxis()->SetTitle("Q^{2}_{Elec.} [GeV^{2}]");h1c->GetXaxis()->CenterTitle();
+    h1c->GetYaxis()->SetTitle("W_{True} [GeV]");h1c->GetYaxis()->CenterTitle();
+
+    TH2 *h1d = new TH2D("h1d","",200,0,200,140,0,70);
+    h1d->GetXaxis()->SetTitle("Q^{2}_{True.} [GeV^{2}]");h1d->GetXaxis()->CenterTitle();
+    h1d->GetYaxis()->SetTitle("W_{True} [GeV]");h1d->GetYaxis()->CenterTitle();
+
     TH1 *h2 = new TH1D("h2","",100,0,10);
     h2->GetXaxis()->SetTitle("W_{True} [GeV]");h2->GetXaxis()->CenterTitle();
     h2->SetLineColor(kBlue);h2->SetLineWidth(2);
@@ -221,6 +229,8 @@ void rad_djangoh(){
         h1->Fill( sqrt(W2_true), sqrt(W2_event) );
         if(Q2_true<50) h1a->Fill( sqrt(W2_true), sqrt(W2_event) );
         if(Q2_true>50) h1b->Fill( sqrt(W2_true), sqrt(W2_event) );
+        if(W2_event>10 && y_event>0.01) h1c->Fill(Q2_event,sqrt(W2_true));
+        h1d->Fill(Q2_true,sqrt(W2_true));
 
         h2->Fill( sqrt(W2_true) );
         h3->Fill(Q2_true,Q2_event);
@@ -561,6 +571,14 @@ void rad_djangoh(){
     cc1b->SetLogz();
     h1b->Draw("colz");
 
+    TCanvas *cc1c = new TCanvas("cc1c");
+    cc1c->SetLogz();
+    h1c->Draw("colz");
+
+    TCanvas *cc1d = new TCanvas("cc1d");
+    cc1d->SetLogz();
+    h1d->Draw("colz");
+
     TCanvas *cc2 = new TCanvas("cc2");
     h2->Draw();
 
@@ -594,6 +612,8 @@ void rad_djangoh(){
     cc1->Print("plots/rad_djangoh.pdf");
     cc1a->Print("plots/rad_djangoh.pdf");
     cc1b->Print("plots/rad_djangoh.pdf");
+    cc1c->Print("plots/rad_djangoh.pdf");
+    cc1d->Print("plots/rad_djangoh.pdf");
     cc2->Print("plots/rad_djangoh.pdf");
     cc3->Print("plots/rad_djangoh.pdf");
     cc4->Print("plots/rad_djangoh.pdf");
