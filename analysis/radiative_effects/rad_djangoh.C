@@ -62,6 +62,14 @@ void rad_djangoh(){
     h2->GetXaxis()->SetTitle("W_{True} [GeV]");h2->GetXaxis()->CenterTitle();
     h2->SetLineColor(kBlue);h2->SetLineWidth(2);
 
+    TH1 *h2a = new TH1D("h2a","",200,-2,80);
+    h2a->GetXaxis()->SetTitle("W_{True} [GeV]");h2a->GetXaxis()->CenterTitle();
+    h2a->SetLineColor(kBlue);h2a->SetLineWidth(2);
+
+    TH1 *h2b = new TH1D("h2b","",200,-2,80);
+    h2b->GetXaxis()->SetTitle("W_{Elec.} [GeV]");h2b->GetXaxis()->CenterTitle();
+    h2b->SetLineColor(kBlue);h2b->SetLineWidth(2);
+
     TH2 *h3 = new TH2D("h3","",100,0,100,100,0,100);
     h3->GetXaxis()->SetTitle("Q^{2}_{True} [GeV^{2}]");h3->GetXaxis()->CenterTitle();
     h3->GetYaxis()->SetTitle("Q^{2}_{Elec.} [GeV^{2}]");h3->GetYaxis()->CenterTitle();
@@ -97,6 +105,22 @@ void rad_djangoh(){
     h6->GetXaxis()->SetTitle("IChannel");h6->GetXaxis()->CenterTitle();
     h6->GetXaxis()->CenterLabels();
     h6->SetLineColor(kBlue);h6->SetLineWidth(2);
+
+    TH1 *h7a = new TH1D("h7a","Sum over final-state particles w/ -4<#eta<4",100,-10,22); //Channel 1
+    h7a->GetXaxis()->SetTitle("(E-p_{z})_{Tot.}");h7a->GetXaxis()->CenterTitle();
+    h7a->SetLineColor(kBlack);h7a->SetLineWidth(2);
+
+    TH1 *h7b = new TH1D("h7b","",100,-10,22); //Channel 6
+    h7b->GetXaxis()->SetTitle("(E-p_{z})_{Tot.}");h7b->GetXaxis()->CenterTitle();
+    h7b->SetLineColor(kBlue);h7b->SetLineWidth(2);
+
+    TH1 *h7c = new TH1D("h7c","",100,-10,22); //Channel 7
+    h7c->GetXaxis()->SetTitle("(E-p_{z})_{Tot.}");h7c->GetXaxis()->CenterTitle();
+    h7c->SetLineColor(kGreen);h7c->SetLineWidth(2);
+
+    TH1 *h7d = new TH1D("h7d","",100,-10,22); //Channel 8
+    h7d->GetXaxis()->SetTitle("(E-p_{z})_{Tot.}");h7d->GetXaxis()->CenterTitle();
+    h7d->SetLineColor(kRed);h7d->SetLineWidth(2);
 
     //Bin Yields/Kinematics/Factors
     //int nbins_tot = nbins_Q2*nbins;
@@ -161,9 +185,14 @@ void rad_djangoh(){
     erhic::ParticleMC *particle(NULL); //Particle Class
 
     TChain *t = new TChain("EICTree");
-    for(int i=0;i<15;i++){
-        t->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/10_100/Rad/djangoh.NC.10x100_%d.root",i));
-    }
+    
+    //Djangoh 4.6.20
+    t->Add("/gpfs02/eic/baraks/djangoh/djangoh_local/outfiles/djangoh.NC.Rad.10x100_evt.root");
+
+    //Djangoh 4.6.10
+    //for(int i=0;i<15;i++){
+        //t->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/10_100/Rad/djangoh.NC.10x100_%d.root",i));
+    //}
 
     t->SetBranchAddress("event",&event);
     double Q2_event; //Get this from scattered electron
@@ -181,9 +210,20 @@ void rad_djangoh(){
     //double nu_event;
     //double nu_true;
 
+    //Other variables
+    double Eout1,pzout1;
+    double Eout6,pzout6;
+    double Eout7,pzout7;
+    double Eout8,pzout8;
+
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
-    double cross_tot = 1.25E9; //Total Cross Section in fb
+    
+    //Djangoh 4.6.20
+    double cross_tot = 1.51E9; //Total Cross Section in fb
+    //Djangoh 4.6.10
+    //double cross_tot = 1.25E9; //Total Cross Section in fb
+    
     double lum = ( (double) nevents)/cross_tot; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
@@ -193,6 +233,13 @@ void rad_djangoh(){
 
     //Loop over events
     for(int k=0;k<nevents;k++){
+
+        //Reset Variables
+        Eout1=0;pzout1=0;
+        Eout6=0;pzout6=0;
+        Eout7=0;pzout7=0;
+        Eout8=0;pzout8=0;
+
         if(k%10000==0) cout<<"Events Analysed = "<<k<<"!"<<endl;
         t->GetEntry(k);
 
@@ -233,13 +280,50 @@ void rad_djangoh(){
         h1d->Fill(Q2_true,sqrt(W2_true));
 
         h2->Fill( sqrt(W2_true) );
+        h2a->Fill( sqrt(W2_true) );
+        h2b->Fill( sqrt(W2_event) );
         h3->Fill(Q2_true,Q2_event);
         h4->Fill(y_true,y_event);
         h5->Fill(x_true,x_event);
         if(Q2_true<50)h5a->Fill(x_true,x_event);
         if(Q2_true>50)h5b->Fill(x_true,x_event);
         h6->Fill(event->IChannel);
-    }
+
+
+        // Loop over all particles in event 
+        for(int iParticle=0;iParticle<event->GetNTracks();iParticle++){
+
+            particle = event->GetTrack(iParticle);
+        
+            //Get total outgoing energy and z momentum component
+            if( particle->GetStatus()==1 && fabs(particle->GetEta())<4 ){
+
+                if(event->IChannel==1){
+                    Eout1+=particle->GetE();
+                    pzout1+=particle->GetPz();
+                }
+                else if(event->IChannel==6){
+                    Eout6+=particle->GetE();
+                    pzout6+=particle->GetPz();
+                }
+                else if(event->IChannel==7){
+                    Eout7+=particle->GetE();
+                    pzout7+=particle->GetPz();
+                }
+                else if(event->IChannel==8){
+                    Eout8+=particle->GetE();
+                    pzout8+=particle->GetPz();
+                }
+            }
+        }
+
+        //Fill additional histograms
+        if( event->IChannel==1 ) h7a->Fill(Eout1-pzout1);
+        if( event->IChannel==6 ) h7b->Fill(Eout6-pzout6);
+        if( event->IChannel==7 ) h7c->Fill(Eout7-pzout7);
+        if( event->IChannel==8 ) h7d->Fill(Eout8-pzout8);
+
+    } //End event loop
 
     //Convert yields to reduced cross sections
     //First do for scattered electron kinematics
@@ -311,15 +395,25 @@ void rad_djangoh(){
     erhic::ParticleMC *particle_d(NULL); //Particle Class
 
     TChain *t_d = new TChain("EICTree");
-    for(int i=0;i<10;i++){
-        t_d->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/10_100/djangoh.NC.10x100_%d.root",i));
-    }
+    
+    //Djangoh 4.6.20
+    t_d->Add("/gpfs02/eic/baraks/djangoh/djangoh_local/outfiles/djangoh.NC.10x100_evt.root");
+
+    //Djangoh 4.6.10
+    //for(int i=0;i<10;i++){
+        //t_d->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/10_100/djangoh.NC.10x100_%d.root",i));
+    //}
 
     t_d->SetBranchAddress("event",&event_d);
 
     //Calculate Generated Luminosity
     int nevents_d = t_d->GetEntries();
-    double cross_tot_d = 1.06E9; //Total Cross Section in fb
+    
+    //Djangoh 4.6.20
+    double cross_tot_d = 1.18E9; //Total Cross Section in fb
+
+    //Djangoh 4.6.10
+    //double cross_tot_d = 1.06E9; //Total Cross Section in fb
     double lum_d = ( (double) nevents_d)/cross_tot_d; //Luminosity in fb^-1
 
     cout<<"-------------------------------"<<endl;
@@ -353,7 +447,7 @@ void rad_djangoh(){
                     yield[i][j]+=1.;
             }
         }
-    }
+    } //End event loop
 
     //Convert Yields to reduced cross sections
     for(int i=0;i<nbins;i++){
@@ -582,6 +676,12 @@ void rad_djangoh(){
     TCanvas *cc2 = new TCanvas("cc2");
     h2->Draw();
 
+    TCanvas *cc2a = new TCanvas("cc2a");
+    h2a->Draw();
+
+    TCanvas *cc2b = new TCanvas("cc2b");
+    h2b->Draw();
+
     TCanvas *cc3 = new TCanvas("cc3");
     cc3->SetLogz();
     h3->Draw("colz");
@@ -605,6 +705,21 @@ void rad_djangoh(){
     TCanvas *cc6 = new TCanvas("cc6");
     h6->Draw();
 
+    TCanvas *cc7 = new TCanvas("cc7");
+    gPad->SetLogy();
+    h7a->Draw();
+    h7b->Draw("same");
+    h7c->Draw("same");
+    h7d->Draw("same");
+
+    TLegend *leg1 = new TLegend(0.125,0.6,0.325,0.8);
+    leg1->SetBorderSize(0);leg1->SetTextSize(0.035);
+    leg1->AddEntry(h7a,"Channel 1","l");
+    leg1->AddEntry(h7b,"Channel 6","l");
+    leg1->AddEntry(h7c,"Channel 7","l");
+    leg1->AddEntry(h7d,"Channel 8","l");
+    leg1->Draw();
+
     //Print to File
     c1->Print("plots/rad_djangoh.pdf[");
     c1->Print("plots/rad_djangoh.pdf");
@@ -615,12 +730,15 @@ void rad_djangoh(){
     cc1c->Print("plots/rad_djangoh.pdf");
     cc1d->Print("plots/rad_djangoh.pdf");
     cc2->Print("plots/rad_djangoh.pdf");
+    cc2a->Print("plots/rad_djangoh.pdf");
+    cc2b->Print("plots/rad_djangoh.pdf");
     cc3->Print("plots/rad_djangoh.pdf");
     cc4->Print("plots/rad_djangoh.pdf");
     cc5->Print("plots/rad_djangoh.pdf");
     cc5a->Print("plots/rad_djangoh.pdf");
     cc5b->Print("plots/rad_djangoh.pdf");
     cc6->Print("plots/rad_djangoh.pdf");
-    cc6->Print("plots/rad_djangoh.pdf]");
+    cc7->Print("plots/rad_djangoh.pdf");
+    cc7->Print("plots/rad_djangoh.pdf]");
 
 }
