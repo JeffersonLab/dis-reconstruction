@@ -122,9 +122,22 @@ void rad_djangoh(){
     h7d->GetXaxis()->SetTitle("(E-p_{z})_{Tot.}");h7d->GetXaxis()->CenterTitle();
     h7d->SetLineColor(kRed);h7d->SetLineWidth(2);
 
+    TH2 *h8a = new TH2D("h8a","(E-p_{z})_{Tot.} > 18 GeV",140,0,70,140,0,70);
+    h8a->GetXaxis()->SetTitle("W_{True} [GeV]");h8a->GetXaxis()->CenterTitle();
+    h8a->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h8a->GetYaxis()->CenterTitle();
+
+    TH2 *h8b = new TH2D("h8b","(E-p_{z})_{Tot.} < 18 GeV",140,0,70,140,0,70);
+    h8b->GetXaxis()->SetTitle("W_{True} [GeV]");h8b->GetXaxis()->CenterTitle();
+    h8b->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h8b->GetYaxis()->CenterTitle();
+
+    TH2 *h8c = new TH2D("h8c","(E-p_{z})_{Tot.} > 18 GeV, y_{Elec.}>0.01",140,0,70,140,0,70);
+    h8c->GetXaxis()->SetTitle("W_{True} [GeV]");h8c->GetXaxis()->CenterTitle();
+    h8c->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h8c->GetYaxis()->CenterTitle();
+
     //Bin Yields/Kinematics/Factors
     //int nbins_tot = nbins_Q2*nbins;
     double yield[nbins][nbins_Q2];
+    double yield_cut[nbins][nbins_Q2];
     double yield_true[nbins][nbins_Q2];
     double error[nbins][nbins_Q2];
     double rcs[nbins][nbins_Q2];
@@ -142,6 +155,7 @@ void rad_djangoh(){
     for(int i=0;i<nbins;i++){ //x loop
         for(int j=0;j<nbins_Q2;j++){ //Q2 loop
             yield[i][j]=0;
+            yield_cut[i][j]=0;
             yield_true[i][j]=0;
             error[i][j]=0;
             rcs[i][j]=0;  
@@ -211,10 +225,7 @@ void rad_djangoh(){
     //double nu_true;
 
     //Other variables
-    double Eout1,pzout1;
-    double Eout6,pzout6;
-    double Eout7,pzout7;
-    double Eout8,pzout8;
+    double Eout,pzout;
 
     //Calculate Generated Luminosity
     int nevents = t->GetEntries();
@@ -235,10 +246,7 @@ void rad_djangoh(){
     for(int k=0;k<nevents;k++){
 
         //Reset Variables
-        Eout1=0;pzout1=0;
-        Eout6=0;pzout6=0;
-        Eout7=0;pzout7=0;
-        Eout8=0;pzout8=0;
+        Eout=0;pzout=0;
 
         if(k%10000==0) cout<<"Events Analysed = "<<k<<"!"<<endl;
         t->GetEntry(k);
@@ -266,8 +274,11 @@ void rad_djangoh(){
         //Using true quantities
         for(int i=0;i<nbins;i++){
             for(int j=0;j<nbins_Q2;j++){
-                if(x_true>x_low[i] && x_true<x_hi[i] && Q2_true>Q2_low[j] && Q2_true<Q2_hi[j] &&
-                    y_true>ymin && W2_true>W2min && y_true<ymax)
+                //Don't use extra cuts here since cutting based on bins
+                //For electron method cross section, these cuts are redundant since the edge bins
+                //are removed. But I'll leave those for now.
+                if(x_true>x_low[i] && x_true<x_hi[i] && Q2_true>Q2_low[j] && Q2_true<Q2_hi[j] 
+                /*&& y_true>ymin && W2_true>W2min && y_true<ymax*/)
                     yield_true[i][j]+=1.;
             }
         }
@@ -289,39 +300,61 @@ void rad_djangoh(){
         if(Q2_true>50)h5b->Fill(x_true,x_event);
         h6->Fill(event->IChannel);
 
-
         // Loop over all particles in event 
         for(int iParticle=0;iParticle<event->GetNTracks();iParticle++){
 
             particle = event->GetTrack(iParticle);
         
             //Get total outgoing energy and z momentum component
+            //N.B. We can use the same set of (Eout,pzout) variables for all channels,
+            //since there is only a single channel for each event. That is, only
+            //one channel contributes to the sum for a given event, and the sum is 
+            //reset each event.
             if( particle->GetStatus()==1 && fabs(particle->GetEta())<4 ){
 
                 if(event->IChannel==1){
-                    Eout1+=particle->GetE();
-                    pzout1+=particle->GetPz();
+                    Eout+=particle->GetE();
+                    pzout+=particle->GetPz();
                 }
                 else if(event->IChannel==6){
-                    Eout6+=particle->GetE();
-                    pzout6+=particle->GetPz();
+                    Eout+=particle->GetE();
+                    pzout+=particle->GetPz();
                 }
                 else if(event->IChannel==7){
-                    Eout7+=particle->GetE();
-                    pzout7+=particle->GetPz();
+                    Eout+=particle->GetE();
+                    pzout+=particle->GetPz();
                 }
                 else if(event->IChannel==8){
-                    Eout8+=particle->GetE();
-                    pzout8+=particle->GetPz();
+                    Eout+=particle->GetE();
+                    pzout+=particle->GetPz();
                 }
             }
         }
 
         //Fill additional histograms
-        if( event->IChannel==1 ) h7a->Fill(Eout1-pzout1);
-        if( event->IChannel==6 ) h7b->Fill(Eout6-pzout6);
-        if( event->IChannel==7 ) h7c->Fill(Eout7-pzout7);
-        if( event->IChannel==8 ) h7d->Fill(Eout8-pzout8);
+        if( event->IChannel==1 ) h7a->Fill(Eout-pzout);
+        if( event->IChannel==6 ) h7b->Fill(Eout-pzout);
+        if( event->IChannel==7 ) h7c->Fill(Eout-pzout);
+        if( event->IChannel==8 ) h7d->Fill(Eout-pzout);
+
+        //Total E-pz (only one channel will be non-zero per event)
+        if( (Eout-pzout)>18 ){
+            h8a->Fill( sqrt(W2_true), sqrt(W2_event) );
+            if(y_event>0.01) h8c->Fill( sqrt(W2_true), sqrt(W2_event) );
+
+            //Using scattered electron quantities
+            for(int i=0;i<nbins;i++){
+                for(int j=0;j<nbins_Q2;j++){
+                    if(x_event>x_low[i] && x_event<x_hi[i] && Q2_event>Q2_low[j] && Q2_event<Q2_hi[j] &&
+                        y_event>ymin && W2_event>W2min && y_event<ymax)
+                        yield_cut[i][j]+=1.;
+                }
+            }
+
+        }
+        else if( (Eout-pzout)<18 ){
+            h8b->Fill( sqrt(W2_true), sqrt(W2_event) );
+        }
 
     } //End event loop
 
@@ -380,6 +413,36 @@ void rad_djangoh(){
             if(yield_true[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
                 gr1t[j]->SetPoint(counter,x_center[i],rcs[i][j]);
                 gr1t[j]->SetPointError(counter,0,error[i][j]);
+                counter++;
+            }
+        }
+        counter=0;
+    }
+
+    //Next do for scattered electron kinematics with E-pz cut
+    for(int i=0;i<nbins;i++){
+        for(int j=0;j<nbins_Q2;j++){
+            rcs[i][j] = rcs_factor[i][j] * (yield_cut[i][j]) / (lum*x_width[i]*Q2_width[j]);
+            if(yield_cut[i][j]>0) error[i][j] = (rcs[i][j]) / (sqrt(yield_cut[i][j]));
+        }
+    }
+
+    //Create and fill TGraphs
+    TGraphErrors *gr1cut[nbins_Q2];
+    for(int j=0;j<nbins_Q2;j++){
+        gr1cut[j] = new TGraphErrors();
+        gr1cut[j]->SetLineWidth(2);
+        gr1cut[j]->SetLineColor(kRed);
+        gr1cut[j]->SetMarkerStyle(24);
+        gr1cut[j]->SetMarkerColor(kRed);
+    }
+
+    counter = 0;
+    for(int j=0;j<nbins_Q2;j++){
+        for(int i=0;i<nbins;i++){
+            if(yield_cut[i][j]>50 && cut_lr[i][j] && cut_ul[i][j]){
+                gr1cut[j]->SetPoint(counter,x_center[i],rcs[i][j]);
+                gr1cut[j]->SetPointError(counter,0,error[i][j]);
                 counter++;
             }
         }
@@ -489,11 +552,14 @@ void rad_djangoh(){
     TLatex *tex2 = new TLatex(4E-4,1.6,"10 GeV e^{-} on 100 GeV p, #sqrt{s}=63.2 GeV");
     tex2->SetTextColor(kBlack);tex2->SetTextFont(42);
 
-    TLatex *tex3 = new TLatex(4E-4,1.45,"Djangoh, y>0.001 and W^{2}>10GeV^{2}");
+    TLatex *tex3 = new TLatex(4E-4,1.45,"Djangoh, y_{bin}>0.001 and W^{2}_{bin}>10GeV^{2}");
     tex3->SetTextColor(kBlack);tex3->SetTextFont(42);
 
-    TLatex *tex4 = new TLatex(4E-4,1.45,"#sigma_{Rad.} using electron quantities");
+    TLatex *tex4 = new TLatex(4E-4,1.60,"#sigma_{Rad.} using elec. quantities");
     tex4->SetTextColor(kBlue);tex4->SetTextFont(62);
+
+    TLatex *tex4a = new TLatex(4E-4,1.45,"#sigma_{Rad.} using elec., E-p_{z} cut");
+    tex4a->SetTextColor(kRed);tex4a->SetTextFont(62);
 
     TLatex *tex5 = new TLatex(4E-4,1.30,"#sigma_{Rad.} using true quantities");
     tex5->SetTextColor(kGreen);tex5->SetTextFont(62);
@@ -534,9 +600,10 @@ void rad_djangoh(){
     hframe->GetXaxis()->SetTitle("x");hframe->GetXaxis()->CenterTitle();
     hframe->GetYaxis()->SetTitle("#sigma_{r,NC}^{-}");hframe->GetYaxis()->CenterTitle();
     counter = 0;
-    gr1[Q2_bin_plot[counter]]->Draw("P Same");  
+    gr1[Q2_bin_plot[counter]]->Draw("P Same"); 
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same"); 
     tex1[counter]->Draw();
     tex2->Draw();tex3->Draw();
 
@@ -553,8 +620,9 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same"); 
     tex1[counter]->Draw();
-    tex4->Draw();tex5->Draw();tex6->Draw();
+    tex4->Draw();tex4a->Draw();tex5->Draw();tex6->Draw();
 
     c1->cd(3);
     gPad->SetLogx();
@@ -569,6 +637,7 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same"); 
     tex1[counter]->Draw();
     
     c1->cd(4);
@@ -584,6 +653,7 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same"); 
     tex1[counter]->Draw();
 
     TCanvas *c2 = new TCanvas("c2");
@@ -602,6 +672,7 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     tex2->Draw();tex3->Draw();
 
@@ -618,8 +689,9 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
-    tex4->Draw();tex5->Draw();tex6->Draw();
+    tex4->Draw();tex4a->Draw();tex5->Draw();tex6->Draw();
     
     c2->cd(3);
     gPad->SetLogx();
@@ -634,6 +706,7 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
     
     c2->cd(4);
@@ -650,6 +723,7 @@ void rad_djangoh(){
     gr1[Q2_bin_plot[counter]]->Draw("P Same");
     gr1t[Q2_bin_plot[counter]]->Draw("P Same");
     gr1_d[Q2_bin_plot[counter]]->Draw("P Same");
+    gr1cut[Q2_bin_plot[counter]]->Draw("P Same");
     tex1[counter]->Draw();
 
     //Plot Histograms
@@ -720,6 +794,18 @@ void rad_djangoh(){
     leg1->AddEntry(h7d,"Channel 8","l");
     leg1->Draw();
 
+    TCanvas *cc8a = new TCanvas("cc8a");
+    cc8a->SetLogz();
+    h8a->Draw("colz");
+
+    TCanvas *cc8b = new TCanvas("cc8b");
+    cc8b->SetLogz();
+    h8b->Draw("colz");
+
+    TCanvas *cc8c = new TCanvas("cc8c");
+    cc8c->SetLogz();
+    h8c->Draw("colz");
+
     //Print to File
     c1->Print("plots/rad_djangoh.pdf[");
     c1->Print("plots/rad_djangoh.pdf");
@@ -739,6 +825,9 @@ void rad_djangoh(){
     cc5b->Print("plots/rad_djangoh.pdf");
     cc6->Print("plots/rad_djangoh.pdf");
     cc7->Print("plots/rad_djangoh.pdf");
-    cc7->Print("plots/rad_djangoh.pdf]");
+    cc8a->Print("plots/rad_djangoh.pdf");
+    cc8b->Print("plots/rad_djangoh.pdf");
+    cc8c->Print("plots/rad_djangoh.pdf");
+    cc8c->Print("plots/rad_djangoh.pdf]");
 
 }
