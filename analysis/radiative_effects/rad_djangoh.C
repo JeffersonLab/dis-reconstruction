@@ -134,6 +134,10 @@ void rad_djangoh(){
     h8c->GetXaxis()->SetTitle("W_{True} [GeV]");h8c->GetXaxis()->CenterTitle();
     h8c->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h8c->GetYaxis()->CenterTitle();
 
+    TH2 *h8d = new TH2D("h8d","(E-p_{z})_{Tot.} > 18 GeV, 0.01<y_{Elec.}<0.95",140,0,70,140,0,70);
+    h8d->GetXaxis()->SetTitle("W_{True} [GeV]");h8d->GetXaxis()->CenterTitle();
+    h8d->GetYaxis()->SetTitle("W_{Elec.} [GeV]");h8d->GetYaxis()->CenterTitle();
+
     //Bin Yields/Kinematics/Factors
     //int nbins_tot = nbins_Q2*nbins;
     double yield[nbins][nbins_Q2];
@@ -341,6 +345,7 @@ void rad_djangoh(){
         if( (Eout-pzout)>18 ){
             h8a->Fill( sqrt(W2_true), sqrt(W2_event) );
             if(y_event>0.01) h8c->Fill( sqrt(W2_true), sqrt(W2_event) );
+            if(y_event>0.01 && y_event<0.95) h8d->Fill( sqrt(W2_true), sqrt(W2_event) );
 
             //Using scattered electron quantities
             for(int i=0;i<nbins;i++){
@@ -806,6 +811,10 @@ void rad_djangoh(){
     cc8c->SetLogz();
     h8c->Draw("colz");
 
+    TCanvas *cc8d = new TCanvas("cc8d");
+    cc8d->SetLogz();
+    h8d->Draw("colz");
+
     //Print to File
     c1->Print("plots/rad_djangoh.pdf[");
     c1->Print("plots/rad_djangoh.pdf");
@@ -828,6 +837,7 @@ void rad_djangoh(){
     cc8a->Print("plots/rad_djangoh.pdf");
     cc8b->Print("plots/rad_djangoh.pdf");
     cc8c->Print("plots/rad_djangoh.pdf");
-    cc8c->Print("plots/rad_djangoh.pdf]");
+    cc8d->Print("plots/rad_djangoh.pdf");
+    cc8d->Print("plots/rad_djangoh.pdf]");
 
 }
