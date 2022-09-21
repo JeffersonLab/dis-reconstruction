@@ -31,12 +31,7 @@ void rad_truth_kinematics(){
   
   TChain *tree = new TChain("EICTree");
   //Djangoh 4.6.20
-  tree->Add("/gpfs02/eic/baraks/djangoh/djangoh_local/outfiles/djangoh.NC.Rad.10x100_evt.root");
-
-  //Djangoh 4.6.10
-  //for(int i=0;i<15;i++){
-      //tree->Add(Form("/eic/data/baraks/dis-reconstruction/djangoh/outfiles/yellow/10_100/Rad/djangoh.NC.10x100_%d.root",i));
-  //}
+  tree->Add("/gpfs02/eic/baraks/djangoh/djangoh_local/outfiles/djangoh.NC.Rad_inelas.10x100_evt.root");
 
   int nEntries = tree->GetEntries();
   cout<<"-------------------------------"<<endl;
@@ -116,6 +111,22 @@ void rad_truth_kinematics(){
   TH2 *h3 = new TH2D("h3","",nbins_x,x_bins,nbins_x,x_bins);
   h3->GetXaxis()->SetTitle("Djangoh True x");h3->GetXaxis()->CenterTitle();
   h3->GetYaxis()->SetTitle("Calc. True x");h3->GetYaxis()->CenterTitle();
+
+  TH2 *h3a = new TH2D("h3a","Channel 1",nbins_x,x_bins,nbins_x,x_bins);
+  h3a->GetXaxis()->SetTitle("Djangoh True x");h3a->GetXaxis()->CenterTitle();
+  h3a->GetYaxis()->SetTitle("Calc. True x");h3a->GetYaxis()->CenterTitle();
+
+  TH2 *h3b = new TH2D("h3b","Channel 6",nbins_x,x_bins,nbins_x,x_bins);
+  h3b->GetXaxis()->SetTitle("Djangoh True x");h3b->GetXaxis()->CenterTitle();
+  h3b->GetYaxis()->SetTitle("Calc. True x");h3b->GetYaxis()->CenterTitle();
+
+  TH2 *h3c = new TH2D("h3c","Channel 7",nbins_x,x_bins,nbins_x,x_bins);
+  h3c->GetXaxis()->SetTitle("Djangoh True x");h3c->GetXaxis()->CenterTitle();
+  h3c->GetYaxis()->SetTitle("Calc. True x");h3c->GetYaxis()->CenterTitle();
+
+  TH2 *h3d = new TH2D("h3d","Channel 8",nbins_x,x_bins,nbins_x,x_bins);
+  h3d->GetXaxis()->SetTitle("Djangoh True x");h3d->GetXaxis()->CenterTitle();
+  h3d->GetYaxis()->SetTitle("Calc. True x");h3d->GetYaxis()->CenterTitle();
 
   TH2 *h4 = new TH2D("h4","",100,0,100,100,0,100);
   h4->GetXaxis()->SetTitle("Djangoh True #nu [GeV]");h4->GetXaxis()->CenterTitle();
@@ -235,6 +246,13 @@ void rad_truth_kinematics(){
     h4->Fill(nu_true,nu_true_calc);
     h5->Fill(y_true,y_true_calc);h5a->Fill(y_true,y_had_calc);
 
+    //Individual channels
+    int channel = event->IChannel; //Event QED channel
+    if(channel==1) h3a->Fill(x_true,x_true_calc);
+    if(channel==6) h3b->Fill(x_true,x_true_calc);
+    if(channel==7) h3c->Fill(x_true,x_true_calc);
+    if(channel==8) h3d->Fill(x_true,x_true_calc);
+
   } //Finished loop over entries
 
   //Make plots
@@ -258,6 +276,21 @@ void rad_truth_kinematics(){
   c3->SetLogx();c3->SetLogy();
   h3->Draw("colz");
 
+  TCanvas *c3a = new TCanvas("c3a");
+  c3a->Divide(2,2);
+  c3a->cd(1);
+  gPad->SetLogx();gPad->SetLogy();
+  h3a->Draw("colz");
+  c3a->cd(2);
+  gPad->SetLogx();gPad->SetLogy();
+  h3b->Draw("colz");
+  c3a->cd(3);
+  gPad->SetLogx();gPad->SetLogy();
+  h3c->Draw("colz");
+  c3a->cd(4);
+  gPad->SetLogx();gPad->SetLogy();
+  h3d->Draw("colz");
+
   TCanvas *c4 = new TCanvas("c4");
   h4->Draw("colz");
 
@@ -276,6 +309,7 @@ void rad_truth_kinematics(){
   c2->Print("plots/rad_truth_kinematics.pdf");
   c2a->Print("plots/rad_truth_kinematics.pdf");
   c3->Print("plots/rad_truth_kinematics.pdf");
+  c3a->Print("plots/rad_truth_kinematics.pdf");
   c4->Print("plots/rad_truth_kinematics.pdf");
   c5->Print("plots/rad_truth_kinematics.pdf");
   c5a->Print("plots/rad_truth_kinematics.pdf");
